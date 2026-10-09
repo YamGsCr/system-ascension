@@ -2,7 +2,7 @@
 App.renderSide = function(){
   var r = App.ui.route, D = App.D;
   var h = '<button class="logo" data-a="logo" aria-label="System Ascension"><span class="logo-mark">'+U.icon('sparkle')+'</span><span><b>System</b><small>Ascension</small></span></button><nav class="nav">';
-  App.NAV.forEach(function(n){ if (!n) { h += '<div class="sep"></div>'; return; } h += '<a href="#/'+n[0]+'" class="'+(r === n[0] ? 'on' : '')+'"'+(r === n[0] ? ' aria-current="page"' : '')+'>'+U.icon(n[2])+n[1]+'</a>'; });
+  App.NAV.forEach(function(n){ if (!n) { h += '<div class="sep"></div>'; return; } if (n[3] && !n[3]()) return; h += '<a href="#/'+n[0]+'" class="'+(r === n[0] ? 'on' : '')+'"'+(r === n[0] ? ' aria-current="page"' : '')+'>'+U.icon(n[2])+n[1]+'</a>'; });
   h += '</nav><div class="side-foot">'+D.nodesDone+'/'+D.nodesTotal+' nós · '+D.gatesDone+'/'+D.gatesTotal+' selos<br>Dia '+(U.daysBetween(App.S.start, U.today())+1)+' no Sistema</div>';
   App.$('side').innerHTML = h;
 };
@@ -33,7 +33,7 @@ App.renderMnav = function(){
   var more = App.$('more');
   more.className = 'more-sheet' + (App.ui.more ? ' on' : '');
   more.innerHTML = '<div class="row between" style="margin-bottom:10px"><span class="eyebrow">Janelas do Sistema</span><button class="iconbtn" data-a="closeAll" aria-label="Fechar">'+U.icon('close')+'</button></div><div class="grid">'
-    + App.NAV.filter(function(n){ return n && main.indexOf(n[0]) < 0; }).map(function(n){ return '<a href="#/'+n[0]+'">'+U.icon(n[2])+n[1]+'</a>'; }).join('') + '</div>';
+    + App.NAV.filter(function(n){ return n && (!n[3] || n[3]()) && main.indexOf(n[0]) < 0; }).map(function(n){ return '<a href="#/'+n[0]+'">'+U.icon(n[2])+n[1]+'</a>'; }).join('') + '</div>';
   App.renderScrim();
 };
 App.dailyWay = function(d){ var S = App.S; if (!d.way) return null; if (d.way === '$main') return E.mainWay(S); if (d.way === '$read') return S.settings.readWay; return d.way; };

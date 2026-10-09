@@ -912,4 +912,82 @@ body.sy-hold .view,body.sy-hold .drawer,body.sy-hold .modal,body.sy-hold .more-s
 .syhold b{color:var(--warn)}
 .syhold .btn{flex:none}
 @media (max-width:560px){.syhold{flex-direction:column;align-items:stretch}}
+/* ===== Cidade (beta): radar, mapa, insígnias de rank, corrupção ===== */
+:root{--cy-red:#ff3b5c}
+.cy-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.cy-radar{flex:none;display:block}
+.cy-rd-bg{fill:var(--inset);stroke:var(--line2);stroke-width:1.2}
+.cy-rd-l{fill:none;stroke:var(--line);stroke-width:.8}
+.cy-rd-w{fill:var(--glow);fill-opacity:.16}
+.cy-rd-e{stroke:var(--glow);stroke-width:1.4;stroke-linecap:round}
+.cy-rd-c{fill:var(--glow)}
+.cy-rd-sweep{animation:cy-spin 4.2s linear infinite}
+@keyframes cy-spin{to{transform:rotate(360deg)}}
+.cy-rd-blip{animation:cy-blip 2.1s ease-in-out infinite}
+@keyframes cy-blip{50%{opacity:.35}}
+.cy-rdlist{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:14px;margin:0}
+.cy-rdlist dt{font:600 11px/1.6 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.cy-rdlist dd{margin:0;color:var(--text);min-width:0}
+.cy-main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);gap:16px;align-items:start}
+.cy-svg{display:block;width:100%;height:auto;max-width:680px;margin:0 auto;user-select:none;-webkit-user-select:none}
+.cy-bgr{fill:var(--bg0)}
+.cy-gridl{fill:none;stroke:var(--line);stroke-width:.6;opacity:.55}
+.cy-av{fill:none;stroke:var(--line2);stroke-width:1;stroke-dasharray:6 9;opacity:.5}
+.cy-frame{fill:none;stroke:var(--glow);stroke-width:2.5;opacity:.8}
+.cy-blk{cursor:pointer;outline:none}
+.cy-fill{fill:var(--wc);fill-opacity:.055;transition:fill-opacity .2s}
+.cy-blk:hover .cy-fill,.cy-blk:focus-visible .cy-fill{fill-opacity:.12}
+.cy-sel .cy-fill{fill-opacity:.17}
+.cy-edge{fill:none;stroke:var(--wc);stroke-width:1.6;stroke-opacity:.85}
+.cy-sel .cy-edge{stroke-width:3;stroke-opacity:1}
+.cy-blk:focus-visible .cy-edge{stroke-width:3;stroke-dasharray:8 5}
+.cy-dash{stroke-dasharray:5 6;stroke-opacity:.5}
+.cy-bld{fill:var(--wc);fill-opacity:.09;stroke:var(--wc);stroke-opacity:.2;stroke-width:.6}
+.cy-st{stroke:var(--wc);stroke-opacity:.33;stroke-width:3.2;stroke-linecap:round}
+.cy-icb{fill:var(--bg1);stroke:var(--wc);stroke-width:1.4}
+.cy-ic path{fill:none;stroke:var(--wc);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.cy-name{font:600 16px/1 var(--f-display);fill:var(--text);letter-spacing:.01em}
+.cy-sub{font:500 10.5px/1 var(--f-mono);fill:var(--dim);letter-spacing:.04em}
+.cy-redt{fill:var(--cy-red)}
+.cy-plaza{fill:var(--glow);fill-opacity:.05;stroke:var(--line);stroke-width:1}
+.cy-ring{fill:none;stroke:var(--glow);stroke-width:2}
+.cy-ring2{fill:none;stroke:var(--glow);stroke-width:1;stroke-dasharray:3 7;opacity:.7}
+.cy-spin{animation:cy-spin 40s linear infinite}
+.cy-gate{fill:var(--glow);fill-opacity:.22;stroke:var(--glow);stroke-width:1.2;animation:cy-gate 3.6s ease-in-out infinite}
+@keyframes cy-gate{50%{fill-opacity:.4}}
+.cy-mist{fill:var(--dim);opacity:.16}
+.cy-drift{animation:cy-drift 18s ease-in-out infinite alternate}
+@keyframes cy-drift{to{transform:translate(-14px,9px)}}
+.cy-fogt{font:700 24px/1 var(--f-display);fill:var(--faint);letter-spacing:.3em}
+.cy-corr .cy-edge{stroke:var(--cy-red)}
+.cy-corr .cy-st{stroke:var(--cy-red);stroke-opacity:.28}
+.cy-corr .cy-icb,.cy-corr .cy-ic path{stroke:var(--cy-red)}
+.cy-tint{fill:var(--cy-red);pointer-events:none}
+.cy-c1 .cy-tint{fill-opacity:.07}.cy-c2 .cy-tint{fill-opacity:.13}.cy-c3 .cy-tint{fill-opacity:.2}
+.cy-noise{pointer-events:none;animation:cy-jit .9s steps(3) infinite}
+.cy-c1 .cy-noise{opacity:.32}.cy-c2 .cy-noise{opacity:.5}.cy-c3 .cy-noise{opacity:.7}
+@keyframes cy-jit{0%{transform:translate(0,0)}33%{transform:translate(-4px,3px)}66%{transform:translate(3px,-2px)}100%{transform:translate(0,0)}}
+.cy-crack{fill:none;stroke:var(--cy-red);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.cy-c3 .cy-edge{animation:cy-flick 2.6s steps(1) infinite}
+@keyframes cy-flick{0%,100%{stroke-opacity:1}48%{stroke-opacity:.35}52%{stroke-opacity:1}70%{stroke-opacity:.6}}
+.cy-badge-b{fill:var(--bg0);stroke:var(--rc);stroke-width:1.8}
+.cy-badge-o{fill:none;stroke:var(--rc);stroke-width:1;opacity:.55}
+.cy-badge-t{font-family:var(--f-display);font-weight:700;fill:var(--rc)}
+.cy-rS .cy-badge-o{animation:cy-pulse 1.8s ease-in-out infinite}
+@keyframes cy-pulse{50%{opacity:.1}}
+.cy-rk{display:inline-block;vertical-align:middle;overflow:visible}
+.cy-legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:12px;font-size:12.5px;color:var(--dim)}
+.cy-legend .rk{display:inline-flex;align-items:center}
+.cy-sw{display:inline-block;width:14px;height:14px;border:1px solid var(--cy-red);vertical-align:-2px;margin-right:5px}
+.cy-dlist{display:flex;flex-direction:column;gap:6px}
+.cy-drow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);background:var(--inset);color:var(--text);text-align:left;font:inherit;cursor:pointer;width:100%}
+.cy-drow:hover,.cy-drow:focus-visible{border-color:var(--line2)}
+.cy-drow .ic{color:var(--wc)}
+.cy-clan{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-top:1px solid var(--line)}
+.cy-clan i{color:var(--dim);font-size:13.5px}
+.cy-prev{display:flex;gap:6px;flex-wrap:wrap}
+.cy-prev .btn.on{border-color:var(--cy-red);color:var(--cy-red)}
+@media (max-width:1080px){.cy-main{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.cy-top{grid-template-columns:minmax(0,1fr)}.cy-radar{margin:0 auto}.cy-rdlist{font-size:13.5px}}
+@media (prefers-reduced-motion:reduce){.cy-rd-sweep,.cy-spin,.cy-gate,.cy-drift,.cy-noise,.cy-c3 .cy-edge,.cy-rS .cy-badge-o,.cy-rd-blip{animation:none}}
 </style>
