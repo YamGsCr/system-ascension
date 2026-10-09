@@ -36,7 +36,7 @@ function oldBuild(){
     const A = await H.openDevice(b, C, 'A', { seed: { 'sysasc.core.v1': base } });
     await sleep(4500);
     const a = await st(A);
-    ok(!a.on && a.since === '' && a.v === 1 && a.dists === 7, 'a Cidade nasce vazia na memória, desligada, com os 7 distritos e versão 1');
+    ok(!a.on && a.since === '' && a.v === 2 && a.dists === 7, 'a Cidade nasce vazia na memória, desligada, com os 7 distritos e a versão atual do documento');
     ok(!C.docs.has(CITY) && !a.local, 'nenhum documento city na nuvem nem no navegador enquanto a Cidade está desligada');
     ok(a.status === 'synced', 'sincronizado como antes (' + a.status + ')');
     const sizes = await A.ev(() => { location.hash = '#/perfil'; return new Promise(r => setTimeout(() => r(document.getElementById('view').innerText), 400)); });
@@ -54,8 +54,8 @@ function oldBuild(){
     await ligar(A); await sleep(3500);
     const a = await st(A), c = city(C);
     ok(a.on && a.nav && /\d{4}-\d\d-\d\d/.test(a.since), 'a chave liga, o botão Cidade aparece no menu e a data de entrada fica guardada');
-    ok(c && c.since === a.since && c.v === 1 && Object.keys(c.dist).length === 7, 'o documento city chegou na nuvem com a data, a versão e os 7 distritos');
-    ok(c && c._u && c._e === c._u && c._w === c._u && c._by, 'com os carimbos da guarda (_u, _e, _w, _by), como os outros três');
+    ok(c && c.since === a.since && c.v === 2 && Object.keys(c.dist).length === 7 && c.portals.length === 3, 'o documento city chegou na nuvem com a data, a versão, os 7 distritos e os 3 portais do dia');
+    ok(c && c._u && c._e && c._e <= c._u && c._w === c._u && c._by, 'com os carimbos da guarda (_u, _e, _w, _by): a edição foi a chave, o nascimento foi manutenção');
     ok(c && !('_b' in c) && !('_bx' in c) && !('_b0' in c), 'sem as marcas locais do aparelho');
     ok(C.core() && C.core().settings.cityBeta === true, 'a chave mora no progresso (core), então vale em todo aparelho');
     const B = await H.openDevice(b, C, 'B', {});
@@ -84,7 +84,8 @@ function oldBuild(){
     await sleep(1500);
     A.offline = false; B.offline = false;
     await A.ev(() => SYS.Store.onWake()); await B.ev(() => SYS.Store.onWake());
-    await sleep(9000);
+    /* espera a convergência (até 30 s): sob carga a nuvem simulada demora mais a circular */
+    for (let t = 0; t < 60; t++) { await sleep(500); const c0 = city(C), a0 = await st(A), b0 = await st(B); if (t >= 12 && c0 && c0.dist.estudio.closed === 9 && a0.closed === 9 && b0.closed === 9 && a0.lost.indexOf('city') >= 0) break; }
     const a = await st(A), bb = await st(B), c = city(C);
     ok(c && c.dist.estudio.closed === 9, 'na nuvem ficou a edição mais nova (9)');
     ok(a.closed === 9 && bb.closed === 9, 'e os dois aparelhos terminam iguais (' + a.closed + ' / ' + bb.closed + ')');

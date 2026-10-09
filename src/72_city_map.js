@@ -95,7 +95,7 @@
       var ps = byRua[r], m = ps.length;
       ps.forEach(function(p, k){
         var px = x + 20 + (w - 40) * (k + 1) / (m + 1), tip = 'Portal ' + p.r + ' · ' + d.ruas[r] + (p.due ? ' · prazo ' + U.fmtDate(p.due) : '');
-        out += App.cyBadge(CY.RANKS.indexOf(p.r) >= 0 ? p.r : 'E', px, streets[r], 9, ' data-tip="' + U.esc(tip) + '"');
+        out += App.cyBadge(CY.RANKS.indexOf(p.r) >= 0 ? p.r : 'E', px, streets[r], 9, ' data-tip="' + U.esc(tip) + '" data-a="cyOpen" data-id="' + U.esc(p.id) + '" role="button" tabindex="0" aria-label="' + U.esc('Abrir portal ' + p.r + ': ' + (p.n || '')) + '"');
       });
     });
     return out;

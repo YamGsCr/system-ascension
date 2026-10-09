@@ -46,7 +46,7 @@ App.renderDrawer = function(){
   if (!u) { dr.classList.remove('on'); dr.setAttribute('aria-hidden', 'true'); dr.removeAttribute('data-k'); return; }
   var key = u.type + ':' + u.id + ':' + (u.tab || ''), same = dr.getAttribute('data-k') === key;
   var ob = dr.querySelector('.dr-body'), sc = ob ? ob.scrollTop : 0;
-  dr.innerHTML = u.type === 'node' ? App.nodeDrawer(u) : u.type === 'exam' ? App.examDrawer(u) : '';
+  dr.innerHTML = u.type === 'node' ? App.nodeDrawer(u) : u.type === 'exam' ? App.examDrawer(u) : (App.DRAWERS && App.DRAWERS[u.type]) ? App.DRAWERS[u.type](u) : '';
   dr.classList.add('on'); dr.setAttribute('aria-hidden', 'false'); dr.setAttribute('data-k', key);
   var nb = dr.querySelector('.dr-body'); if (nb && same) nb.scrollTop = sc;
 };
@@ -156,7 +156,7 @@ App.M.undo = function(m){
 };
 App.C.doneCheck = function(el){ var m = App.ui.modal; if (!m) return; m.checks[+el.getAttribute('data-i')] = el.checked; var btn = App.$('modal').querySelector('[data-a="confirmDone"]'); var w = App.way(E.NODE[m.id].way); if (btn) btn.disabled = !w.checks.every(function(_, i){ return m.checks[i]; }); };
 App.I.doneEv = function(el){ if (App.ui.modal) App.ui.modal.ev = el.value; };
-App.A.closeModal = function(){ App.ui.modal = null; App.renderModal(); };
+App.A.closeModal = function(){ App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal(); };
 App.A.confirmDone = function(){
   var m = App.ui.modal, S = App.S, n = E.NODE[m.id], w = App.way(n.way), t = U.today();
   S.nodes[n.id] = {s:'done', d0:(S.nodes[n.id] && S.nodes[n.id].d0) || t, d1:t};

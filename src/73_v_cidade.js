@@ -20,7 +20,7 @@
 
   /* ---------- tela com a Cidade desligada ---------- */
   function off(){
-    return H.head('Cidade · beta', 'A Cidade', 'Portais nascem sozinhos nos 7 distritos, um por Caminho, com rank de E a S, prazo e drop. A Cidade está sendo construída: por enquanto, o mapa e o radar.')
+    return H.head('Cidade · beta', 'A Cidade', 'Portais nascem sozinhos nos 7 distritos, um por Caminho, com rank de E a S, prazo e drop. Em beta: portais, drop e Licença já funcionam; caixas, vales, Ecos e Forja chegam nos próximos blocos.')
       + '<section class="win"><div class="win-h">' + U.icon('city') + 'Cidade (beta)</div><div class="stack" style="gap:12px">'
       + '<p>A chave fica desligada até você pedir. Ligar não mexe no seu progresso: a Cidade guarda tudo num save próprio, separado do resto.</p>'
       + '<div class="row"><button class="btn primary" data-a="cityOn">' + U.icon('city') + 'Ligar a Cidade (beta)</button><span class="faint" style="font-size:13px">Dá para desligar em Perfil → Ajustes.</span></div>'
@@ -35,10 +35,14 @@
     return 'Estação 1 · ' + n + ' terminou';
   }
   function radar(){
-    var open = openAll(), R = CY.CONF.ritmo;
+    var open = openAll(), R = CY.CONF.ritmo, c = App.city, S = App.S, day = U.today(), z = S.pz || {};
+    var cont = E.cyCount(c), extra = open.length - cont, hr = String(U.resetHour()).padStart(2, '0') + ':00';
+    var prox = E.cyPaused(S, day) ? 'em pausa junto com o protocolo' : c.spawn === day ? 'amanhã, no reset das ' + hr + (cont > CY.NASCE.cheio ? ' (só 1: mais de 4 abertos)' : '') : 'agora, assim que a nuvem for conferida';
+    var cham = !z.on ? 'protocolo desligado' : c.cham === day ? 'o portal de hoje já nasceu' : 'nasce quando a janela abrir, às ' + z.ini;
     var rows = [
-      ['Portais', open.length + ' de ' + R.abertosMax + ' abertos'],
-      ['Próximo', open.length ? 'no próximo reset' : 'o motor de portais ainda não ligou'],
+      ['Portais', cont + ' de ' + R.abertosMax + ' abertos' + (extra > 0 ? ' · +' + extra + ' fora do limite' : '')],
+      ['Próximo', prox],
+      ['Chamado', cham],
       ['Raid', 'nenhuma anunciada · uma por mês'],
       ['Maldições', 'nenhuma ativa'],
       ['Mercador', 'fora da Cidade']
@@ -67,6 +71,11 @@
   }
   function panel(){
     var sel = ui().sel;
+    var dp = CY.DMAP[sel] ? '<section class="win"><div class="win-h">' + U.icon('gate') + 'Portais em ' + U.esc(CY.DMAP[sel].n) + '</div>' + App.cyPortalsHTML(E.cyOpen(App.city).filter(function(p){ return p.d === sel; }), 'Nenhum portal aberto neste distrito.') + '</section>' : '';
+    if (dp) return dp + panelD(sel);
+    return panelD(sel);
+  }
+  function panelD(sel){
     if (!sel) return '<section class="win"><div class="win-h">' + U.icon('map') + 'Distritos</div><p class="dim" style="font-size:14px;margin-bottom:10px">Toque num distrito, no mapa ou aqui, para ver as ruas, os clãs e o estado dele.</p><div class="cy-dlist">'
       + CY.DIST.map(distRow).join('') + '<button class="cy-drow" style="--wc:var(--glow)" data-a="cyPick" data-id="centro">' + U.icon('d_center') + '<span class="stack" style="gap:1px"><b>Centro</b><span class="faint" style="font-size:12.5px">Dungeons, Raids e Oficina</span></span><span></span></button></div></section>';
     var back = '<button class="act" data-a="cyPick" data-id="' + sel + '">fechar ✕</button>';
@@ -93,17 +102,17 @@
   App.V.cidade = function(){
     if (!E.cityOn(App.S)) return off();
     var since = App.city && App.city.since;
-    return H.head('Cidade · beta', 'A Cidade', 'Sete distritos, um por Caminho, e o Centro. Os portais nascem nas ruas de cada distrito; por enquanto o radar está quieto.' + (since ? ' Na Cidade desde ' + U.fmtDate(since) + '.' : ''))
-      + '<div class="stack" style="gap:16px">' + radar() + '<div class="cy-main">' + mapWin() + panel() + '</div></div>';
+    return H.head('Cidade · beta', 'A Cidade', 'Sete distritos, um por Caminho, e o Centro. Todo reset nascem portais nas ruas de cada distrito: entre, entregue e role o drop.' + (since ? ' Na Cidade desde ' + U.fmtDate(since) + '.' : ''))
+      + '<div class="stack" style="gap:16px">' + radar()
+      + '<section class="win"><div class="win-h">' + U.icon('gate') + 'Portais abertos</div>' + App.cyPortalsHTML(openAll(), 'Nenhum portal aberto agora. Os próximos nascem no reset.') + '</section>'
+      + '<div class="cy-main">' + mapWin() + '<div class="cy-side stack" id="cySide" style="gap:16px">' + panel() + '</div></div>'
+      + '<div class="cy-low">' + App.cyLicCard() + App.cyInvHTML() + App.cyPhoneHTML() + '</div></div>';
   };
 
   /* ---------- ações ---------- */
   function setCity(on){
-    var S = App.S, C = App.city, docs = ['core'];
-    S.settings.cityBeta = !!on;
-    if (on && !C.since) { C.since = U.today(); C.log.push({at: new Date().toISOString(), k: 'beta'}); docs.push('city'); }
-    App.commit(docs);
-    App.toast(on ? {t: 'Cidade (beta) ligada', s: 'A aba Cidade apareceu no menu. Por enquanto: o mapa e o radar.', ic: 'city'} : {t: 'Cidade (beta) desligada', s: 'Nada foi apagado. Ligue de novo quando quiser.', ic: 'city'});
+    App.citySet(on);
+    App.toast(on ? {t: 'Cidade (beta) ligada', s: 'A aba Cidade apareceu no menu. Os primeiros portais nascem agora.', ic: 'city'} : {t: 'Cidade (beta) desligada', s: 'A Cidade congelou: nada vence nem quebra até você ligar de novo.', ic: 'city'});
   }
   App.C.pCity = function(el){ setCity(el.checked); };
   App.A.cityOn = function(){ setCity(true); };
@@ -122,5 +131,6 @@
   document.addEventListener('keydown', function(ev){
     var t = ev.target;
     if ((ev.key === 'Enter' || ev.key === ' ') && t && t.classList && t.classList.contains('cy-blk')) { ev.preventDefault(); App.A.cyPick(t, {detail: 0}); }
+    else if ((ev.key === 'Enter' || ev.key === ' ') && t && t.getAttribute && t.getAttribute('data-a') === 'cyOpen' && t.classList.contains('cy-badge')) { ev.preventDefault(); App.A.cyOpen(t); }
   });
 })();

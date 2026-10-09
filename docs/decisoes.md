@@ -5,7 +5,7 @@ Os números ficam em `SYS.CITY.CONF` (`src/70_city_data.js`), para mudar num lug
 
 | # | Pergunta | Resposta | No código |
 |---|---|---|---|
-| 1 | Economia de ◆ | equilibrar | Meta de uns 45 ◆ por dia na Licença E, calibrada contra a chave E e o Baú de Mana quando a rolagem de drop chegar (com teste de distribuição). `CONF.econ` |
+| 1 | Economia de ◆ | equilibrar | Calibrado no Bloco 2 com os valores da Bíblia: na Licença E, quem fecha tudo o que nasce (uns 2,7 portais por dia) faz 46 ◆ por dia; quem fecha até 2 por dia, uns 29. Simulação de 60 dias em `tests/citymotor.js`. `CONF.econ` |
 | 2 | Fundo de Recompensas | equilibrar pelo rank, com config | Valor mensal por rank de Licença como padrão, editável nos Ajustes. A ideia de um "Cofre" que libera o Fundo quando sobra dinheiro fica anotada para o bloco dos vales. `CONF.fundo` |
 | 3 | Tetos dos vales | manter; vale de Tempo limitado | Tetos de R$ 25 a R$ 800, dobrando por raridade. Vale de Tempo: no máximo 2 por mês. `CONF.vales` |
 | 4 | Chaves na loja | subir o preço | Continuam à venda, mais caras (+50% como ponto de partida), a partir do bloco em que portais começam a dropar chaves. Antes disso o preço atual fica. `CONF.chaveMult` |

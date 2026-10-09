@@ -55,18 +55,18 @@ const view = p => p.evaluate(() => document.getElementById('view').textContent);
   ok(r.wc, 'cada distrito com a cor do seu Caminho');
   ok(r.ics, 'cada distrito com o seu ícone');
   ok(r.streets, 'uma rua por vertente em cada distrito');
-  ok(r.radar && /0 de 6 abertos/.test(r.txt) && /Raid/.test(r.txt) && /Mercador/.test(r.txt), 'radar vazio: 0 de 6 portais, raid, maldições, Mercador');
+  ok(r.radar && /\d de 6 abertos/.test(r.txt) && /Chamado/.test(r.txt) && /Raid/.test(r.txt) && /Mercador/.test(r.txt), 'radar: portais abertos de 6, Chamado, raid, maldições, Mercador');
   ok(/começa em 17 dias, na Noite dos Portais Vermelhos/.test(r.txt), 'contagem da Estação 1 até 31/10 ("' + (r.txt.match(/Estação 1[^.]*/) || [''])[0].slice(0, 70) + '")');
   ok(r.legend === 'EDCBAS', 'legenda com as 6 insígnias, de E a S');
   ok(r.svgW > 500, 'mapa ocupa a coluna no desktop (' + Math.round(r.svgW) + ' px)');
 
   sec('distrito selecionado, teclado e prévia da corrupção');
   await p.click('.cy-blk[data-id="piscinas"]'); await p.clock.runFor(200);
-  r = await p.evaluate(() => ({ sel: document.querySelector('.cy-blk[data-id="piscinas"]').getAttribute('aria-pressed'), txt: document.querySelector('.cy-main > section:last-child').textContent }));
+  r = await p.evaluate(() => ({ sel: document.querySelector('.cy-blk[data-id="piscinas"]').getAttribute('aria-pressed'), txt: document.getElementById('cySide').textContent }));
   ok(r.sel === 'true' && /Piscinas/.test(r.txt) && /Calistenia/.test(r.txt) && /Contemplação/.test(r.txt), 'clicar em Piscinas abre a ficha com as 4 ruas');
   ok(/Os Ingravidáveis/.test(r.txt) && /Casa do Vapor/.test(r.txt) && /Companhia do Palco/.test(r.txt), 'e os 3 clãs do distrito');
   await p.click('.cy-blk[data-id="piscinas"]'); await p.clock.runFor(200);
-  ok(await p.evaluate(() => !SYS.App.ui.cy.sel && /Toque num distrito/.test(document.querySelector('.cy-main > section:last-child').textContent)), 'clicar de novo fecha a ficha e volta à lista');
+  ok(await p.evaluate(() => !SYS.App.ui.cy.sel && /Toque num distrito/.test(document.getElementById('cySide').textContent)), 'clicar de novo fecha a ficha e volta à lista');
   await p.focus('.cy-blk[data-id="biblioteca"]'); await p.keyboard.press('Enter'); await p.clock.runFor(200);
   r = await p.evaluate(() => ({ sel: SYS.App.ui.cy.sel, focus: document.activeElement && document.activeElement.getAttribute('data-id') }));
   ok(r.sel === 'biblioteca' && r.focus === 'biblioteca', 'Enter num distrito abre a ficha e o foco continua nele');
@@ -85,7 +85,8 @@ const view = p => p.evaluate(() => document.getElementById('view').textContent);
   ok(await p.evaluate(() => !/cy-corr/.test(document.querySelector('.cy-blk[data-id="biblioteca"]').getAttribute('class')) && !Object.keys(SYS.App.ui.cy.prev).length), '"limpo" desfaz a prévia');
 
   sec('dados de verdade: corrupção e portais abertos');
-  await p.evaluate(() => { const A = SYS.App, C = A.city; C.dist.agencia.corr = 2; C.portals = [{id: 'p1', d: 'servidores', r: 'E', rua: 0}, {id: 'p2', d: 'servidores', r: 'C', rua: 1}, {id: 'p3', d: 'piscinas', r: 'S'}, {id: 'p4', d: 'galeria', r: 'B', due: '2026-10-20'}, {id: 'p5', d: 'galeria', r: 'A', st: 'closed'}]; A.ui.cy = {sel: null, prev: {}}; A.commit(['city']); });
+  await p.evaluate(() => { const A = SYS.App, C = A.city, mk = (id, d, r, rua, due, st) => ({id, n: 'Portal ' + id, d, way: SYS.CITY.DMAP[d].way, rua, r, st: st || 'open', born: '2026-10-14T11:00:00.000Z', due: due || '2026-10-16T11:00:00.000Z', mods: [], crit: ['a', 'b', 'c'], obj: 'x', ent: 'y', lore: 'z', min: 20});
+    C.dist.agencia.corr = 2; C.portals = [mk('p1', 'servidores', 'E', 0), mk('p2', 'servidores', 'C', 1), mk('p3', 'piscinas', 'S'), mk('p4', 'galeria', 'B', 0, '2026-10-20T11:00:00.000Z'), mk('p5', 'galeria', 'A', 0, null, 'closed')]; C.spawn = '2026-10-14'; A.ui.cy = {sel: null, prev: {}}; A.commit(['city']); });
   await p.clock.runFor(300);
   r = await p.evaluate(() => {
     const q = (id) => Array.from(document.querySelectorAll('.cy-blk[data-id="' + id + '"] .cy-badge')).map(g => g.textContent).join('');
@@ -94,13 +95,13 @@ const view = p => p.evaluate(() => document.getElementById('view').textContent);
   ok(r.serv === 'EC' && r.pisc === 'S' && r.gal === 'B', 'cada portal aberto vira uma insígnia no distrito dele; o fechado some');
   ok(/cy-c2/.test(r.ag), 'corrupção gravada no documento aparece no mapa');
   ok(r.blips === 4 && /4 de 6 abertos/.test(r.txt), 'o radar mostra 4 pontos e "4 de 6 abertos"');
-  ok(/Portal B · Observação e Leitura|Portal B · [A-Z]/.test(r.tip) && /prazo/.test(r.tip), 'a insígnia diz rank, rua e prazo (' + r.tip + ')');
+  ok(/^Portal B · Observação e Leitura · prazo/.test(r.tip), 'a insígnia diz rank, rua e prazo (' + r.tip + ')');
   ok(/2 portais/.test(r.foot), 'o rodapé conta os portais do distrito');
 
   sec('Centro e névoa');
   await p.click('.cy-blk[data-id="centro"]'); await p.clock.runFor(200);
   ok(/Dungeons/.test(await view(p)) && /Oficina/.test(await view(p)) && await p.evaluate(() => !!document.querySelector('.cy-main a[href="#/portoes/dungeons"]')), 'Centro: Dungeons, Raids e Oficina, com o caminho para as Dungeons de hoje');
-  await p.click('.cy-blk[data-id="nevoa"]'); await p.clock.runFor(200);
+  await p.click('.cy-blk[data-id="nevoa"]', { force: true }); await p.clock.runFor(200);
   ok(/Névoa\. O Sistema não mostra o que tem aqui\./.test(await view(p)), 'a névoa não diz o que esconde');
 
   sec('Estação 1 no calendário');
@@ -111,9 +112,10 @@ const view = p => p.evaluate(() => document.getElementById('view').textContent);
 
   sec('desligar');
   await go(p, '#/perfil');
+  const antes = await p.evaluate(() => SYS.App.city.portals.length);
   await p.click('input[data-c="pCity"]'); await p.clock.runFor(2500);
   r = await p.evaluate(() => ({ on: SYS.App.S.settings.cityBeta, nav: !!document.querySelector('#side a[href="#/cidade"]'), since: SYS.App.city.since, portals: SYS.App.city.portals.length }));
-  ok(!r.on && !r.nav && r.since === '2026-10-14' && r.portals === 5, 'desligar tira o botão do menu e não apaga a Cidade');
+  ok(!r.on && !r.nav && r.since === '2026-10-14' && r.portals === antes && antes > 0, 'desligar tira o botão do menu e não apaga a Cidade (' + r.portals + ' portais guardados)');
   ok(p.errs.length === 0, 'sem erro de JS ' + p.errs.slice(0, 3).join(' | '));
   await ctx.close();
 

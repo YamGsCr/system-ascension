@@ -2,7 +2,7 @@
    A Cidade é o modo de portais da Bíblia da Cidade. Neste bloco: o mapa, o radar vazio e o save próprio.
    Ordem dos distritos = ordem do mapa da Bíblia (e da tabela de clãs na aba Facções). */
 SYS.CITY = {
-  V: 1,   /* versão do documento city na nuvem */
+  V: 2,   /* versão do documento city na nuvem (2: portais, Licença, inventário e livro-razão) */
 
   /* as respostas das Decisões, em números. Mudar aqui muda o jogo inteiro */
   CONF: {

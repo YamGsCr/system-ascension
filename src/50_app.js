@@ -65,7 +65,7 @@ App.commit = function(docs, opt){
   if (!opt.quiet) {
     un.forEach(function(a, i){ setTimeout(function(){ App.toastAch(a); }, 350 + i*450); });
     if (before != null && App.D.level > before) { App.S.lvlog.push({l:App.D.level, d:U.today()}); if (App.S.lvlog.length > 120) App.S.lvlog = App.S.lvlog.slice(-120); Store.save(['core']); }
-    if (before != null && App.D.level > before) setTimeout(function(){ App.ui.modal = {type:'levelup', from:before, to:App.D.level}; App.renderModal(); }, 250);
+    if (before != null && App.D.level > before) setTimeout(function(){ var lv = {type:'levelup', from:before, to:App.D.level}; if (App.ui.modal && App.ui.modal.type === 'cyDrop') App.ui.modalNext = lv; else { App.ui.modal = lv; App.renderModal(); } }, 250);   /* revelação do drop aberta: o level up espera ela fechar */
   }
   if (!opt.norender) App.render();
 };
