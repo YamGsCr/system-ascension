@@ -1,0 +1,42 @@
+const { chromium } = require('playwright');
+const path = require('path');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+(async () => {
+  const b = await chromium.launch(); const p = await b.newPage({viewport:{width:1360,height:1000}});
+  const errs = []; p.on('pageerror', e => errs.push('pageerror: ' + e.message));
+  p.on('console', m => { if (m.type()==='error' && !/ERR_TUNNEL/.test(m.text())) errs.push('console: '+m.text()); });
+  await p.goto('file://' + path.join(__dirname, '..', 'dist', 'test_legacy.html')); await sleep(900);
+  const log = (k,v) => console.log(k.padEnd(20), JSON.stringify(v));
+  log('achs', await p.evaluate(() => ({total:SYS.E.ACH.length, refs:SYS.E.ACH.filter(a=>a.id.startsWith('ref_')||a.id.startsWith('ft_cos')).length, titles:SYS.E.TITLES.length})));
+  log('cosmeticos', await p.evaluate(() => ({nc:SYS.NAMECARDS.length, fr:SYS.FRAMES.length, fx:SYS.FX.length})));
+  log('shops', await p.evaluate(() => SYS.WAYS.reduce((m,w)=>(m[w.id]=w.shop.length,m),{})));
+  // carteira
+  await p.evaluate(() => location.hash = '#/carteira'); await sleep(500);
+  await p.fill('[data-i="invF"][data-k="n"]', 'LCI Banco X'); await p.fill('[data-i="invF"][data-k="v0"]', '5000');
+  await p.selectOption('[data-c="invF"][data-k="cls"]', 'lci'); await sleep(200);
+  await p.fill('[data-i="invF"][data-k="n"]', 'LCI Banco X'); await p.fill('[data-i="invF"][data-k="v0"]', '5000'); await p.fill('[data-i="invF"][data-k="tax"]', '97% CDI');
+  await p.click('[data-a="invAdd"]'); await sleep(400);
+  await p.selectOption('[data-c="invF"][data-k="cls"]', 'acao'); await sleep(250);
+  await p.fill('[data-i="invF"][data-k="n"]', 'PETR4'); await p.fill('[data-i="invF"][data-k="v0"]', '2000'); await p.fill('[data-i="invF"][data-k="v"]', '2350');
+  await p.click('[data-a="invAdd"]'); await sleep(400);
+  await p.selectOption('[data-c="invF"][data-k="cls"]', 'reserva'); await sleep(250);
+  await p.fill('[data-i="invF"][data-k="n"]', 'Tesouro Selic 2029'); await p.fill('[data-i="invF"][data-k="v0"]', '8000');
+  await p.click('.check input[data-c="invF"][data-k="res"]'); await sleep(150);
+  await p.click('[data-a="invAdd"]'); await sleep(400);
+  await p.fill('[data-c="invCost"]', '2500'); await p.dispatchEvent('[data-c="invCost"]','change'); await sleep(350);
+  await p.fill('[data-i="invAp"]', '1200'); await p.click('[data-a="invSnap"]'); await sleep(500);
+  log('carteira', await p.evaluate(() => { const S=SYS.App.S, T=SYS.App.invTotals(); return {pos:S.inv.pos.length, total:T.tot, aportado:T.ap, reserva:T.res, snaps:S.inv.snaps, ctr:S.ctr.invest_months, navXP:SYS.App.D.wayXP.navigation}; }));
+  await p.screenshot({path:'shots/v3_carteira.png'});
+  // troca de focos -> ref_vessel
+  await p.evaluate(() => { SYS.App.S.stats.focusSwaps = 12; SYS.App.commit(['core']); }); await sleep(400);
+  log('ref_vessel', await p.evaluate(() => !!SYS.App.S.ach.ref_vessel));
+  await p.evaluate(() => location.hash = '#/conquistas/secretas'); await sleep(400);
+  await p.screenshot({path:'shots/v3_secretas.png'});
+  const m = await b.newPage({viewport:{width:390,height:844}, isMobile:true, hasTouch:true});
+  await m.goto('file://' + path.join(__dirname, '..', 'dist', 'test_legacy.html')); await sleep(800);
+  await m.evaluate(() => { SYS.App.S.inv.pos.push({id:'x1',cls:'lci',n:'LCI Teste',v0:5000,v:5200,res:0,d:'2026-09-01'}); SYS.App.commit(['core']); location.hash='#/carteira'; }); await sleep(600);
+  await m.screenshot({path:'shots/v3_m_carteira.png'});
+  console.log('mobile overflow', await m.evaluate(() => ({sw:document.documentElement.scrollWidth, cw:document.documentElement.clientWidth})));
+  console.log('ERRORS:', errs.length ? errs.join('\n') : 'none');
+  await b.close();
+})();

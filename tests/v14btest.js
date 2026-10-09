@@ -1,0 +1,196 @@
+/* v14b · prendas (quitação por tipo), trégua, descanso, antecipação, ausência, pausa, ajustes, dobro, vencimento */
+const L = require('./v14lib.js'); const { ok, sec, open, at, run, prime, st, act } = L;
+const inject = (p, kinds, extra) => p.evaluate(({kinds, extra}) => { const A = SYS.App, z = A.S.pz, d = A.pzClock().day; const ids = kinds.map(k => 'pz_' + k); z.pens = z.pens.filter(x => x.st !== 'open' && ids.indexOf(x.id) < 0); kinds.forEach(k => { delete A.ui.pzErr['pz_' + k]; delete A.ui.pzRes['pz_' + k]; });
+  kinds.forEach(k => { const body = Object.assign(A.pzBody(k, d), (extra || {})[k] || {}); z.pens.push({id:'pz_' + k, k:k, d:d, f:d, at:new Date().toISOString(), st:'open', src:'table', body:body, due:k === 'selo' ? body.night : k === 'dobro' ? body.day : SYS.U.addDays(d, SYS.E.pzKind(k).due)}); });
+  z.show = null; A.pzHide(); SYS.Store.asAuto(() => A.commit(['core'])); location.hash = '#/zona'; }, {kinds, extra});
+const pen = (p, id) => p.evaluate((id) => { const x = SYS.App.pzPen(id); return x ? { st: x.st, src: x.src, over: x.over, ev: x.ev, body: x.body, gen: x.gen } : null; }, id);
+const LONG = n => 'Situação: o enlace caiu e metade dos módulos está sem rede. Opções: contorno com rádio reserva, reparo do cabo, ou escalar o fornecedor. '.repeat(Math.ceil(n / 130)).slice(0, n);
+
+(async () => {
+  const b = await L.chromium.launch();
+  let { p } = await open(b, '2026-10-07T20:00:00');
+  await prime(p, true);
+  let s = await st(p);
+  ok(s.since === '2026-10-08', 'armado depois das 17:20: a primeira janela é amanhã, sem bronca retroativa (' + s.since + ')');
+  ok(!s.ov && s.ph === 'off', 'nada de veredito no dia em que a regra ainda não existia');
+
+  sec('quitação · lista de exercícios (com redação sob medida)');
+  await at(p, '2026-10-08T10:00:00');
+  await inject(p, ['treino']); await run(p, 600);
+  ok(await p.evaluate(() => !!document.querySelector('#pen-pz_treino [data-a="pzGenBtn"]')), 'botão de redigir sob medida aparece (Claude disponível)');
+  await p.click('#pen-pz_treino [data-a="pzPay"]'); await run(p, 300);
+  ok(/Marque cada exercício/i.test(await p.evaluate(() => document.getElementById('pen-pz_treino').innerText)) && (await pen(p, 'pz_treino')).st === 'open', 'não quita sem marcar os exercícios');
+  await p.click('#pen-pz_treino [data-a="pzGenBtn"]'); await run(p, 1200);
+  let x = await pen(p, 'pz_treino');
+  ok(x.src === 'ai' && x.body.t === 'Circuito do Faltoso' && x.body.items.length === 4, 'versão sob medida entrou: ' + x.body.t);
+  ok(!(await p.evaluate(() => document.querySelector('#pen-pz_treino [data-a="pzGenBtn"]'))), 'só uma redação por prenda');
+  const n = await p.evaluate(() => document.querySelectorAll('#pen-pz_treino input[data-c="pzCk"]').length);
+  for (let i = 0; i < n; i++) { await p.click('#pen-pz_treino input[data-c="pzCk"] >> nth=' + i); await run(p, 120); }
+  await p.click('#pen-pz_treino [data-a="pzPay"]'); await run(p, 600);
+  x = await pen(p, 'pz_treino'); s = await st(p);
+  ok(x.st === 'paid' && s.open === 0 && s.tot.paid === 1 && s.tot.paidOn === 1 && s.tot.same === 1, 'circuito quitado no prazo e no mesmo dia');
+  ok(/quitada/i.test(s.toasts) && /Loja liberada/i.test(s.toasts), 'aviso de quitação e loja liberada');
+
+  sec('redação sob medida fora do padrão de segurança é recusada');
+  await inject(p, ['treino']); await run(p, 500);
+  await p.evaluate(() => { window.__mockTreino = {titulo:'Massacre', minutos:15, voltas:4, descanso:'30 s', itens:[{nome:'Burpee', qtd:'200'},{nome:'Flexão', qtd:'150'},{nome:'Agachamento', qtd:'300'}], frase:'x'}; });
+  await p.click('#pen-pz_treino [data-a="pzGenBtn"]'); await run(p, 1200);
+  x = await pen(p, 'pz_treino');
+  ok(x.src === 'table' && x.gen === 1 && x.body.items.every(i => !/200|150|300/.test(i[1])), 'volume absurdo descartado: continua a lista de reserva');
+  await p.evaluate(() => { window.__mockTreino = null; });
+
+  sec('quitação · briefing avaliado pelo Examinador');
+  await inject(p, ['briefing']); await run(p, 500);
+  await p.click('#pen-pz_briefing [data-a="pzGrade"]'); await run(p, 300);
+  ok(/Mínimo de 600/i.test(await p.evaluate(() => document.getElementById('pen-pz_briefing').innerText)), 'texto curto não vai para avaliação');
+  await p.fill('#pen-pz_briefing textarea', LONG(700)); await run(p, 900);
+  ok(/700 \/ mínimo 600/.test(await p.evaluate(() => document.getElementById('pen-pz_briefing').innerText)), 'contador de caracteres ao vivo');
+  await p.evaluate(() => { window.__mockNota = 40; });
+  await p.click('#pen-pz_briefing [data-a="pzGrade"]'); await run(p, 1200);
+  x = await pen(p, 'pz_briefing');
+  ok(x.st === 'open' && /DEVOLVIDO/.test(await p.evaluate(() => document.getElementById('pen-pz_briefing').innerText)), 'nota 40: devolvido, prenda continua aberta');
+  ok((await p.evaluate(() => document.querySelector('#pen-pz_briefing textarea').value.length)) === 700, 'o rascunho não se perde');
+  await p.evaluate(() => { window.__mockNota = 78; });
+  await p.click('#pen-pz_briefing [data-a="pzGrade"]'); await run(p, 1200);
+  x = await pen(p, 'pz_briefing');
+  ok(x.st === 'paid' && x.ev.nota === 78 && x.ev.ai === 1, 'nota 78: aceito e quitado');
+
+  sec('quitação · sem Claude disponível vira autoavaliação');
+  await p.evaluate(() => { SYS.App.sampleOff = true; });
+  await inject(p, ['briefing', 'autopsia', 'marcha']); await run(p, 500);
+  ok(!(await p.evaluate(() => document.querySelector('#pen-pz_briefing [data-a="pzGrade"]'))) && (await p.evaluate(() => document.querySelectorAll('#pen-pz_briefing input[data-k="cr"]').length)) === 5, 'briefing manual: 5 critérios de autoavaliação');
+  await p.fill('#pen-pz_briefing textarea', LONG(650)); await run(p, 900);
+  await p.click('#pen-pz_briefing [data-a="pzPay"]'); await run(p, 300);
+  ok((await pen(p, 'pz_briefing')).st === 'open', 'sem os critérios marcados não entrega');
+  for (let i = 0; i < 5; i++) { await p.click('#pen-pz_briefing input[data-k="cr"] >> nth=' + i); await run(p, 100); }
+  await p.click('#pen-pz_briefing [data-a="pzPay"]'); await run(p, 500);
+  ok((await pen(p, 'pz_briefing')).st === 'paid', 'briefing manual quitado');
+  const ta = '#pen-pz_autopsia textarea';
+  await p.fill(ta + ' >> nth=0', 'Eu estava no balcão resolvendo uma venda que passou do horário previsto.'); await p.fill(ta + ' >> nth=1', 'Curto.'); await p.fill(ta + ' >> nth=2', 'Amanhã deixo o capítulo aberto na tela antes das 17h, para só continuar.'); await run(p, 900);
+  await p.click('#pen-pz_autopsia [data-a="pzPay"]'); await run(p, 300);
+  ok((await pen(p, 'pz_autopsia')).st === 'open', 'autópsia exige as três respostas com corpo');
+  await p.fill(ta + ' >> nth=1', 'Não tinha decidido antes qual capítulo abrir, então a largada ficou pesada demais.'); await run(p, 900);
+  await p.click('#pen-pz_autopsia [data-a="pzPay"]'); await run(p, 500);
+  ok((await pen(p, 'pz_autopsia')).st === 'paid', 'autópsia registrada');
+  await p.click('#pen-pz_marcha [data-a="pzPay"]'); await run(p, 300);
+  ok((await pen(p, 'pz_marcha')).st === 'open', 'marcha pede confirmação e observação');
+  await p.click('#pen-pz_marcha input[data-k="ok"]'); await p.fill('#pen-pz_marcha input[data-k="obs"]', 'Tem uma casa antiga de imigrantes com data de 1921 na fachada.'); await run(p, 900);
+  await p.click('#pen-pz_marcha [data-a="pzPay"]'); await run(p, 500);
+  ok((await pen(p, 'pz_marcha')).st === 'paid', 'marcha quitada');
+  await p.evaluate(() => { SYS.App.sampleOff = false; });
+
+  sec('quitação · interrogatório e leitura');
+  await p.evaluate(() => { SYS.App.S.nodes.A01 = {s:'doing', d0:SYS.U.today()}; SYS.Store.asAuto(() => SYS.App.commit(['core'])); });
+  await inject(p, ['banca', 'leitura']); await run(p, 500);
+  x = await pen(p, 'pz_banca');
+  ok(x.body.node === 'A01' && /A01/.test(await p.evaluate(() => document.getElementById('pen-pz_banca').innerText)), 'interrogatório sorteia um capítulo que você já tocou (A01)');
+  await p.fill('#pen-pz_banca textarea', LONG(450)); await run(p, 900);
+  await p.click('#pen-pz_banca [data-a="pzGrade"]'); await run(p, 1200);
+  x = await pen(p, 'pz_banca');
+  ok(x.st === 'paid' && x.ev.nota === 82, 'Examinador deu 82: interrogatório quitado');
+  await p.fill('#pen-pz_leitura input[data-k="livro"]', 'A Arte da Pesquisa'); await p.fill('#pen-pz_leitura textarea', LONG(260)); await run(p, 900);
+  await p.click('#pen-pz_leitura [data-a="pzPay"]'); await run(p, 500);
+  ok((await pen(p, 'pz_leitura')).st === 'paid', 'leitura quitada');
+
+  sec('quitação · noite selada');
+  await inject(p, ['selo'], {selo:{night:'2026-10-08'}}); await run(p, 500);
+  let t = await p.evaluate(() => document.getElementById('pen-pz_selo').innerText);
+  ok(/É hoje/i.test(t) && !(await p.evaluate(() => document.querySelector('#pen-pz_selo [data-a="pzSeal"]'))), 'na noite selada não há botão de confirmar');
+  ok(/NOITE SELADA/.test((await st(p)).pill), 'pílula "NOITE SELADA" no HUD');
+  await at(p, '2026-10-08T17:25:00'); s = await st(p);
+  ok(s.ov === 'call' && /prenda/i.test(await p.evaluate(() => document.getElementById('pzroot').innerText)), 'chamado com prenda aberta menciona a dívida');
+  await p.keyboard.press('Escape'); await run(p, 400); await act(p, 1); await run(p, 400);
+  s = await st(p); ok(s.v === 'ok' && s.seq === 1, 'janela do dia 08 cumprida (para o dia virar sem falta)');
+  await at(p, '2026-10-09T10:00:00'); s = await st(p);
+  ok(!s.ov, 'manhã seguinte sem bronca');
+  await p.evaluate(() => { location.hash = '#/status'; }); await run(p, 300); await p.evaluate(() => { location.hash = '#/zona'; }); await run(p, 500);
+  ok((await p.evaluate(() => document.querySelectorAll('#pen-pz_selo [data-a="pzSeal"]').length)) === 2, 'no dia seguinte: cumpri / quebrei');
+  await p.click('#pen-pz_selo [data-a="pzSeal"][data-ok="1"]'); await run(p, 500);
+  ok((await pen(p, 'pz_selo')).st === 'paid', 'selo cumprido e quitado');
+  await inject(p, ['selo'], {selo:{night:'2026-10-08'}}); await run(p, 500);
+  const g0 = (await st(p)).gem;
+  await p.click('#pen-pz_selo [data-a="pzSeal"][data-ok="0"]'); await run(p, 600);
+  s = await st(p); x = await pen(p, 'pz_selo');
+  ok(x.st === 'failed' && s.open === 1 && s.pens.filter(k => /open/.test(k))[0].split(':')[0] !== 'selo', 'selo quebrado: vira multa e outra prenda é sorteada (' + s.pens.filter(k => /open/.test(k))[0] + ')');
+  ok(s.gem <= g0, 'multa em cristal limitada ao saldo (' + g0 + ' → ' + s.gem + ')');
+  await p.evaluate(() => { const z = SYS.App.S.pz; z.pens = []; SYS.Store.asAuto(() => SYS.App.commit(['core'])); });
+
+  sec('trégua');
+  await at(p, '2026-10-09T17:30:00');
+  s = await st(p); ok(s.ov === 'call' && s.truce === 2, 'chamado com 2 tréguas no mês');
+  await p.click('#pzroot [data-a="pzTruce"]'); await run(p, 600);
+  s = await st(p);
+  ok(!s.ov && s.rec.v === 'rest' && s.rec.tr === 1 && s.truce === 1, 'trégua usada antes do veredito: dia desarmado, resta 1');
+  await at(p, '2026-10-09T19:31:00'); s = await st(p);
+  ok(!s.ov && s.tot.miss === 0 && s.open === 0, 'sem bronca e sem prenda em dia de trégua');
+  await at(p, '2026-10-10T19:30:05'); s = await st(p);
+  ok(s.ov === 'miss' && s.open === 1, 'dia seguinte em branco: bronca');
+  await p.click('#pzroot [data-a="pzTruce"]'); await run(p, 600);
+  s = await st(p);
+  ok(!s.ov && s.rec.v === 'rest' && s.open === 0 && s.tot.miss === 0 && s.truce === 0, 'trégua na bronca desfaz a sentença de hoje (prenda some, falta some)');
+  await at(p, '2026-10-11T19:30:05'); s = await st(p);
+  let has = await p.evaluate(() => /Usar trégua/i.test(document.getElementById('pzroot').innerText));
+  ok(s.ov === 'miss' && !has && s.truce === 0, 'terceira falta do mês: sem trégua para oferecer');
+  await p.keyboard.press('Escape'); await run(p, 600);
+  s = await st(p); ok(!s.ov && s.open === 1 && !s.show, 'fechar a bronca não cancela a prenda');
+  await p.evaluate(() => { const z = SYS.App.S.pz; z.pens = []; SYS.Store.asAuto(() => SYS.App.commit(['core'])); });
+
+  sec('dia de descanso');
+  await at(p, '2026-10-12T10:00:00');
+  await p.evaluate(() => { location.hash = '#/status'; }); await run(p, 400);
+  await p.click('[data-a="restDay"]'); await run(p, 500);
+  await at(p, '2026-10-12T17:21:00'); s = await st(p);
+  ok(s.rec.r === 1 && s.rec.v === 'rest' && !s.ov, 'descanso declarado de manhã desarma a janela (sem chamado)');
+  await at(p, '2026-10-12T19:31:00'); ok((await st(p)).tot.miss === 1, 'e não gera falta');
+  await at(p, '2026-10-13T17:25:00'); await p.keyboard.press('Escape'); await run(p, 400);
+  await p.click('[data-a="restDay"]'); await run(p, 500);
+  await at(p, '2026-10-13T19:30:05'); s = await st(p);
+  ok(s.ov === 'miss' && !s.rec.r, 'descanso declarado DEPOIS de o portão abrir não salva o dia');
+  await p.keyboard.press('Escape'); await run(p, 500);
+  await p.evaluate(() => { const z = SYS.App.S.pz; z.pens = []; SYS.Store.asAuto(() => SYS.App.commit(['core'])); });
+
+  sec('chegou antes: diárias fechadas antes de o portão abrir');
+  await at(p, '2026-10-14T11:00:00');
+  await p.evaluate(() => { location.hash = '#/status'; }); await run(p, 400);
+  const nd = await p.evaluate(() => document.querySelectorAll('[data-a="dailyToggle"]').length);
+  for (let i = 0; i < nd; i++) { await p.click('[data-a="dailyToggle"] >> nth=' + i); await run(p, 150); }
+  s = await st(p); ok(s.rec.dc != null && s.rec.dc < 1040 && s.rec.e > 0, 'minuto do fechamento das diárias registrado (' + s.rec.dc + ')');
+  await at(p, '2026-10-14T17:20:03'); s = await st(p);
+  ok(s.rec.v === 'ok' && s.rec.early === 1 && s.ov === 'ok', 'às 17:20 o portão já está cumprido por antecipação');
+  ok(/antes/i.test(await p.evaluate(() => document.getElementById('pzroot').innerText)), 'veredito reconhece que você chegou antes');
+  await p.click('#pzroot [data-a="pzClose"]'); await run(p, 500);
+  ok(!!(await p.evaluate(() => SYS.App.S.ach.pz_early)), 'conquista "Chegou Antes"');
+  await at(p, '2026-10-14T19:31:00'); ok(!(await st(p)).ov, 'e não repete o veredito às 19:30');
+
+  sec('janela dobrada');
+  await at(p, '2026-10-15T09:00:00');
+  await inject(p, ['dobro']); await run(p, 500);
+  x = await pen(p, 'pz_dobro'); ok(x.body.day === '2026-10-15', 'dobro marcado para a janela de hoje (ainda não abriu)');
+  await at(p, '2026-10-15T17:25:00'); await p.keyboard.press('Escape'); await run(p, 400);
+  s = await st(p); ok(s.need === 2, 'mínimo dobrou para ' + s.need);
+  await act(p, 1); s = await st(p); ok(s.a === 1 && !s.v, 'uma ação já não basta');
+  await act(p, 1); s = await st(p); ok(s.a === 2 && s.v === 'ok', 'duas ações cumprem a janela dobrada');
+  await run(p, 1500); x = await pen(p, 'pz_dobro'); s = await st(p);
+  ok(x.st === 'paid' && x.ev.auto === 1 && s.open === 0, 'cumpriu a janela dobrada: o Sistema quita a prenda na hora');
+  ok(/Janela Dobrada cumprida/i.test(s.toasts), 'aviso de janela dobrada cumprida');
+  ok(s.need === 1, 'mínimo volta ao normal (' + s.need + ')');
+  await at(p, '2026-10-15T19:30:05'); await run(p, 800);
+  s = await st(p); ok(s.ov === 'ok', 'veredito normal de cumprido às 19:30');
+  await p.keyboard.press('Escape'); await run(p, 400);
+
+  sec('prenda vencida vira multa');
+  await at(p, '2026-10-16T09:00:00');
+  await inject(p, ['marcha']); await run(p, 400);
+  await at(p, '2026-10-16T17:25:00'); await p.keyboard.press('Escape'); await run(p, 300); await act(p, 1);
+  await at(p, '2026-10-17T17:25:00'); await p.keyboard.press('Escape'); await run(p, 300); await act(p, 1);
+  await at(p, '2026-10-18T17:25:00'); await p.keyboard.press('Escape'); await run(p, 300); await act(p, 1);
+  const gb = (await st(p)).gem;
+  await at(p, '2026-10-19T09:00:00'); await run(p, 800);
+  x = await pen(p, 'pz_marcha'); s = await st(p);
+  ok(x.over === 1 && x.st === 'open' && s.tot.exp === 1, 'marcha passou do prazo: marcada como vencida e continua aberta');
+  ok(gb - s.gem === 10, 'multa de 10 ◆ (' + gb + ' → ' + s.gem + ')');
+  ok(/vencida/i.test(await p.evaluate(() => { location.hash = '#/zona'; return 1; }).then(() => run(p, 500)).then(() => p.evaluate(() => document.getElementById('view').innerText))), 'cartão mostra "vencida"');
+
+  ok(p.errs.length === 0, 'zero erros de JS ' + p.errs.slice(0, 2).join(' | '));
+  await L.done(b);
+})();

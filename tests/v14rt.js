@@ -1,0 +1,41 @@
+/* v14 · tempo real (sem relógio simulado): digitação, roleta e figura animando com movimento ligado */
+const { chromium } = require('playwright'); const path = require('path');
+const URL = 'file://' + path.resolve(__dirname, '../dist/test.html');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let fails = 0; const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fails++; };
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({ viewport: { width: 1280, height: 900 } }); const errs = []; p.on('pageerror', e => errs.push(e.message));
+  await p.goto(URL); await sleep(1200);
+  await p.evaluate(() => { const A = SYS.App; A.S.profile.name = 'Yam'; A.S.settings.motion = true; A.S.pz.intro = 1; A.S.pz.introD = A.pzClock().day; SYS.Store.asAuto(() => A.commit(['core'])); location.hash = '#/zona'; });
+  await sleep(1800);
+  ok(await p.evaluate(() => !SYS.App.ui.pz), 'nenhuma tela cheia espontânea fora de hora (' + (await p.evaluate(() => SYS.App.pzPhase().ph)) + ')');
+  await p.click('#pzset [data-a="pzDemo"][data-k="miss"]');
+  await sleep(250);
+  const t1 = await p.evaluate(() => ({ line: document.querySelector('#pzroot .pzline').textContent, full: document.querySelector('#pzroot .pzline').getAttribute('data-t'), cur: !!document.querySelector('#pzroot .pzline .cur'), hidden: [].map.call(document.querySelectorAll('#pzroot [data-after]'), e => e.style.visibility).join(',') }));
+  ok(t1.cur && t1.line.length < t1.full.length && /hidden/.test(t1.hidden), 'a fala entra digitada (' + t1.line.length + ' de ' + t1.full.length + ' letras) e os botões esperam');
+  await p.screenshot({ path: 'shots/v14rt_typing.png' });
+  const figA = await p.evaluate(() => { const g = document.querySelector('#pzroot .pzfig .f-float'); return getComputedStyle(g).transform; });
+  await sleep(2600);
+  const t2 = await p.evaluate(() => ({ line: document.querySelector('#pzroot .pzline').textContent, full: document.querySelector('#pzroot .pzline').getAttribute('data-t'), hidden: [].map.call(document.querySelectorAll('#pzroot [data-after]'), e => e.style.visibility).join(',') }));
+  ok(t2.line === t2.full && !/hidden/.test(t2.hidden), 'fala completa e botões liberados');
+  const figB = await p.evaluate(() => { const g = document.querySelector('#pzroot .pzfig .f-float'); return getComputedStyle(g).transform; });
+  ok(figA !== figB, 'a figura flutua (transform mudou: ' + figA + ' → ' + figB + ')');
+  await p.click('#pzroot [data-a="pzSpin"]');
+  const seen = new Set(); const t0 = Date.now(); let step = 1;
+  while (Date.now() - t0 < 12000) { const r = await p.evaluate(() => ({ step: SYS.App.ui.pz ? SYS.App.ui.pz.step : -1, on: (document.querySelector('#pzroot .pzwheel span.on') || {}).textContent || '' })); if (r.on) seen.add(r.on); step = r.step; if (step !== 1) break; if (seen.size === 3) await p.screenshot({ path: 'shots/v14rt_wheel.png' }); await sleep(60); }
+  const dt = Date.now() - t0;
+  ok(step === 2 && seen.size >= 5, 'a roleta percorre as prendas (' + seen.size + ' acesas) e para sozinha em ' + (dt / 1000).toFixed(1) + ' s');
+  ok(/Sentença/i.test(await p.evaluate(() => document.getElementById('pzroot').innerText)), 'sentença na tela');
+  await p.screenshot({ path: 'shots/v14rt_sentence.png' });
+  await p.click('#pzroot [data-a="pzAccept"]'); await sleep(300);
+  await p.click('#pzset [data-a="pzDemo"][data-k="call"]'); await sleep(2600);
+  const c1 = await p.evaluate(() => document.getElementById('pzclk').textContent);
+  ok(/52:10/.test(c1), 'prévia do chamado com o relógio de exemplo (' + c1 + ')');
+  await p.screenshot({ path: 'shots/v14rt_call.png' });
+  await p.keyboard.press('Escape'); await sleep(400);
+  ok(await p.evaluate(() => !SYS.App.ui.pz && SYS.App.S.pz.pens.length === 0), 'Esc fecha; nada foi registrado');
+  ok(errs.length === 0, 'sem erro de JS ' + errs.join(' | '));
+  console.log(fails ? fails + ' FALHA(S)' : 'tempo real ok');
+  await b.close(); process.exit(fails ? 1 : 0);
+})();

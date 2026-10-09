@@ -1,0 +1,123 @@
+/* v14 · O Chamado: janela, veredito, falta, roleta, Zona */
+const L = require('./v14lib.js'); const { ok, sec, open, at, run, prime, st, act } = L;
+(async () => {
+  const b = await L.chromium.launch();
+
+  sec('1 · apresentação do protocolo no primeiro save');
+  let { p } = await open(b, '2026-10-07T16:00:00');
+  let s = await p.evaluate(() => ({ u: SYS.App.S._u, since: SYS.App.S.pz.since, ov: SYS.App.ui.pz }));
+  ok(!s.u && !s.since && !s.ov, 'jogador novo: nada automático antes do primeiro save');
+  await prime(p, false);
+  s = await st(p);
+  ok(s.ov === 'intro', 'o ALGOZ se apresenta em tela cheia');
+  ok(s.since === '' && s.ph === 'off', 'enquanto a apresentação não é aceita, nada é armado nem julgado');
+  let txt = await p.evaluate(() => document.getElementById('pzroot').innerText);
+  ok(/17:20/.test(txt) && /19:30/.test(txt) && /Armar o protocolo/i.test(txt), 'apresentação traz os horários e o botão de armar');
+  ok(await p.evaluate(() => !!document.querySelector('#pzroot svg.pzfig')), 'figura do ALGOZ desenhada');
+  await p.click('#pzroot [data-a="pzIntroOk"]:not([data-r])'); await run(p, 900);
+  s = await st(p);
+  ok(!s.ov && (await p.evaluate(() => SYS.App.S.pz.intro)) === 1, 'armado: apresentação não volta');
+  ok(s.since === '2026-10-07', 'aceitou antes das 17:20: a primeira janela é a de hoje (' + s.since + ')');
+  ok(/PORTÃO 17:20/.test(s.pill) && s.ph === 'pre', 'HUD avisa o horário do portão: "' + s.pill + '"');
+
+  sec('2 · 17:20 · o chamado abre sozinho com a página já aberta');
+  await at(p, '2026-10-07T17:20:02');
+  s = await st(p);
+  ok(s.ph === 'janela' && s.ov === 'call', 'tela cheia do chamado às 17:20 (fase ' + s.ph + ')');
+  txt = await p.evaluate(() => document.getElementById('pzroot').innerText);
+  ok(/1:09:5\d/.test(txt), 'contagem regressiva até 18:30 aparece: ' + (txt.match(/\d:\d\d:\d\d/) || [''])[0]);
+  ok(/Entrar no portão/i.test(txt) && /veredito às 19:30/i.test(txt), 'chamado mostra a ação e o horário do veredito');
+  ok(/\d\d:\d\d · 0\/1|1:\d\d:\d\d · 0\/1/.test(s.pill), 'pílula do HUD em contagem: "' + s.pill + '"');
+  await run(p, 3000);
+  const t2 = await p.evaluate(() => document.getElementById('pzclk').textContent);
+  ok(/1:09:5\d/.test(t2) && t2 !== (txt.match(/\d:\d\d:\d\d/) || [''])[0], 'o relógio anda a cada segundo: ' + t2);
+
+  sec('3 · entrar no portão e fazer uma ação real');
+  await p.click('#pzroot .pzacts [data-a="pzEnter"]'); await run(p, 600);
+  s = await st(p);
+  ok(!s.ov && s.rec.c === 1, 'chamado fecha e fica marcado como visto');
+  ok(await p.evaluate(() => !!(SYS.App.ui.drawer && SYS.App.ui.drawer.type === 'node')), 'abre direto o próximo capítulo do Caminho principal');
+  await p.click('#drawer [data-a="drTab"][data-tab="estudar"]'); await run(p, 200);
+  ok((await st(p)).a === 0, 'abrir capítulo e olhar NÃO conta como ação');
+  await p.click('#drawer input[data-c="studyTick"]'); await run(p, 900);
+  s = await st(p);
+  ok(s.a === 1 && s.v === 'ok', 'marcar um tópico estudado cumpre a janela (ações ' + s.a + ', veredito ' + s.v + ')');
+  ok(s.seq === 1 && s.gin === 5 && s.gem === 15, 'sequência 1, +5 ◆ da janela e +10 ◆ da conquista (cristais ' + s.gem + ')');
+  ok(/Janela cumprida/i.test(s.toasts), 'aviso de janela cumprida');
+  ok(/JANELA D/.test(s.pill), 'pílula vira verde com o rank: "' + s.pill + '"');
+  ok(!!(await p.evaluate(() => SYS.App.S.ach.pz_first)), 'conquista "Primeiro Portão" liberada');
+  await p.evaluate(() => { SYS.App.ui.drawer = null; SYS.App.render(); });
+  await act(p, 7);
+  s = await st(p);
+  ok(s.a === 8 && s.tot.s === 1 && /JANELA S/.test(s.pill), '8 ações na janela = rank S (' + s.pill + ')');
+  ok(s.seq === 1 && s.gin === 5, 'mais ações não duplicam recompensa nem sequência');
+
+  sec('4 · 19:30 · veredito cumprido');
+  await at(p, '2026-10-07T18:31:00');
+  s = await st(p); ok(s.ph === 'limbo' && !s.ov, 'entre o fechamento e o veredito, nada de tela cheia');
+  await at(p, '2026-10-07T19:30:02');
+  s = await st(p);
+  ok(s.ph === 'pos' && s.ov === 'ok', 'veredito abre sozinho às 19:30');
+  txt = await p.evaluate(() => document.getElementById('pzroot').innerText);
+  ok(/janela cumprida/i.test(txt) && /rank da janela: S/i.test(txt), 'veredito mostra cumprido e o rank');
+  await p.click('#pzroot [data-a="pzClose"]'); await run(p, 700);
+  s = await st(p); ok(!s.ov && s.rec.s === 1, 'fechado e marcado: não reaparece');
+  await at(p, '2026-10-07T23:50:00'); ok(!(await st(p)).ov, 'continua quieto no resto da noite');
+
+  sec('5 · dia seguinte em branco → bronca às 19:30');
+  await at(p, '2026-10-08T17:20:03');
+  s = await st(p);
+  ok(s.day === '2026-10-08' && s.ov === 'call', 'novo dia, novo chamado');
+  txt = await p.evaluate(() => document.querySelector('#pzroot .pzline').textContent);
+  ok(txt.length > 15, 'fala do chamado: "' + txt + '"');
+  await p.keyboard.press('Escape'); await run(p, 600);
+  ok(!(await st(p)).ov, 'Esc fecha o chamado');
+  await at(p, '2026-10-08T18:30:03');
+  s = await st(p);
+  ok(s.ph === 'limbo' && /portão fechou/i.test(s.toasts) && /VEREDITO 19:30/.test(s.pill), 'portão fechou vazio: aviso e pílula "' + s.pill + '"');
+  await act(p, 2);
+  s = await st(p); ok(s.rec.l === 2 && !s.v, 'ação depois do portão não salva o dia no modo rígido (registrada como tardia)');
+  await at(p, '2026-10-08T19:30:02');
+  s = await st(p);
+  ok(s.ov === 'miss' && s.rec.v === 'miss', 'bronca em tela cheia às 19:30');
+  ok(s.tot.miss === 1 && s.seq === 0 && s.best === 1, 'falta registrada, sequência zerada (melhor continua ' + s.best + ')');
+  ok(s.open === 1 && s.show === 'miss:1', 'uma prenda sorteada: ' + s.pens.join(','));
+  txt = await p.evaluate(() => document.getElementById('pzroot').innerText);
+  ok(/janela em branco/i.test(txt) && /sequência perdida: 1/i.test(txt) && /receber a prenda/i.test(txt), 'bronca mostra a falta, a sequência perdida e o botão da Zona');
+  ok(/Usar trégua/i.test(txt), 'trégua oferecida enquanto a sentença não foi aceita');
+  ok(await p.evaluate(() => !!document.querySelector('#pzroot svg.pzfig.m-miss') && !!document.querySelector('#pzroot .pzsys svg.mascot')), 'ALGOZ em modo bronca e o Sys em pânico no canto');
+  const kind = (await st(p)).pens[0].split(':')[0];
+  await p.click('#pzroot [data-a="pzSpin"]'); await run(p, 200);
+  ok((await st(p)).step === 1 && await p.evaluate(() => document.querySelectorAll('#pzroot .pzwheel span').length === 8), 'roleta com as 8 prendas');
+  await run(p, 900);
+  s = await st(p);
+  ok(s.step === 2 && !s.show, 'roleta para na prenda e a sentença aparece');
+  ok(await p.evaluate((k) => document.querySelector('#pzroot .pzwheel') === null && new RegExp(SYS.E.pzKind(k).n, 'i').test(document.getElementById('pzroot').innerText), kind), 'sentença nomeia a prenda sorteada (' + kind + ')');
+  await run(p, 900);
+  await p.click('#pzroot [data-a="pzAccept"]'); await L.routed(p, 'zona'); await run(p, 400);
+  s = await st(p);
+  ok(!s.ov && s.route === 'zona', 'aceitar leva para a Zona');
+  ok(await p.evaluate(() => document.querySelectorAll('#view .pzcard').length === 1), 'cartão da prenda aberto na Zona');
+  ok(/ZONA · 1/.test(s.pill), 'pílula vermelha da Zona no HUD: "' + s.pill + '"');
+
+  sec('6 · prenda aberta sela a loja');
+  await p.evaluate(() => { location.hash = '#/lojas/architect'; }); await run(p, 500);
+  const buy = await p.evaluate(() => { const A = SYS.App; A.A.buyOpen({ getAttribute: (k) => k === 'data-way' ? 'architect' : A.way('architect').shop[0].id }); return { modal: A.ui.modal, toast: document.getElementById('toasts').innerText }; });
+  ok(!buy.modal && /Loja selada/i.test(buy.toast), 'compra bloqueada com aviso');
+  await p.evaluate(() => { location.hash = '#/status'; }); await run(p, 500);
+  ok(await p.evaluate(() => /Zona de Penalidade/i.test(document.getElementById('view').innerText) && /prenda aberta/i.test(document.getElementById('view').innerText)), 'Status mostra o aviso de prenda aberta');
+
+  sec('7 · no outro dia, a janela continua valendo com dívida');
+  await at(p, '2026-10-09T17:20:03');
+  s = await st(p);
+  ok(s.ov === 'call', 'chamado normal com prenda aberta');
+  txt = await p.evaluate(() => document.querySelector('#pzroot .pzline').textContent);
+  ok(/prenda|Dívida|deve/i.test(txt), 'fala cobra a dívida: "' + txt + '"');
+  await p.keyboard.press('Escape'); await run(p, 500);
+  const need = (await st(p)).need;                       /* se a prenda sorteada foi a Janela Dobrada, hoje o mínimo é 2 */
+  await act(p, need); await run(p, 600);
+  s = await st(p); ok(s.v === 'ok' && s.seq === 1 && s.open === (need > 1 ? 0 : 1), 'cumpriu a janela mesmo devendo (sequência recomeça em 1; mínimo de hoje: ' + need + ')');
+
+  ok(p.errs.length === 0, 'zero erros de JS no fluxo principal ' + p.errs.slice(0, 2).join(' | '));
+  await L.done(b);
+})();

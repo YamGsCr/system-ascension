@@ -1,0 +1,58 @@
+name: build e testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Dependências
+        run: npm ci
+
+      - name: Chromium do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: python3 build.py
+
+      - name: Testes
+        run: node tests/run.js
+        env:
+          JOBS: 2
+
+      - name: Guardar o app montado
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: dist/
+          retention-days: 14
+
+      - name: Guardar logs e capturas da falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-dos-testes
+          path: |
+            tests/logs/
+            tests/shots/
+          retention-days: 14
