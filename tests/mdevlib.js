@@ -58,7 +58,7 @@ async function openDevice(browser, C, name, o) {
     const user = { id: () => Promise.resolve('u_test'), me: () => Promise.resolve({ id: 'u_test', name: 'T' }) };
     window.claude = { use: (n) => new Promise(res => setTimeout(() => res(n === 'db' ? db : n === 'user' ? user : null), 20)) };
   }, { name });
-  await page.goto(URL);
+  await page.goto(o.url || URL);   /* o.url: outra montagem do app (ex.: a versão antiga, para testar convivência) */
   dev.ev = (fn, arg) => page.evaluate(fn, arg);
   dev.core = () => page.evaluate(() => { const A = SYS.App, St = SYS.Store, z = A.S.pz || {}; return { name: A.S.profile.name, a01: !!A.S.nodes.A01, _u: A.S._u, _e: A.S._e, status: St.status, pending: !!St.pending.core, writing: !!St.writing.core, d: St.meta.core && St.meta.core.d, adopted: St.adopted.core || 0, hold: document.body.classList.contains('sy-hold'), ask: !!document.getElementById('syhold'), ov: A.ui.pz ? A.ui.pz.k : null, miss: (z.tot || {}).miss, open: (z.pens || []).filter(x => x.st === 'open').length, lost: !!localStorage.getItem('sysasc.lost.v1'), marks: Object.keys(A.S.flags.marks || {}).sort().join(','), toasts: (document.getElementById('toasts') || {}).innerText || '' }; });
   dev.close = async () => { dev.closed = true; try { await page.close(); } catch (e) {} };

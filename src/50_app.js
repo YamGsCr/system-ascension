@@ -1,6 +1,6 @@
 /* ===== APP CORE: estado, commit, rotas, eventos, toasts ===== */
-var App = SYS.App = {S:null, J:null, N:null, D:null, ui:{route:'status', param:null, drawer:null, modal:null, more:false, f:{}}, me:null, userCap:null, sample:null, downloads:null, A:{}, C:{}, I:{}, V:{}};
-App.docs = function(){ return {core:App.S, journal:App.J, notes:App.N}; };
+var App = SYS.App = {S:null, J:null, N:null, city:null, D:null, ui:{route:'status', param:null, drawer:null, modal:null, more:false, f:{}}, me:null, userCap:null, sample:null, downloads:null, A:{}, C:{}, I:{}, V:{}};
+App.docs = function(){ return {core:App.S, journal:App.J, notes:App.N, city:App.city}; };
 App.$ = function(id){ return document.getElementById(id); };
 App.way = function(id){ return SYS.WAYMAP[id]; };
 
@@ -10,6 +10,7 @@ App.init = function(){
   App.S = E.migrate(E.fill(L.core || E.newState(), E.newState()));
   App.J = E.fill(L.journal || E.newJournal(), E.newJournal());
   App.N = E.fill(L.notes || E.newNotes(), E.newNotes());
+  App.city = E.cityFill(L.city);   /* save do v13 não tem a Cidade: nasce vazia e só grava quando a Cidade beta é ligada */
   var silent = E.checkAch(App.S, App.J);
   App.D = E.derive(App.S, App.J);
   if (silent.length && App.S._u) Store.save(['core']);
@@ -24,6 +25,7 @@ App.init = function(){
 App.replaceDoc = function(k, doc){
   if (k === 'core') App.S = E.migrate(E.fill(doc, E.newState()));
   else if (k === 'journal') App.J = E.fill(doc, E.newJournal());
+  else if (k === 'city') App.city = E.cityFill(doc);
   else App.N = E.fill(doc, E.newNotes());
   U.ls.set(Store.KEYS[k], doc);
   App.D = E.derive(App.S, App.J); App.render();
@@ -57,6 +59,7 @@ App.commit = function(docs, opt){
   var un = E.checkAch(App.S, App.J);
   if (un.length && docs.indexOf('core') < 0) docs = docs.concat(['core']);
   E.pruneDaily(App.S);
+  if (docs.indexOf('city') >= 0) E.cityPrune(App.city);
   App.D = E.derive(App.S, App.J);
   Store.save(docs);
   if (!opt.quiet) {

@@ -32,11 +32,12 @@ App.V.perfil = function(){
     + '<label class="check"><input type="checkbox" data-c="pOpenWorld"'+(S.settings.openWorld ? ' checked' : '')+'><span><b>Modo Mundo Aberto</b><br><span class="dim" style="font-size:13.5px">Remove as travas de arco e pré-requisitos de selo. Útil se você já domina um arco — mas lembre: “vi a matéria” não conta. Evidências dos selos continuam exigidas.</span></span></label>'
     + '<label class="fld" style="margin:4px 0 6px">Hora do reset diário (o dia do Sistema vira nesse horário)<select data-c="pReset">'+[4,5,6,7,8,9,10].map(function(h){ return '<option value="'+h+'"'+(+S.settings.resetHour === h ? ' selected' : '')+'>'+String(h).padStart(2,'0')+':00'+(h === 8 ? ' (padrão)' : '')+'</option>'; }).join('')+'</select></label>'
     + '<label class="check"><input type="checkbox" data-c="pMotion"'+(S.settings.motion ? ' checked' : '')+'><span><b>Animações</b><br><span class="dim" style="font-size:13.5px">Janelas do Sistema “materializando”, brilhos e molduras animadas.</span></span></label>'
+    + '<label class="check"><input type="checkbox" data-c="pCity"'+(S.settings.cityBeta ? ' checked' : '')+'><span><b>Cidade (beta)</b><br><span class="dim" style="font-size:13.5px">Liga a aba Cidade: o mapa dos 7 distritos e o radar. Os portais ainda não nascem; eles chegam com o motor da Cidade. Desligar não apaga nada.</span></span></label>'
     + '<p class="faint mono" style="font-size:11.5px;margin-top:6px">Início no Sistema: '+U.fmtDate(S.start)+' · principais desde '+U.fmtDate(S.settings.season.start)+'</p></div></section>';
-  var sizes = Store.DOCS.map(function(k){ var n = JSON.stringify(App.docs()[k]).length; return '<div class="stack" style="gap:3px"><div class="row between mono" style="font-size:11.5px"><span>'+{core:'Progresso',journal:'Diário & Mundo Aberto',notes:'Notas das quests'}[k]+'</span><span class="dim">'+Math.round(n/1024)+' KB / 250 KB</span></div>'+H.bar(U.pct(n, 250000), n > 200000 ? 'warnbar thin' : 'thin')+'</div>'; }).join('');
+  var sizes = Store.DOCS.map(function(k){ var n = JSON.stringify(App.docs()[k]).length; return '<div class="stack" style="gap:3px"><div class="row between mono" style="font-size:11.5px"><span>'+{core:'Progresso',journal:'Diário & Mundo Aberto',notes:'Notas das quests',city:'Cidade'}[k]+'</span><span class="dim">'+Math.round(n/1024)+' KB / '+Math.round(Store.LIMIT/1000)+' KB</span></div>'+H.bar(U.pct(n, Store.LIMIT), n > 200000 ? 'warnbar thin' : 'thin')+'</div>'; }).join('');
   var save = '<section class="win"><div class="win-h">'+U.icon('cloud')+'Save</div><div class="stack" style="gap:10px"><p id="syncbox" style="font-size:14px">'+App.syncDetail()+'</p>'+sizes
     + '<div class="row"><button class="btn" data-a="exportSave">'+U.icon('download')+'Exportar save (.json)</button><button class="btn" data-a="importSave">'+U.icon('upload')+'Importar save</button></div>'
-    + '<div class="hr"></div><div class="row between"><span class="dim" style="font-size:13.5px">Recomeçar do zero apaga progresso, diário e notas.</span><button class="btn sm danger" data-a="resetOpen">'+U.icon('trash')+'Resetar Sistema</button></div></div></section>';
+    + '<div class="hr"></div><div class="row between"><span class="dim" style="font-size:13.5px">Recomeçar do zero apaga progresso, diário, notas e a Cidade.</span><button class="btn sm danger" data-a="resetOpen">'+U.icon('trash')+'Resetar Sistema</button></div></div></section>';
   return h + '<div class="grid g2" style="align-items:start"><div class="stack" style="gap:16px">'+ident+sets+'</div><div class="stack" style="gap:16px">'+cos+save+'</div></div>';
 };
 App.I.pName = function(el){ App.S.profile.name = el.value.slice(0, 32); App.debSave('core'); document.querySelectorAll('.pc-name').forEach(function(n){ n.textContent = H.pname(); }); };
@@ -52,7 +53,7 @@ App.A.scMove = function(el){ var sc = App.S.profile.showcase, i = +el.getAttribu
 App.A.scRm = function(el){ App.S.profile.showcase.splice(+el.getAttribute('data-i2'), 1); App.commit(['core']); };
 
 /* ---------- save: exportar, importar, resetar ---------- */
-App.saveJSON = function(){ return JSON.stringify({app:'system-ascension', v:1, exportedAt:new Date().toISOString(), core:App.S, journal:App.J, notes:App.N}, null, 1); };
+App.saveJSON = function(){ return JSON.stringify({app:'system-ascension', v:2, exportedAt:new Date().toISOString(), core:App.S, journal:App.J, notes:App.N, city:App.city}, null, 1); };
 App.A.exportSave = function(){
   var data = App.saveJSON(), name = 'system-ascension-save-' + U.today() + '.json';
   if (App.downloads && App.downloads.save) {
@@ -81,24 +82,25 @@ App.onImportFile = function(ev){
 };
 App.M.import = function(m){
   var c = m.data.core, n = Object.keys(c.nodes || {}).filter(function(k){ return c.nodes[k] && c.nodes[k].s === 'done'; }).length;
-  return '<section class="win"><div class="win-h" style="color:var(--warn)">'+U.icon('upload')+'Importar save<button class="act" data-a="closeModal">fechar ✕</button></div><div class="stack"><p>Save de <b>'+U.esc((c.profile && c.profile.name) || 'Player')+'</b>, exportado em '+U.fmtDate(m.data.exportedAt || '')+': '+n+' nós concluídos, '+Object.keys(c.ach || {}).length+' conquistas.</p><div class="callout fail" style="font-size:14px">Isso <b>substitui</b> todo o progresso, diário e notas atuais. Exporte o save atual antes, se quiser guardar.</div><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="closeModal">Cancelar</button><button class="btn danger" data-a="importDo">Substituir e importar</button></div></div></section>';
+  return '<section class="win"><div class="win-h" style="color:var(--warn)">'+U.icon('upload')+'Importar save<button class="act" data-a="closeModal">fechar ✕</button></div><div class="stack"><p>Save de <b>'+U.esc((c.profile && c.profile.name) || 'Player')+'</b>, exportado em '+U.fmtDate(m.data.exportedAt || '')+': '+n+' nós concluídos, '+Object.keys(c.ach || {}).length+' conquistas.</p><div class="callout fail" style="font-size:14px">Isso <b>substitui</b> todo o progresso, diário, notas e a Cidade atuais. Exporte o save atual antes, se quiser guardar.'+(m.data.city && typeof m.data.city === 'object' ? '' : ' Este arquivo é de antes da Cidade: ela volta ao começo.')+'</div><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="closeModal">Cancelar</button><button class="btn danger" data-a="importDo">Substituir e importar</button></div></div></section>';
 };
 App.A.importDo = function(){
   var m = App.ui.modal; if (!m || !m.data) return; var o = m.data;
   App.S = E.fill(o.core, E.newState()); App.J = E.fill(o.journal && typeof o.journal === 'object' ? o.journal : E.newJournal(), E.newJournal()); App.N = E.fill(o.notes && typeof o.notes === 'object' ? o.notes : E.newNotes(), E.newNotes());
+  App.city = E.cityFill(o.city && typeof o.city === 'object' ? o.city : E.newCity()); App.ui.cy = null;
   App.ui.modal = null; E.checkAch(App.S, App.J); App.D = E.derive(App.S, App.J);
-  App.commit(['core','journal','notes'], {quiet:true});
+  App.commit(['core','journal','notes','city'], {quiet:true});
   App.toast({t:'Save importado', s:'Bem-vindo de volta, '+H.pname()+'.', ic:'upload'});
 };
 App.A.resetOpen = function(){ App.ui.modal = {type:'reset', txt:''}; App.renderModal(); };
 App.M.reset = function(m){
-  return '<section class="win"><div class="win-h" style="color:var(--bad)">'+U.icon('alert')+'Resetar Sistema<button class="act" data-a="closeModal">fechar ✕</button></div><div class="stack"><p>Isso apaga <b>todo</b> o progresso, conquistas, compras, diário e notas — neste navegador e na sua conta. Não tem volta.</p><label class="fld">Digite RESETAR para confirmar<input type="text" data-i="resetTxt" value="'+U.esc(m.txt || '')+'" autocomplete="off"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="closeModal">Cancelar</button><button class="btn danger" data-a="resetDo"'+(m.txt === 'RESETAR' ? '' : ' disabled')+'>Apagar tudo</button></div></div></section>';
+  return '<section class="win"><div class="win-h" style="color:var(--bad)">'+U.icon('alert')+'Resetar Sistema<button class="act" data-a="closeModal">fechar ✕</button></div><div class="stack"><p>Isso apaga <b>todo</b> o progresso, conquistas, compras, diário, notas e a Cidade — neste navegador e na sua conta. Não tem volta.</p><label class="fld">Digite RESETAR para confirmar<input type="text" data-i="resetTxt" value="'+U.esc(m.txt || '')+'" autocomplete="off"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="closeModal">Cancelar</button><button class="btn danger" data-a="resetDo"'+(m.txt === 'RESETAR' ? '' : ' disabled')+'>Apagar tudo</button></div></div></section>';
 };
 App.I.resetTxt = function(el){ if (!App.ui.modal) return; App.ui.modal.txt = el.value.trim().toUpperCase(); var b = App.$('modal').querySelector('[data-a="resetDo"]'); if (b) b.disabled = App.ui.modal.txt !== 'RESETAR'; };
 App.A.resetDo = function(){
   if (!App.ui.modal || App.ui.modal.txt !== 'RESETAR') return;
-  App.S = E.newState(); App.J = E.newJournal(); App.N = E.newNotes(); App.ui.modal = null; App.ui.f = {};
-  App.D = E.derive(App.S, App.J); App.commit(['core','journal','notes'], {quiet:true}); App.go('status');
+  App.S = E.newState(); App.J = E.newJournal(); App.N = E.newNotes(); App.city = E.cityFill(E.newCity()); App.ui.modal = null; App.ui.f = {}; App.ui.cy = null;
+  App.D = E.derive(App.S, App.J); App.commit(['core','journal','notes','city'], {quiet:true}); App.go('status');
   App.toast({t:'Sistema reiniciado', s:'Nível 1 de novo. O NPC voltou. Bora.', ic:'sparkle'});
 };
 

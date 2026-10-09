@@ -1,8 +1,11 @@
 /* ===== STORE: save privado por usuário (db) + cache local ===== */
 var Store = SYS.Store = {mode:'local', status:'local', uid:null, db:null, refs:{}, pending:{}, writing:{}, timer:null, listeners:[], err:null};
-Store.KEYS = {core:'sysasc.core.v1', journal:'sysasc.journal.v1', notes:'sysasc.notes.v1'};
-Store.DOCS = ['core','journal','notes'];
-Store.loadLocal = function(){ return {core:U.ls.get(Store.KEYS.core), journal:U.ls.get(Store.KEYS.journal), notes:U.ls.get(Store.KEYS.notes)}; };
+Store.KEYS = {core:'sysasc.core.v1', journal:'sysasc.journal.v1', notes:'sysasc.notes.v1', city:'sysasc.city.v1'};
+/* city (v16): a Cidade mora num documento só dela, para o progresso (core) não chegar ao limite de tamanho */
+Store.DOCS = ['core','journal','notes','city'];
+Store.LIMIT = 250000;
+Store.LABEL = {core:'Progresso', journal:'Diário', notes:'Notas', city:'Cidade'};
+Store.loadLocal = function(){ var o = {}; Store.DOCS.forEach(function(k){ o[k] = U.ls.get(Store.KEYS[k]); }); return o; };
 Store.setStatus = function(s, msg){ Store.status = s; Store.err = msg || null; if (SYS.App && SYS.App.renderSync) SYS.App.renderSync(); };
 Store.touch = function(doc){ doc._u = new Date().toISOString(); };
 Store.save = function(names){
@@ -20,7 +23,7 @@ Store.flush = function(){
     var doc = SYS.App.docs()[k];
     var body = JSON.parse(JSON.stringify(doc));
     var size = JSON.stringify(body).length;
-    if (size > 250000) { Store.setStatus('error', 'O documento “'+k+'” passou do limite de tamanho. Exporte o save e limpe notas antigas.'); Store.pending[k] = false; return; }
+    if (size > Store.LIMIT) { Store.setStatus('error', 'O documento “'+k+'” passou do limite de tamanho. Exporte o save e limpe notas antigas.'); Store.pending[k] = false; return; }
     Store.pending[k] = false; Store.writing[k] = true;
     Store.refs[k].set(body).then(function(){
       Store.writing[k] = false;

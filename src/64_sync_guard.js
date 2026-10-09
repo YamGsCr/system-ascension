@@ -241,7 +241,7 @@
     var doc = App.docs()[k], body = clone(doc); body._by = Store.sid;
     delete body._b; delete body._bx; delete body._bn; delete body._b0;   /* marcas deste aparelho: não sobem */
     var size = JSON.stringify(body).length;
-    if (size > 250000) { Store.setStatus('error', 'O documento “' + k + '” passou do limite de tamanho. Exporte o save e limpe notas antigas.'); Store.pending[k] = false; return; }
+    if (size > Store.LIMIT) { Store.setStatus('error', 'O save “' + (Store.LABEL[k] || k) + '” passou do limite de tamanho e parou de subir para a nuvem. Exporte o save e limpe o que for antigo.'); Store.pending[k] = false; return; }
     Store.pending[k] = false; Store.writing[k] = true; Store.sentU[k] = body._u || '';
     Store.refs[k].set(body).then(function(){
       Store.writing[k] = false;
