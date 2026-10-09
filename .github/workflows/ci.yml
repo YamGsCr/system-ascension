@@ -15,6 +15,8 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # histórico e tags: a suíte citysave monta a v15 para testar a página antiga
 
       - uses: actions/setup-python@v5
         with:
