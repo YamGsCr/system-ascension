@@ -1,4 +1,5 @@
 /* ===== BOOT ===== */
+SYS.bootOk = 1;   /* último bloco carregado: a página confere isso antes de dar o app como montado */
 (function(){
   function start(){
     try { App.init(); }
