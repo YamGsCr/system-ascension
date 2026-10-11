@@ -50,6 +50,23 @@ SYS.CITY = {
     itens: [['Dungeons', 'as 12 Dungeons e as secretas'], ['Raids', 'o alerta de raid e o quadro de eventos'], ['Oficina', 'as 9 bancadas de ferramentas']]},
   NEVOA: {id: 'nevoa', n: '???', col: 2, row: 2, fala: 'Névoa. O Sistema não mostra o que tem aqui.'},
 
+  /* gente da Cidade: retrato (imagem em assets/img), clã e papel. Os outros representantes chegam com as Facções */
+  PERS: {
+    ivo: {n: 'Ivo Lint', cla: 'Casa de Babel', papel: 'representante', d: 'servidores', img: 'ivo'}
+  },
+  /* falas em cena: cada uma pode apontar para uma parte da tela (alvo = seletor; sem alvo, só a vinheta) */
+  FALAS: {
+    ivoIntro: [
+      {t: 'Ah. O caçador novo. Ivo Lint, Casa de Babel. Eu reviso código; pelo visto, hoje eu reviso você.'},
+      {t: 'Isso é a Cidade: sete bairros, um por Caminho, o Centro na praça e um rio que ninguém documentou.', alvo: '.cy-mapbox'},
+      {t: 'Toca num bairro e a janela dele abre direto. Tinha um painel do lado repetindo o mapa. Tirei: era atalho para uma coisa que já estava ali.', alvo: '.cy-mapbox'},
+      {t: 'No canto fica o radar. Cada ponto é um portal aberto; toca nele para ver prazo, Chamado e o resto.', alvo: '.cy-mini'},
+      {t: 'Aqui é você. Perfil, inventário e celular moram nessa janela. Uma janela que abre outras janelas: recursão, só que com moderação.', alvo: '.cy-me'},
+      {t: 'Os losangos são portais, e a letra é o rank. Entra, entrega, rola o drop. Portal C+ que você começou e largou quebra, e a corrupção cobra com juros.', alvo: '.cy-svg .cy-badge'},
+      {t: 'Último conselho, de graça: pergunta o porquê antes do como. O resto eu cobro em pull request.'}
+    ]
+  },
+
   /* corrupção do distrito (aba Quebra e corrupção da Bíblia) */
   CORR: [
     {n: 'Limpo', d: 'Nenhuma quebra pendente.'},

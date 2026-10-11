@@ -3,6 +3,7 @@
 Saída em dist/ (a pasta inteira é o que se publica):
   system-ascension.html   a página: estilos, esqueleto e as tags <script> na ordem certa
   js/<bloco>.<hash>.js    o código, em blocos contíguos de src/ (nome com hash: nunca vem do cache errado)
+  img/<nome>.<hash>.webp  as imagens de assets/img (retrato, carregamento, personagens)
   manifest.json           quais arquivos de src/ foram para cada bloco, com tamanhos
   test*.html              as páginas das suítes de teste (mesma pasta, mesmos blocos)
   single/system-ascension.html   versão de arquivo único, como reserva
@@ -89,11 +90,32 @@ for name, _ in CHUNKS:
     manifest['chunks'].append({'name': name, 'file': rel, 'bytes': len(data), 'src': [f for f, _ in groups[name]]})
     tags.append('<script src="' + rel + '"></script>')
 
+# imagens (assets/img): copiadas com hash no nome; a página recebe os caminhos em window.SYS_IMG
+shutil.rmtree(os.path.join(dist, 'img'), ignore_errors=True)
+imgs = {}
+asrc = os.path.join(root, 'assets', 'img')
+if os.path.isdir(asrc):
+    os.makedirs(os.path.join(dist, 'img'), exist_ok=True)
+    for f in sorted(os.listdir(asrc)):
+        stem, ext = os.path.splitext(f)
+        with open(os.path.join(asrc, f), 'rb') as fh:
+            data = fh.read()
+        rel = 'img/' + stem + '.' + hashlib.sha256(data).hexdigest()[:10] + ext
+        with open(os.path.join(dist, rel), 'wb') as fh:
+            fh.write(data)
+        imgs[stem] = rel
+manifest['images'] = imgs
+
+
+def imgtag(pre):
+    return '<script>window.SYS_IMG=' + json.dumps({k: pre + v for k, v in imgs.items()}) + ';</script>'
+
+
 # se algum bloco não carregar (publicação incompleta), a página explica em vez de ficar em branco
 guard = ('<script>if (!window.SYS || !SYS.App || !SYS.Store || !SYS.bootOk) { var v = document.getElementById("view"); '
          'if (v) v.innerHTML = \'<section class="win"><div class="win-h">[Sistema] Os arquivos do app não carregaram</div>'
          '<p class="dim">Recarregue a página. Se continuar assim, a publicação ficou incompleta.</p></section>\'; }</script>')
-page = head + '\n' + body + '\n' + '\n'.join(tags) + '\n' + guard + '\n'
+page = head + '\n' + body + '\n' + imgtag('') + '\n' + '\n'.join(tags) + '\n' + guard + '\n'
 write(os.path.join(dist, PAGE), page)
 page_bytes = len(page.encode('utf8'))
 if page_bytes > PAGE_LIMIT:
@@ -101,7 +123,7 @@ if page_bytes > PAGE_LIMIT:
 
 # reserva: tudo num arquivo só, como antes
 script = '<script>\n"use strict";\n' + '\n'.join('/* --- ' + f + ' --- */\n' + read(f) for f in files) + '\n</script>\n'
-write(os.path.join(dist, 'single', PAGE), head + '\n' + body + '\n' + script)
+write(os.path.join(dist, 'single', PAGE), head + '\n' + body + '\n' + imgtag('../') + '\n' + script)
 
 manifest['pageBytes'] = page_bytes
 manifest['totalBytes'] = page_bytes + sum(c['bytes'] for c in manifest['chunks'])

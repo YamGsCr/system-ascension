@@ -5,7 +5,7 @@ E.CITY_LOG_MAX = 300;     /* entradas de histórico guardadas no documento */
 E.CITY_SOFT = 200000;     /* aviso nos Ajustes antes do limite duro de 250 KB */
 
 E.newCity = function(){ return {_u: '', v: SYS.CITY.V, since: '', seed: '', dist: {}, portals: [], log: [], spawn: '', cham: '', tickDay: '', pausa: '', off: '',
-  lic: {r: 'E', pts: 0, hist: [], tent: 0}, led: {xp: {}, cr: {}, gem: 0}, inv: {mat: {}, passe: [], caixas: [], vales: [], frag: {}, perg: [], reliq: []}, ecos: [], pity: {c: 0}, tpl: {}, ult: null, nid: 0}; };
+  lic: {r: 'E', pts: 0, hist: [], tent: 0}, led: {xp: {}, cr: {}, gem: 0}, inv: {mat: {}, passe: [], caixas: [], vales: [], frag: {}, perg: [], reliq: []}, ecos: [], pity: {c: 0}, tpl: {}, ult: null, nid: 0, vis: {}}; };
 E.newDist = function(){ return {corr: 0, closed: 0}; };
 
 /* completa um documento que veio do cache, da nuvem ou de um arquivo: campos que faltam, distritos que faltam, versão */

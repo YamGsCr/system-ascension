@@ -53,25 +53,25 @@
       return '<div class="cy-mod"><span class="chip ' + tag + '">' + U.esc(m.t === 'bencao' ? 'bênção' : m.t) + '</span><b>' + U.esc(m.n) + '</b><span class="dim">' + U.esc(m.ef) + '</span><span class="mono" style="font-size:11.5px">' + (m.q ? 'Q +' + m.q + '% ' : '') + (m.r ? 'R +' + m.r + '%' : '') + (m.rol ? '+1 rolagem' : '') + '</span></div>';
     }).join('') + '</div>';
   }
-  function head(p){
+  function head(p, depth){
     var w = wayOf(p), d = dOf(p), tags = '';
     if (p.cham) tags += '<span class="chip glow">' + U.icon('clock') + 'Portal do Chamado</span>';
     if (p.reav) tags += '<span class="chip warn">Reavaliação · Licença ' + p.reav.para + '</span>';
     if (p.tranc) tags += '<span class="chip warn">' + U.icon('lock') + 'Trancado</span>';
     if (p.fis) tags += '<span class="chip">físico</span>';
     if (perigo(p) && !p.in) tags += '<span class="chip bad">' + U.icon('alert') + 'perigo</span>';
-    return '<div class="dr-head" style="--wc:' + w.color + '"><div class="dr-top"><div class="row" style="gap:12px;flex-wrap:nowrap;min-width:0">' + U.rankBadge(p.r, 46)
-      + '<div class="stack" style="gap:4px;min-width:0"><span class="eyebrow" style="color:' + w.color + '">' + U.esc(d.n) + ' · ' + U.esc(d.ruas[p.rua] || '') + '</span><h2>' + U.esc(p.n) + '</h2>'
-      + '<div class="row" style="gap:6px"><span class="chip">' + CY.RANK[p.r].tipo + ' · ' + CY.RANK[p.r].esf + '</span><span class="chip' + (left(p) < 6 * 3600000 ? ' warn' : '') + '">' + U.icon('clock') + prazo(p) + '</span>' + tags + '</div></div></div>'
-      + '<button class="iconbtn" data-a="closeAll" aria-label="Fechar">' + U.icon('close') + '</button></div></div>';
+    return '<header class="cyw-h cy-ph">' + (depth > 0 ? App.cyBackBtn() : '') + '<span class="cy-ph-rk">' + U.rankBadge(p.r, 46) + '</span>'
+      + '<div class="cyw-tt"><span class="eyebrow" style="color:' + w.color + '">' + U.esc(d.n) + ' · ' + U.esc(d.ruas[p.rua] || '') + '</span><h2>' + U.esc(p.n) + '</h2>'
+      + '<div class="row" style="gap:6px"><span class="chip">' + CY.RANK[p.r].tipo + ' · ' + CY.RANK[p.r].esf + '</span><span class="chip' + (left(p) < 6 * 3600000 ? ' warn' : '') + '">' + U.icon('clock') + prazo(p) + '</span>' + tags + '</div></div>'
+      + '<button class="iconbtn cyw-x" data-a="cyWinX" aria-label="Fechar">' + U.icon('close') + '</button></header>';
   }
 
-  /* ---------- gaveta lateral do portal ---------- */
-  App.DRAWERS = App.DRAWERS || {};
-  App.DRAWERS.portal = function(u){
-    var p = E.cyPortal(C(), u.id);
-    if (!p) return '<div class="dr-head"><div class="dr-top"><h2>Portal fechado</h2><button class="iconbtn" data-a="closeAll" aria-label="Fechar">' + U.icon('close') + '</button></div></div><div class="dr-body"><p class="dim">Este portal não está mais no mapa.</p></div>';
-    return head(p) + '<div class="dr-body">' + (p.in ? dentro(p) : ficha(p)) + '</div>';
+  /* ---------- janela do portal (abre por cima do bairro, do radar ou do mapa) ---------- */
+  App.CYW = App.CYW || {};
+  App.CYW.portal = function(w, depth){
+    var p = E.cyPortal(C(), w.id);
+    if (!p) return {ic: 'gate', sup: 'Portal', t: 'Portal fechado', b: '<p class="dim">Este portal não está mais no mapa.</p>'};
+    return {h: head(p, depth), t: p.n, wc: wayOf(p).color, cls: 'wide', b: p.in ? dentro(p) : ficha(p)};
   };
   function ficha(p){
     var neb = (p.mods || []).indexOf('neblina') >= 0, ck = E.cyCanEnter(C(), p), t = p.min;
@@ -120,6 +120,7 @@
     var min = E.cyNotaMin(p), nt = p.nt || null, ai = App.sample && !App.sampleOff, busy = App.ui.cyBusy === p.id;
     var h = '<div class="stack cy-nota" style="gap:8px"><span class="eyebrow">Examinador · nota mínima ' + min + '</span>';
     if (nt) h += '<div class="callout' + (nt.nota >= min ? ' gate' : ' fail') + '"><b>Nota ' + nt.nota + '</b>' + (nt.src === 'manual' ? ' (autoavaliação)' : '') + ' · ' + U.esc(nt.resumo || '') + (nt.lac && nt.lac.length ? '<br><span class="dim" style="font-size:13px">Faltou: ' + U.esc(nt.lac.join('; ')) + '</span>' : '') + '</div>';
+    if (busy) h += '<div class="cy-wait">' + (App.img('eu-loading') ? '<img src="' + App.img('eu-loading') + '" alt="">' : '') + '<span class="mono">o Examinador está lendo · leva o tempo que precisar</span></div>';
     if (ai) h += '<button class="btn" data-a="cyGrade" data-id="' + p.id + '"' + (busy ? ' disabled' : '') + '>' + U.icon('oracle') + (busy ? 'O Examinador está lendo…' : nt ? 'Pedir outra nota' : 'Pedir a nota ao Examinador') + '</button>';
     else {
       var M = en.man || (en.man = {}), extra = p.reav ? ['Expliquei em voz alta, sem ler', 'Mostrei a alguém ou gravei a explicação'] : [];
@@ -141,17 +142,17 @@
   App.A.cyGrade = function(el){
     var id = el.getAttribute('data-id'), p = E.cyPortal(C(), id), en = (App.ui.cyEnt || {})[id]; if (!p || !en || !App.sample || App.ui.cyBusy) return;
     var err = E.cyCheck(p, Object.assign({}, en, {nota: 0})); if (err) { setErr(id, err); return; }
-    App.ui.cyBusy = id; App.renderDrawer();
+    App.ui.cyBusy = id; App.cyWinRender();
     App.sample.json(App.cyGradePrompt(p, en), {cache: false}).then(function(r){
       App.ui.cyBusy = null;
       var n = Math.max(0, Math.min(100, Math.round(+(r && r.nota) || 0)));
       p.nt = {nota: n, src: 'ia', resumo: String((r && r.resumo) || '').slice(0, 400), lac: ((r && r.lacunas) || []).slice(0, 4).map(function(x){ return String(x).slice(0, 160); })};
-      App.commit(['city'], {norender: true}); App.renderDrawer();
+      App.commit(['city'], {norender: true}); App.cyWinRender();
     }, function(e){
       App.ui.cyBusy = null; var c = e && e.code;
       if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].indexOf(c) >= 0) App.sampleOff = true;
       setErr(id, 'O Examinador não respondeu (' + (c || 'erro') + '). ' + (App.sampleOff ? 'Use a autoavaliação.' : 'Tente de novo em instantes.'));
-      App.renderDrawer();
+      App.cyWinRender();
     });
   };
   App.C.cyMan = function(el){ var en = (App.ui.cyEnt || {})[el.getAttribute('data-id')]; if (!en) return; (en.man || (en.man = {}))[el.getAttribute('data-i2')] = el.checked; };
@@ -160,12 +161,12 @@
     var tot = p.crit.length + (p.reav ? 2 : 0), ok = 0; for (var i = 0; i < tot; i++) if (en.man && en.man[i]) ok++;
     var min = E.cyNotaMin(p), n = ok === tot ? Math.max(min, p.reav ? CY.REAV.nota : 70) : Math.round(min * ok / tot) - 1;
     p.nt = {nota: n, src: 'manual', resumo: ok === tot ? 'Autoavaliação: todos os critérios cumpridos.' : 'Autoavaliação: ' + ok + ' de ' + tot + ' itens cumpridos.', lac: []};
-    App.commit(['city'], {norender: true}); App.renderDrawer();
+    App.commit(['city'], {norender: true}); App.cyWinRender();
   };
   function setErr(id, msg){ (App.ui.cyErr || (App.ui.cyErr = {}))[id] = msg; var el = document.getElementById('cyErr-' + id); if (el) el.textContent = msg; }
 
   /* ---------- ações ---------- */
-  App.A.cyOpen = function(el, ev){ if (ev && ev.stopPropagation) ev.stopPropagation(); App.ui.drawer = {type: 'portal', id: el.getAttribute('data-id')}; App.renderDrawer(); };
+  App.A.cyOpen = function(el, ev){ if (ev && ev.stopPropagation) ev.stopPropagation(); App.cyWinOpen({t: 'portal', id: el.getAttribute('data-id')}); };
   App.A.cyEnter = function(el){
     var p = E.cyPortal(C(), el.getAttribute('data-id')), r = E.cyEnter(C(), App.S, p);
     if (!r.ok) { App.toast({t: 'Não deu para entrar', s: r.why === 'perg' ? 'Precisa de um Pergaminho de Permissão.' : r.why === 'rank' ? 'Rank alto demais para a sua Licença.' : 'Este portal não está aberto.', ic: 'lock'}); return; }
@@ -177,15 +178,15 @@
   App.I.cyEco = function(el){ var en = (App.ui.cyEnt || {})[el.getAttribute('data-id')]; if (en) en.eco[el.getAttribute('data-f')] = el.value; };
   App.C.cyEcoT = function(el){ var en = (App.ui.cyEnt || {})[el.getAttribute('data-id')]; if (en) en.eco.tipo = el.value; };
   App.C.cyCump = function(el){ var en = (App.ui.cyEnt || {})[el.getAttribute('data-id')]; if (en) en.cump[el.getAttribute('data-m')] = el.checked; };
-  App.A.cyStep = function(el){ var p = E.cyPortal(C(), el.getAttribute('data-id')), i = +el.getAttribute('data-i2'); if (!p) return; p.ok = p.ok || []; var k = p.ok.indexOf(i); if (k >= 0) p.ok.splice(k, 1); else p.ok.push(i); App.commit(['city'], {norender: true}); App.renderDrawer(); };
+  App.A.cyStep = function(el){ var p = E.cyPortal(C(), el.getAttribute('data-id')), i = +el.getAttribute('data-i2'); if (!p) return; p.ok = p.ok || []; var k = p.ok.indexOf(i); if (k >= 0) p.ok.splice(k, 1); else p.ok.push(i); App.commit(['city'], {norender: true}); App.cyWinRender(); };
   App.A.cyClose = function(el){
     var id = el.getAttribute('data-id'), p = E.cyPortal(C(), id), en = (App.ui.cyEnt || {})[id] || {};
     if (!p) return;
     var src = Object.assign({}, en, {nota: p.nt ? p.nt.nota : undefined, src: p.nt ? p.nt.src : ''});
     var r = E.cyClose(C(), App.S, p, src);
-    if (!r.ok) { setErr(id, r.msg); if (r.reprovou) { App.ui.drawer = null; App.commit(['city']); App.toast({t: 'Reavaliação reprovada', s: r.msg, ic: 'alert', ms: 8000}); } return; }
+    if (!r.ok) { setErr(id, r.msg); if (r.reprovou) { App.cyWinRemove('portal', id); App.commit(['city']); App.toast({t: 'Reavaliação reprovada', s: r.msg, ic: 'alert', ms: 8000}); } return; }
     delete (App.ui.cyEnt || {})[id];
-    App.ui.drawer = null;
+    App.ui.cyw = (App.ui.cyw || []).filter(function(x){ return !(x.t === 'portal' && x.id === id); });
     App.commit(r.core ? ['city', 'core'] : ['city']);
     App.ui.modal = {type: 'cyDrop', k: 0}; App.renderModal();
   };
@@ -224,17 +225,18 @@
     list = list.slice().sort(function(a, b){ return Date.parse(a.due) - Date.parse(b.due); });
     return list.length ? '<div class="cy-plist">' + list.map(App.cyRow).join('') + '</div>' : '<p class="dim" style="font-size:14px">' + U.esc(vazio) + '</p>';
   };
-  App.cyLicCard = function(){
+  App.cyLicInner = function(){
     var c = C(), L = E.cyLic(c), nx = E.cyLicNext(c), row = E.cyLicRow(L.r), from = row.pts, to = nx ? nx.pts : row.pts;
     var reav = (c.portals || []).filter(function(p){ return p.reav && p.st === 'open'; })[0];
     var st = !nx ? 'Licença máxima.' : reav ? 'Reavaliação aberta: feche o portal para subir.' : L.pts >= to ? (L.falhou ? 'Nova Reavaliação em ' + Math.max(0, CY.REAV.espera - U.daysBetween(L.falhou, U.today())) + ' dias.' : 'Pontos batidos: a Reavaliação nasce na próxima manutenção.') : 'Faltam ' + (to - L.pts) + ' Pontos de Caça para a Reavaliação.';
     var per = CY.DIST.map(function(d){ var x = E.cityDist(c, d.id); return '<span class="cy-lpd" style="--wc:' + App.way(d.way).color + '" title="' + U.esc(d.n) + '">' + U.icon(d.ic) + '<b>' + (x.closed || 0) + '</b></span>'; }).join('');
-    return '<section class="win cy-lic"><div class="win-h">' + U.icon('cert') + 'Licença de Caçador</div><div class="row" style="gap:16px;flex-wrap:nowrap">' + U.rankBadge(L.r, 64)
+    return '<div class="row" style="gap:16px;flex-wrap:nowrap">' + U.rankBadge(L.r, 64)
       + '<div class="stack" style="gap:6px;min-width:0;flex:1"><div class="row between mono" style="font-size:12px"><span>' + L.pts + ' Pontos de Caça</span><span class="dim">' + (nx ? 'Licença ' + nx.r + ' em ' + to : '') + '</span></div>'
       + H.bar(nx ? U.pct(L.pts - from, to - from) : 100, 'thin') + '<span class="dim" style="font-size:13px">' + st + '</span></div></div>'
-      + '<div class="cy-lpds">' + per + '</div><p class="faint" style="font-size:12px">Portais fechados por distrito. E 1 · D 2 · C 5 · B 12 Pontos.</p></section>';
+      + '<div class="cy-lpds">' + per + '</div><p class="faint" style="font-size:12px">Portais fechados por bairro. E 1 · D 2 · C 5 · B 12 Pontos.</p>';
   };
-  App.cyInvHTML = function(){
+  App.cyLicCard = function(){ return '<section class="win cy-lic"><div class="win-h">' + U.icon('cert') + 'Licença de Caçador</div>' + App.cyLicInner() + '</section>'; };
+  App.cyInvInner = function(){
     var c = C(), I = E.cyInv(c), K = App.S.owned.keys || {}, rows = [];
     Object.keys(I.mat).forEach(function(k){ if (I.mat[k]) rows.push(['sword', (CY.ITENS[k] || {n: k}).n, '×' + I.mat[k]]); });
     I.caixas.forEach(function(x){ rows.push(['bag', 'Caixa ' + CY.CAIXA[x.grau] + ' (par)', x.so ? 'só Amaldiçoada' : 'fechada']); });
@@ -245,10 +247,12 @@
     I.passe.forEach(function(x){ rows.push(['map', 'Passe · ' + ((CY.DMAP[x.d] || {ruas: []}).ruas[x.rua] || ''), '']); });
     (c.ecos || []).forEach(function(x){ rows.push(['star', 'Eco · ' + x.n, RARN[x.r]]); });
     var keys = RK.filter(function(r){ return K[r]; }).map(function(r){ return r + ' ×' + K[r]; }).join(' · ');
-    return '<section class="win"><div class="win-h">' + U.icon('bag') + 'Inventário</div>' + (keys ? '<p style="font-size:13.5px;margin-bottom:8px">' + U.icon('lock') + ' Chaves de Dungeon: <b>' + keys + '</b> · <a href="#/portoes/dungeons">usar nas Dungeons</a></p>' : '')
+    return (keys ? '<p style="font-size:13.5px;margin-bottom:8px">' + U.icon('lock') + ' Chaves de Dungeon: <b>' + keys + '</b> · <a href="#/portoes/dungeons">usar nas Dungeons</a></p>' : '')
       + (rows.length ? '<div class="cy-inv">' + rows.map(function(r){ return '<div class="cy-invr">' + U.icon(r[0]) + '<span>' + U.esc(r[1]) + '</span><span class="dim mono" style="font-size:11.5px">' + U.esc(r[2]) + '</span></div>'; }).join('') + '</div>' : '<p class="dim" style="font-size:14px">Vazio. Os drops dos portais aparecem aqui.</p>')
-      + '<p class="faint" style="font-size:12px;margin-top:8px">Caixas, vales, Relíquias, Forja e Ecos ganham uso nos próximos blocos; o que cair agora fica guardado.</p></section>';
+      + '<p class="faint" style="font-size:12px;margin-top:8px">Caixas, vales, Relíquias, Forja e Ecos ganham uso nos próximos blocos; o que cair agora fica guardado.</p>';
   };
+  App.cyInvCount = function(){ var I = E.cyInv(C()), n = I.caixas.length + I.vales.length + I.perg.length + I.reliq.length + I.passe.length + (C().ecos || []).length; Object.keys(I.mat).forEach(function(k){ n += I.mat[k] || 0; }); Object.keys(I.frag).forEach(function(k){ n += I.frag[k] || 0; }); return n; };
+  App.cyInvHTML = function(){ return '<section class="win"><div class="win-h">' + U.icon('bag') + 'Inventário</div>' + App.cyInvInner() + '</section>'; };
   var LOGT = {
     nasceu: function(l){ return 'Portal ' + l.r + ' nasceu em ' + dn(l.d) + ': ' + l.n + '.'; },
     chamado: function(l){ return 'A janela abriu. Portal do Chamado em ' + dn(l.d) + ': ' + l.n + '.'; },
@@ -262,14 +266,16 @@
     beta: function(){ return 'Você chegou à Cidade.'; }
   };
   function dn(d){ return (CY.DMAP[d] || {n: d}).n; }
-  App.cyPhoneHTML = function(){
+  App.cyMsgs = function(n){ return (C().log || []).slice(-(n || 24)).reverse().filter(function(l){ return LOGT[l.k]; }).map(function(l){ return {k: l.k, at: l.at, t: LOGT[l.k](l)}; }); };
+  App.cyPhoneInner = function(){
     var L = (C().log || []).slice(-24).reverse().filter(function(l){ return LOGT[l.k]; });
-    return '<section class="win cy-phone"><div class="win-h">' + U.icon('journal') + 'Celular</div><div class="cy-phone-scr">'
+    return '<div class="cy-phone-scr">'
       + (L.length ? L.map(function(l){ var t = new Date(l.at); return '<div class="cy-msg cy-m-' + l.k + '"><span class="mono">' + String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + ' ' + String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0') + '</span><p>' + U.esc(LOGT[l.k](l)) + '</p></div>'; }).join('') : '<p class="dim" style="font-size:13.5px">Sem mensagens. O Sistema escreve quando algo acontece na Cidade.</p>')
-      + '</div></section>';
+      + '</div>';
   };
+  App.cyPhoneHTML = function(){ return '<section class="win cy-phone"><div class="win-h">' + U.icon('journal') + 'Celular</div>' + App.cyPhoneInner() + '</section>'; };
 
-  /* relógio do Trancado na gaveta aberta */
+  /* relógio do Trancado na janela aberta */
   setInterval(function(){ var el = document.querySelector('.cy-lock'); if (!el) return; var t = el.querySelector('.cy-lockt'); if (t) t.textContent = U.fmtDur(Date.parse(el.getAttribute('data-lock')) - Date.now()); }, 15000);
 
   /* a Licença também mora no Perfil */
