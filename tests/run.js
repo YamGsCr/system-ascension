@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DIR = __dirname;
-const ASSERT = ['catalog', 'split', 'cidade', 'cidade2', 'cityui', 'anistia', 'citysave', 'citymotor', 'v12test', 'v13test', 'v14test', 'v14btest', 'v14ctest', 'v14dtest', 'v14etest', 'v14rt', 'syncrace', 'mdev'];
+const ASSERT = ['catalog', 'split', 'cidade', 'cidade2', 'cityui', 'recompensas', 'anistia', 'citysave', 'citymotor', 'v12test', 'v13test', 'v14test', 'v14btest', 'v14ctest', 'v14dtest', 'v14etest', 'v14rt', 'syncrace', 'mdev'];
 const PROBE = ['v2test', 'v3test', 'v3btest', 'v4test', 'v5test', 'v7test', 'v9test', 'v10test', 'v11test', 'smoke', 'interact', 'pzsmoke', 'reload'];
 /* falha de rede para fora (fontes do Google num ambiente sem internet) não é falha do app; arquivo do app que não carrega é */
 const NET = /ERR_TUNNEL_CONNECTION_FAILED|ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED|ERR_PROXY_CONNECTION_FAILED|ERR_CONNECTION_(REFUSED|RESET|CLOSED|TIMED_OUT)/;

@@ -208,7 +208,7 @@
     g.praca = '<circle class="cy-plaza" cx="' + f1(pr[0]) + '" cy="' + f1(pr[1]) + '" r="62"/><circle class="cy-ring" cx="' + f1(pr[0]) + '" cy="' + f1(pr[1]) + '" r="44" filter="url(#cy-glowf)"/>'
       + '<g class="cy-spin" style="transform-origin:' + f1(pr[0]) + 'px ' + f1(pr[1]) + 'px"><circle class="cy-ring2" cx="' + f1(pr[0]) + '" cy="' + f1(pr[1]) + '" r="53"/></g>'
       + '<circle class="cy-gate" cx="' + f1(pr[0]) + '" cy="' + f1(pr[1]) + '" r="20"/>';
-    g.nev = T(NEV);
+    g.nev = T(NEV); g.pr = pr;
     g.clips = Object.keys(g.z).map(function(id){ return '<clipPath id="cy-cl-' + id + '"><polygon points="' + g.z[id].pts + '"/></clipPath>'; }).join('');
     return (GEO[or] = g);
   }
@@ -288,14 +288,18 @@
       out += zone(g, d, st, sel === d.id);
       lab += label(g, d.id, d.ic, way.color, {t: (lvl ? 'corrupção ' + lvl : 'prof. ' + E.cityDepth(st.closed)) + ' · ' + open.length + (open.length === 1 ? ' portal' : ' portais'), red: !!lvl}, open.length);
       marks(g, d.id, open).forEach(function(m){
-        var p = m.p, tip = 'Portal ' + p.r + ' · ' + d.ruas[m.rua] + (p.due ? ' · prazo ' + U.fmtDate(p.due) : '');
-        bad += App.cyBadge(CY.RANKS.indexOf(p.r) >= 0 ? p.r : 'E', m.x, m.y, g.or === 'port' ? 15 : 12, ' data-tip="' + U.esc(tip) + '" data-a="cyOpen" data-id="' + U.esc(p.id) + '" role="button" tabindex="0" aria-label="' + U.esc('Abrir portal ' + p.r + ': ' + (p.n || '')) + '"');
+        var p = m.p, rk = App.cyBreu && App.cyBreu(p) ? '?' : CY.RANKS.indexOf(p.r) >= 0 ? p.r : 'E', tip = 'Portal ' + rk + ' · ' + d.ruas[m.rua] + (p.due ? ' · prazo ' + U.fmtDate(p.due) : '');   /* Breu: o mapa esconde o rank */
+        bad += App.cyBadge(rk, m.x, m.y, g.or === 'port' ? 15 : 12, ' data-tip="' + U.esc(tip) + '" data-a="cyOpen" data-id="' + U.esc(p.id) + '" role="button" tabindex="0" aria-label="' + U.esc('Abrir portal ' + rk + ': ' + (p.n || '')) + '"');
       });
     });
     var Zc = g.z.centro;
     out += '<g class="cy-d cy-centro' + (sel === 'centro' ? ' cy-sel' : '') + '" data-id="centro" style="--wc:var(--glow)"><polygon class="cy-dz" points="' + Zc.pts + '" data-a="cyPick" data-id="centro" role="button" tabindex="0" aria-label="Centro: Dungeons, Raids e Oficina" data-tip="Centro · Dungeons, Raids e Oficina"/>'
       + '<polygon class="cy-edge" points="' + Zc.pts + '" clip-path="url(#cy-cl-centro)"/></g>';
     out += g.stat + g.praca;
+    if (App.cyMitico && App.cyMitico()) {   /* Relíquia mítica equipada: o relógio da praça marca 3h33 */
+      var cx = g.pr[0], cy = g.pr[1], hd = function(deg, len){ var a = (deg - 90) * Math.PI / 180; return 'M' + f1(cx) + ' ' + f1(cy) + 'L' + f1(cx + Math.cos(a) * len) + ' ' + f1(cy + Math.sin(a) * len); };
+      out += '<g class="cy-clock" aria-hidden="true"><circle cx="' + f1(cx) + '" cy="' + f1(cy) + '" r="15"/><path d="' + hd(106.5, 8) + hd(198, 12) + '"/></g>';
+    }
     var nv = g.nev, rx = g.or === 'port' ? 44 : 58, ry = g.or === 'port' ? 58 : 44;
     out += '<g class="cy-nev' + (sel === 'nevoa' ? ' cy-sel' : '') + '" data-a="cyPick" data-id="nevoa" role="button" tabindex="0" aria-label="Névoa" data-tip="???"><ellipse class="cy-nevz" cx="' + f1(nv[0]) + '" cy="' + f1(nv[1]) + '" rx="' + rx + '" ry="' + ry + '" filter="url(#cy-blurf)"/>'
       + '<ellipse class="cy-nevh" cx="' + f1(nv[0]) + '" cy="' + f1(nv[1]) + '" rx="' + rx + '" ry="' + ry + '"/><text class="cy-fogt" x="' + f1(nv[0]) + '" y="' + f1(nv[1] + 8) + '">???</text></g>';
@@ -310,7 +314,7 @@
       + '<circle class="cy-rd-bg" cx="' + f1(R) + '" cy="' + f1(R) + '" r="' + f1(R - 6) + '"/><g clip-path="url(#' + id + ')"><g transform="translate(' + f1(ox) + ' ' + f1(oy) + ')">';
     CY.DIST.forEach(function(d){ var st = state(d.id); out += '<polygon class="cy-mz' + (st.corr ? ' red' : '') + '" points="' + g.z[d.id].base + '" style="--wc:' + App.way(d.way).color + '"/>'; });
     out += '<polygon class="cy-mz cen" points="' + g.z.centro.base + '"/><path class="cy-mrio" d="' + g.rioD + '"/>';
-    App.cyMarks(g.or, state).forEach(function(m){ out += '<circle class="cy-rd-blip" cx="' + f1(m.x) + '" cy="' + f1(m.y) + '" r="' + f1(R * 0.042) + '" style="fill:' + (SYS.RANKC[m.p.r] || '#fff') + '"/>'; });
+    App.cyMarks(g.or, state).forEach(function(m){ out += '<circle class="cy-rd-blip" cx="' + f1(m.x) + '" cy="' + f1(m.y) + '" r="' + f1(R * 0.042) + '" style="fill:' + ((App.cyBreu && App.cyBreu(m.p) ? '' : SYS.RANKC[m.p.r]) || '#fff') + '"/>'; });
     var a = Math.PI / 4;
     out += '</g><circle class="cy-rd-l" cx="' + f1(R) + '" cy="' + f1(R) + '" r="' + f1(R * 0.36) + '"/><circle class="cy-rd-l" cx="' + f1(R) + '" cy="' + f1(R) + '" r="' + f1(R * 0.7) + '"/>'
       + '<g class="cy-rd-sweep" style="transform-origin:' + f1(R) + 'px ' + f1(R) + 'px"><path class="cy-rd-w" d="M' + f1(R) + ' ' + f1(R) + 'L' + f1(R) + ' 0A' + f1(R) + ' ' + f1(R) + ' 0 0 1 ' + f1(R + R * Math.sin(a)) + ' ' + f1(R - R * Math.cos(a)) + 'Z"/>'

@@ -98,7 +98,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await p.click('.cy-me'); await run(); await p.click('#cyw [data-w="inv"]'); await run();
   ok(/Inventário/.test(await top()) && /Caixas, vales/.test(await top()), 'o inventário da Cidade abre pela Janela do Caçador');
   await p.keyboard.press('Escape'); await run();
-  ok(/Perfil, inventário e celular/.test(await top()), 'Esc volta para a Janela do Caçador');
+  ok(/Perfil, inventário e recompensas/.test(await top()), 'Esc volta para a Janela do Caçador');
   await p.keyboard.press('Escape'); await run();
   await p.evaluate(() => { location.hash = '#/perfil'; }); await run();
   ok(await p.evaluate(() => !!document.querySelector('#view .cy-lic') && /Pontos de Caça/.test(document.querySelector('#view .cy-lic').textContent)), 'a carteirinha da Licença aparece no Perfil');

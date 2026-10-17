@@ -25,7 +25,7 @@
 
   /* ---------- tela com a Cidade desligada ---------- */
   function off(){
-    return H.head('Cidade · beta', 'A Cidade', 'Portais nascem sozinhos nos 7 bairros, um por Caminho, com rank de E a S, prazo e drop. Em beta: portais, drop e Licença já funcionam; caixas, vales, Ecos e Forja chegam nos próximos blocos.')
+    return H.head('Cidade · beta', 'A Cidade', 'Portais nascem sozinhos nos 7 bairros, um por Caminho, com rank de E a S, prazo e drop. Em beta: portais, drop, Licença, caixas, vales reais, Ecos, Relíquias e Forja já funcionam; clãs, raids e o Mercador chegam nos próximos blocos.')
       + '<section class="win"><div class="win-h">' + U.icon('city') + 'Cidade (beta)</div><div class="stack" style="gap:12px">'
       + '<p>A chave fica desligada até você pedir. Ligar não mexe no seu progresso: a Cidade guarda tudo num save próprio, separado do resto.</p>'
       + '<div class="row"><button class="btn primary" data-a="cityOn">' + U.icon('city') + 'Ligar a Cidade (beta)</button><span class="faint" style="font-size:13px">Dá para desligar em Perfil → Ajustes.</span></div>'
@@ -59,9 +59,10 @@
       + '<div class="cy-mapbox">' + App.cityMap(state, {or: st.or, sel: App.cySel()}) + '</div>'
       + '<div class="cy-hud">'
       + '<button class="cy-me" data-a="cyWin" data-w="hub" data-reset aria-label="Janela do Caçador: perfil, inventário e celular"><span class="cy-me-av">' + App.cyAvatar() + '<span class="cy-me-rk">' + U.rankBadge(L.r, 22) + '</span></span>'
-      + '<span class="cy-me-t"><b>' + U.esc(H.pname()) + '</b><span>Licença ' + L.r + ' · ' + L.pts + ' pts</span></span></button>'
+      + '<span class="cy-me-t"><b>' + U.esc(H.pname()) + '</b><span>Licença ' + L.r + ' · ' + L.pts + ' pts</span>' + (App.cyTitleHUD ? App.cyTitleHUD() : '') + '</span></button>'
       + '<button class="cy-mini" data-a="cyWin" data-w="radar" data-reset aria-label="Radar: ' + n + ' de ' + mx + ' portais abertos">' + App.cyMini(state, st.or) + '<span class="cy-mini-t">' + n + '/' + mx + '</span></button>'
       + '<div class="cy-est">' + U.icon('clock') + '<span>' + U.esc(App.cyEstacao(true)) + '</span></div>'
+      + (App.cyMaldHUD ? App.cyMaldHUD() : '')
       + '</div></div>';
   };
 
@@ -93,6 +94,7 @@
   App.CYW.centro = function(){
     return {ic: 'd_center', sup: 'A praça do meio', t: 'Centro', wc: 'var(--glow)', b: '<div class="stack" style="gap:0">'
       + CY.CENTRO.itens.map(function(it){ return '<div class="cy-clan"><b>' + U.esc(it[0]) + '</b><i>' + U.esc(it[1]) + '</i></div>'; }).join('') + '</div>'
+      + '<div class="row" style="gap:8px"><button class="btn primary" data-a="cyWin" data-w="forja">' + U.icon('anvil') + 'Abrir a Forja</button><button class="btn" data-a="cyWin" data-w="fundo">' + U.icon('cert') + 'Fundo e vales</button></div>'
       + '<p class="faint" style="font-size:13px">As Dungeons ainda moram em <a href="#/portoes/dungeons">Portões → Dungeons</a>. Elas se mudam para o Centro mais adiante.</p>'};
   };
   App.CYW.nevoa = function(){ return {ic: 'd_fog', sup: 'Fora do mapa', t: '???', wc: 'var(--faint)', cls: 'narrow', b: '<p class="dim">' + U.esc(CY.NEVOA.fala) + '</p>'}; };
@@ -102,7 +104,7 @@
     if (tab === 'radar') {
       var prox = E.cyPaused(S, day) ? 'em pausa junto com o protocolo' : c.spawn === day ? 'amanhã, no reset das ' + hr() + (cont > CY.NASCE.cheio ? ' (só 1: mais de 4 abertos)' : '') : 'agora, assim que a nuvem for conferida';
       var cham = !z.on ? 'protocolo desligado' : c.cham === day ? 'o portal de hoje já nasceu' : 'nasce quando a janela abrir, às ' + z.ini;
-      var rows = [['Portais', cont + ' de ' + R.abertosMax + ' abertos' + (extra > 0 ? ' · +' + extra + ' fora do limite' : '')], ['Próximo', prox], ['Chamado', cham], ['Raid', 'nenhuma anunciada · uma por mês'], ['Maldições', 'nenhuma ativa'], ['Mercador', 'fora da Cidade']];
+      var rows = [['Portais', cont + ' de ' + R.abertosMax + ' abertos' + (extra > 0 ? ' · +' + extra + ' fora do limite' : '')], ['Próximo', prox], ['Chamado', cham], ['Raid', 'nenhuma anunciada · uma por mês'], ['Maldições', App.cyMaldTxt ? App.cyMaldTxt() : 'nenhuma ativa'], ['Mercador', 'fora da Cidade']];
       b += '<div class="cy-top"><div class="cy-bigmini">' + App.cyMini(state, ui().or || 'land') + '</div><div class="stack" style="gap:10px;min-width:0"><dl class="cy-rdlist">'
         + rows.map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + U.esc(r[1]) + '</dd>'; }).join('') + '</dl><div class="callout" style="font-size:13.5px">' + U.esc(App.cyEstacao()) + '</div></div></div>';
     } else if (tab === 'portais') b += App.cyPortalsHTML(open, 'Nenhum portal aberto agora. Os próximos nascem no reset das ' + hr() + '.');

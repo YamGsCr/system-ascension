@@ -47,7 +47,7 @@ SYS.CITY = {
       clas: [['Cronistas da Marquise', 'Anda devagar. A cidade fala baixo.'], ['Sociedade do Estranho', 'Escreve o que você viu no canto do olho.']]}
   ],
   CENTRO: {id: 'centro', n: 'Centro', curto: 'Centro', ic: 'd_center', col: 1, row: 1,
-    itens: [['Dungeons', 'as 12 Dungeons e as secretas'], ['Raids', 'o alerta de raid e o quadro de eventos'], ['Oficina', 'as 9 bancadas de ferramentas']]},
+    itens: [['Dungeons', 'as 12 Dungeons e as secretas'], ['Raids', 'o alerta de raid e o quadro de eventos'], ['Oficina', 'as 9 bancadas de ferramentas'], ['Forja', 'materiais nos portais, as 8 receitas e o desmanche de Relíquias']]},
   NEVOA: {id: 'nevoa', n: '???', col: 2, row: 2, fala: 'Névoa. O Sistema não mostra o que tem aqui.'},
 
   /* gente da Cidade: retrato (imagem em assets/img), clã e papel. Os outros representantes chegam com as Facções */

@@ -110,7 +110,8 @@
   /* ---------- Janela do Caçador: a janela que abre outras janelas ---------- */
   App.CYW.hub = function(){
     var c = App.city, L = E.cyLic(c), n = App.cyInvCount(), m = App.cyMsgs(1)[0];
-    var tiles = [['perfil', 'user', 'Perfil do Caçador', 'Licença ' + L.r + ' · ' + L.pts + ' Pontos de Caça'], ['inv', 'bag', 'Inventário', n ? n + (n === 1 ? ' item guardado' : ' itens guardados') : 'vazio por enquanto'], ['phone', 'phone', 'Celular', m ? m.t : 'sem mensagens']];
+    var tiles = [['perfil', 'user', 'Perfil do Caçador', 'Licença ' + L.r + ' · ' + L.pts + ' Pontos de Caça'], ['inv', 'bag', 'Inventário', n ? n + (n === 1 ? ' item guardado' : ' itens guardados') : 'vazio por enquanto'], ['phone', 'phone', 'Celular', m ? m.t : 'sem mensagens']]
+      .concat(App.cyHubTiles ? App.cyHubTiles() : []);   /* Arsenal, Relíquias, Fundo e vales, Sala de Troféus (src/79c) */
     var soon = [['shield', 'Clãs', 'abrem com as Facções'], ['sparkle', 'Laços', 'chegam com Laços e Junções']];
     var b = '<div class="cy-hub-me">' + (App.img('eu-perfil') ? '<img class="cy-hub-ph" src="' + App.img('eu-perfil') + '" alt="" draggable="false">' : '')
       + '<div class="stack" style="gap:5px;min-width:0"><span class="eyebrow">Caçador</span><h3>' + U.esc(H.pname()) + '</h3>' + (H.ptitle() ? '<span class="dim" style="font-size:13px">' + U.esc(H.ptitle()) + '</span>' : '')
@@ -118,7 +119,7 @@
       + '<div class="cy-tiles">' + tiles.map(function(t){ return '<button class="cy-tile" data-a="cyWin" data-w="' + t[0] + '">' + U.icon(t[1]) + '<b>' + t[2] + '</b><span>' + U.esc(t[3]) + '</span></button>'; }).join('')
       + soon.map(function(t){ return '<div class="cy-tile off" aria-disabled="true">' + U.icon(t[0]) + '<b>' + t[1] + '</b><span>' + t[2] + '</span></div>'; }).join('') + '</div>'
       + '<div class="row between"><button class="btn sm ghost" data-a="cyIntro">' + U.icon('eye') + 'Rever a apresentação do Ivo</button><a class="act" href="#/perfil">Ajustes da Cidade</a></div>';
-    return {ic: 'helm', sup: 'Janela do Caçador', t: 'Perfil, inventário e celular', b: b, cls: 'cy-hubwin'};
+    return {ic: 'helm', sup: 'Janela do Caçador', t: 'Perfil, inventário e recompensas', b: b, cls: 'cy-hubwin'};
   };
   App.CYW.perfil = function(){
     var c = App.city, closed = CY.DIST.reduce(function(a, d){ return a + (E.cityDist(c, d.id).closed || 0); }, 0), K = App.S.owned.keys || {}, keys = Object.keys(K).reduce(function(a, k){ return a + (+K[k] || 0); }, 0);

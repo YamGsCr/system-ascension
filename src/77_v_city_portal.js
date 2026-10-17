@@ -60,6 +60,7 @@
     if (p.tranc) tags += '<span class="chip warn">' + U.icon('lock') + 'Trancado</span>';
     if (p.fis) tags += '<span class="chip">físico</span>';
     if (perigo(p) && !p.in) tags += '<span class="chip bad">' + U.icon('alert') + 'perigo</span>';
+    if (App.cyTagsEsp) tags += App.cyTagsEsp(p);   /* Contenção, Revanche, Posseiro, Sirene, Inimigo Íntimo, Passe (src/79c) */
     return '<header class="cyw-h cy-ph">' + (depth > 0 ? App.cyBackBtn() : '') + '<span class="cy-ph-rk">' + U.rankBadge(p.r, 46) + '</span>'
       + '<div class="cyw-tt"><span class="eyebrow" style="color:' + w.color + '">' + U.esc(d.n) + ' · ' + U.esc(d.ruas[p.rua] || '') + '</span><h2>' + U.esc(p.n) + '</h2>'
       + '<div class="row" style="gap:6px"><span class="chip">' + CY.RANK[p.r].tipo + ' · ' + CY.RANK[p.r].esf + '</span><span class="chip' + (left(p) < 6 * 3600000 ? ' warn' : '') + '">' + U.icon('clock') + prazo(p) + '</span>' + tags + '</div></div>'
@@ -83,6 +84,7 @@
     out += '<p class="faint mono" style="font-size:12px">Tempo estimado: ' + t + ' min · para fechar: ' + U.esc(CY.PROVA[p.reav ? 'nota' : CY.RANK[p.r].prova]) + '</p>';
     out += modsHTML(p);
     out += '<section class="win flat cy-dropwin"><div class="win-h">' + U.icon('bag') + 'Drop previsto</div>' + App.cyOddsHTML(p) + '</section>';
+    if (App.cyFichaExtra) out += App.cyFichaExtra(p);   /* Forja e Carimbo antes de entrar (src/79c) */
     var btn;
     if (ck.ok) btn = '<button class="btn primary" data-a="cyEnter" data-id="' + p.id + '">' + U.icon('gate') + 'Entrar no portal' + (ck.perg ? ' (gasta 1 Pergaminho de Permissão)' : '') + '</button>' + (p.tranc ? '<span class="warn" style="font-size:13px">Ao entrar, o relógio corre e não pausa: ' + CY.TRANC.min[p.r] + ' min.</span>' : '');
     else btn = '<span class="chip bad">' + U.icon('lock') + (ck.why === 'perg' ? 'Dois ranks acima da sua Licença: precisa de Pergaminho de Permissão' : 'Rank alto demais para a sua Licença') + '</span>';
@@ -97,6 +99,7 @@
     if (p.passos && p.passos.length) out += '<section class="stack" style="gap:6px"><span class="eyebrow">Passos</span>' + p.passos.map(function(s, i){ var on = (p.ok || []).indexOf(i) >= 0; return '<button class="cy-step' + (on ? ' on' : '') + '" data-a="cyStep" data-id="' + p.id + '" data-i2="' + i + '" aria-pressed="' + on + '"><i>' + (on ? U.icon('check') : '') + '</i><span>' + U.esc(s) + '</span></button>'; }).join('') + '</section>';
     out += '<section class="stack" style="gap:6px"><span class="eyebrow">Critérios</span><ul class="list">' + p.crit.map(function(c){ return '<li><span>' + U.esc(c) + '</span></li>'; }).join('') + '</ul></section>';
     out += modsHTML(p);
+    if (App.cyDentroExtra) out += App.cyDentroExtra(p, en);   /* invocar um Eco, Carimbo (src/79c) */
     out += '<label class="fld">Rascunho (fica salvo, conta como ação no Chamado)<textarea data-i="cyDraft" data-id="' + p.id + '" rows="6" placeholder="Anote o que está fazendo.">' + U.esc(p.dr || '') + '</textarea></label>';
     /* entrega */
     var f = '<section class="win flat"><div class="win-h">' + U.icon('upload') + 'Entrega</div><div class="stack" style="gap:10px">';
@@ -109,6 +112,7 @@
     if (honra.length) f += '<div class="stack" style="gap:4px"><span class="eyebrow">Cumpriu os modificadores?</span><span class="faint" style="font-size:12.5px">O que não foi cumprido não soma Q nem R. Sem culpa: só sem bônus.</span>' + honra.map(function(m){ return '<label class="check"><input type="checkbox" data-c="cyCump" data-id="' + p.id + '" data-m="' + m.id + '"' + (en.cump[m.id] ? ' checked' : '') + '><span><b>' + U.esc(m.n) + '</b> · ' + U.esc(m.ef) + '</span></label>'; }).join('') + '</div>';
     if ((p.mods || []).indexOf('alvorada') >= 0) { var h = new Date().getHours(); f += '<p class="faint" style="font-size:12.5px">da Alvorada: ' + (h >= 7 && h < 10 ? '<b class="ok">dentro da janela (7h às 10h)</b>' : 'só soma se você entregar entre 7h e 10h') + '.</p>'; }
     if (CY.RANK[p.r].eco) f += '<details class="cy-eco"' + (en.eco.n ? ' open' : '') + '><summary>Registrar o Eco (o que ficou de reutilizável)</summary><div class="stack" style="gap:8px;margin-top:8px"><label class="fld">Nome<input type="text" data-i="cyEco" data-id="' + p.id + '" data-f="n" value="' + U.esc(en.eco.n) + '" maxlength="60"></label><label class="fld">Tipo<select data-c="cyEcoT" data-id="' + p.id + '">' + ['template', 'snippet', 'preset', 'checklist', 'texto', 'áudio', 'diagrama', 'planilha'].map(function(t){ return '<option' + (en.eco.tipo === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></label><label class="fld">Link ou onde está<input type="text" data-i="cyEco" data-id="' + p.id + '" data-f="link" value="' + U.esc(en.eco.link) + '" maxlength="300"></label><span class="faint" style="font-size:12.5px">Sem registro, o Eco não nasce, mas o portal fecha igual.</span></div></details>';
+    if (App.cyEspelhoHTML) f += App.cyEspelhoHTML(p, en);   /* maldição do Espelho: ensinar antes de fechar */
     if (E.cyPrecisaNota(p)) f += notaHTML(p, en);
     f += '<p class="cy-err bad" id="cyErr-' + p.id + '" style="font-size:13.5px">' + U.esc(App.ui.cyErr && App.ui.cyErr[p.id] || '') + '</p>';
     f += '<div class="row" style="justify-content:flex-end"><button class="btn primary" data-a="cyClose" data-id="' + p.id + '">' + U.icon('check') + 'Entregar e fechar</button></div></div></section>';
@@ -218,7 +222,8 @@
   /* ---------- listas, inventário, Licença e celular ---------- */
   App.cyRow = function(p){
     var d = dOf(p), st = p.in ? '<span class="chip glow">dentro</span>' : perigo(p) ? '<span class="chip bad">perigo</span>' : '';
-    return '<button class="cy-prow" style="--wc:' + wayOf(p).color + '" data-a="cyOpen" data-id="' + p.id + '">' + U.rankBadge(p.r, 30) + '<span class="stack" style="gap:1px;min-width:0"><b>' + U.esc(p.n) + '</b><span class="faint" style="font-size:12.5px">' + U.esc(d.n) + ' · ' + U.esc(d.ruas[p.rua] || '') + (p.cham ? ' · Chamado' : '') + (p.reav ? ' · Reavaliação' : '') + (p.tranc ? ' · Trancado' : '') + '</span></span>'
+    var esp = App.cyEspName ? App.cyEspName(p) : '';
+    return '<button class="cy-prow" style="--wc:' + wayOf(p).color + '" data-a="cyOpen" data-id="' + p.id + '">' + U.rankBadge(App.cyBreu && App.cyBreu(p) ? '?' : p.r, 30) + '<span class="stack" style="gap:1px;min-width:0"><b>' + U.esc(p.n) + '</b><span class="faint" style="font-size:12.5px">' + U.esc(d.n) + ' · ' + U.esc(d.ruas[p.rua] || '') + (p.cham ? ' · Chamado' : '') + (p.reav ? ' · Reavaliação' : '') + (p.tranc ? ' · Trancado' : '') + (esp ? ' · ' + U.esc(esp) : '') + '</span></span>'
       + '<span class="stack" style="gap:3px;align-items:flex-end">' + st + '<span class="mono" style="font-size:11.5px;color:' + (left(p) < 6 * 3600000 ? 'var(--warn)' : 'var(--dim)') + '">' + prazo(p) + '</span></span></button>';
   };
   App.cyPortalsHTML = function(list, vazio){
@@ -265,6 +270,7 @@
     'reav-fim': function(l){ return 'Reavaliação ' + (l.ok ? 'aprovada' : 'não passou') + (l.nota != null ? ' (nota ' + l.nota + ')' : '') + '.'; },
     beta: function(){ return 'Você chegou à Cidade.'; }
   };
+  App.cyLOGT = LOGT;   /* src/79c acrescenta as mensagens das Recompensas */
   function dn(d){ return (CY.DMAP[d] || {n: d}).n; }
   App.cyMsgs = function(n){ return (C().log || []).slice(-(n || 24)).reverse().filter(function(l){ return LOGT[l.k]; }).map(function(l){ return {k: l.k, at: l.at, t: LOGT[l.k](l)}; }); };
   App.cyPhoneInner = function(){

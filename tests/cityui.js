@@ -59,7 +59,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   sec('Janela do Caçador: a janela que abre outras janelas');
   await p.click('.cy-me'); await run(); await sleep(150);
   r = await p.evaluate(() => { const i = document.querySelector('#cyw .cy-hub-ph'); return { w: document.querySelector('#cyw.on .cyw-top').getAttribute('data-w'), tiles: Array.from(document.querySelectorAll('#cyw .cy-tile')).map(t => (t.classList.contains('off') ? '-' : '') + t.querySelector('b').textContent).join('|'), src: i && i.getAttribute('src'), iw: i && i.naturalWidth }; });
-  ok(r.w === 'hub' && r.tiles === 'Perfil do Caçador|Inventário|Celular|-Clãs|-Laços', 'abre com Perfil, Inventário e Celular; Clãs e Laços aparecem trancados (' + r.tiles + ')');
+  ok(r.w === 'hub' && r.tiles === 'Perfil do Caçador|Inventário|Celular|Arsenal|Relíquias|Fundo e vales|Sala de Troféus|-Clãs|-Laços', 'abre com Perfil, Inventário, Celular e as 4 janelas das Recompensas; Clãs e Laços aparecem trancados (' + r.tiles + ')');
   ok(/^img\/eu-perfil\.[0-9a-f]{10}\.webp$/.test(r.src) && r.iw === 480, 'com o seu retrato sem a frase');
   await p.click('#cyw [data-w="perfil"]'); await run();
   r = await p.evaluate(() => ({ w: Array.from(document.querySelectorAll('#cyw .cyw-win')).map(x => x.getAttribute('data-w') + (x.classList.contains('cyw-under') ? '(atrás)' : '')).join(' '), lic: !!document.querySelector('#cyw .cyw-top .cy-lic'), txt: document.querySelector('#cyw .cyw-top').textContent }));

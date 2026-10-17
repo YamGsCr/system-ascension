@@ -97,11 +97,12 @@ const near = (a, b, tol) => Math.abs(a - b) <= tol;
     const base = (id, r, extra) => Object.assign({id, n: id, d: 'piscinas', way: 'aesthetic', rua: 1, r, st: 'open', born: '2026-10-14T11:00:00Z', due: '2026-10-16T11:00:00Z', mods: [], crit: []}, extra || {});
     C.portals = [base('e1', 'E'), base('c1', 'C'), base('c2', 'C', {in: '2026-10-15T00:00:00Z'}), base('d1', 'D', {tranc: true, in: '2026-10-20T10:00:00Z', lock: '2026-10-20T10:45:00Z', due: '2026-10-30T00:00:00Z'})];
     E.cyExpire(C, S, t0);
-    return { open: C.portals.length, corr: C.dist.piscinas.corr, esc: C.inv.mat.escoria, log: C.log.map(l => l.p + ':' + l.k).join(',') };
+    return { open: C.portals.filter(p => !E.cyEsp(p)).length, esp: C.portals.filter(p => E.cyEsp(p)).map(p => E.cyEspKind(p)).sort().join(), corr: C.dist.piscinas.corr, esc: C.inv.mat.escoria, log: C.log.map(l => l.p + ':' + l.k).join(',') };
   });
   ok(r.log.indexOf('e1:sumiu') >= 0 && r.log.indexOf('c1:sumiu') >= 0, 'E vencido some; C em que você nem entrou também some (outra guilda fechou)');
   ok(r.log.indexOf('c2:quebrou') >= 0 && r.log.indexOf('d1:quebrou') >= 0, 'C começado e vencido quebra; Trancado estourado quebra na hora');
   ok(r.corr === 2 && r.esc === 2 && r.open === 0, 'cada quebra corrompe o distrito (+1 nível) e deixa 1 Escória');
+  ok(r.esp === 'cont,cont,rev,rev', 'cada quebra deixa uma Revanche, e cada nível de corrupção abre uma Contenção: ' + r.esp);
 
   sec('pausa do protocolo e Portal do Chamado');
   r = await ev(() => {
@@ -213,7 +214,9 @@ const near = (a, b, tol) => Math.abs(a - b) <= tol;
     const fim = E.cyClose(C, S, pb, {txt, nota: 80, src: 'ia', eco: {n: 'Template de case', tipo: 'template', link: ''}});
     out.bOk = fim.ok && C.lic.pts === 12 && C.dist.biblioteca.closed === 1 && C.ecos.length === 1 && C.ecos[0].r === 'rare' && (S.owned.keys.E || 0) >= 1;
     const pm = mk('m1', 'C', {mods: ['sem_consulta', 'mare_vermelha']}); C.portals.push(pm);
+    const ecos = C.ecos; C.ecos = [];   /* só os modificadores: o bônus dos Ecos tem suíte própria (recompensas) */
     out.qSem = E.cyQR(C, pm, {}).r; out.qCom = E.cyQR(C, pm, {sem_consulta: true}).r; out.qPraga = E.cyQR(C, pm, {}).q;
+    C.ecos = ecos;
     return out;
   });
   ok(r.semPerg === 'perg' && r.comPerg, 'dois ranks acima pede Pergaminho de Permissão; entrar gasta o pergaminho');

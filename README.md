@@ -13,7 +13,7 @@ src/        o código, em arquivos numerados: a ordem alfabética é a ordem de 
   50–63     telas
   64        guarda de sincronização entre aparelhos
   65–68     Zona de Penalidade
-  70–78     Cidade (beta): dados, motor, mapa, tela, catálogo, drop, portais e janelas
+  70–79     Cidade (beta): dados, motor, mapa, tela, catálogo, drop, portais, janelas e recompensas
   99        boot
 assets/img  imagens (retrato do caçador, carregamento, personagens)
 build.py    monta dist/
@@ -49,7 +49,7 @@ node tests/run.js cidade mdev  # só algumas
 O runner roda 2 suítes por vez (`JOBS=n` muda), guarda os logs em `tests/logs/` e sai com erro se alguma falhar.
 O GitHub Actions (`.github/workflows/ci.yml`) faz build e testes a cada push e guarda o `dist/` montado como artefato da execução.
 
-Suítes principais: `catalog` (os 245 modelos de portal), `citymotor` (nascimento, prazos, drop com distribuição, Licença e economia), `cidade` e `cidade2` (a aba, o mapa e jogar na tela), `cityui` (carregamento, apresentação do Ivo, janelas e a tela sem rolar em 6 tamanhos), `split` (build em blocos), `citysave` (o 4º save), `mdev` e `syncrace` (sincronização entre aparelhos), `v14*` (Zona), `v12`/`v13` e as sondas antigas `v2`–`v11`.
+Suítes principais: `catalog` (os 245 modelos de portal), `citymotor` (nascimento, prazos, drop com distribuição, Licença e economia), `cidade` e `cidade2` (a aba, o mapa e jogar na tela), `cityui` (carregamento, apresentação do Ivo, janelas e a tela sem rolar em 6 tamanhos), `recompensas` (caixas, maldições, Fundo e vales, Ecos, Relíquias, Forja, títulos e corrupção), `anistia` (a anistia de 17/10), `split` (build em blocos), `citysave` (o 4º save), `mdev` e `syncrace` (sincronização entre aparelhos), `v14*` (Zona), `v12`/`v13` e as sondas antigas `v2`–`v11`.
 
 ## Saves
 
@@ -60,8 +60,17 @@ O documento `city` só passa a existir quando a Cidade beta é ligada nos Ajuste
 ## A tela da Cidade
 
 O mapa ocupa a área toda, sem rolar: sete bairros encostados, com avenidas entre eles, um rio com pontes e o Centro na praça. Em tela em pé (celular), a mesma cidade gira 90° e os textos continuam de pé.
-Tocar num bairro abre a janela dele por cima, com vinheta. O minimapa no canto é o radar; o botão com a sua foto abre a Janela do Caçador (Perfil, Inventário e Celular).
+Tocar num bairro abre a janela dele por cima, com vinheta. O minimapa no canto é o radar; o botão com a sua foto abre a Janela do Caçador (Perfil, Inventário, Celular, Arsenal, Relíquias, Fundo e vales, Sala de Troféus). A Forja fica no Centro.
 As janelas formam uma pilha: ← ou Esc voltam uma, ✕ ou clicar fora fecham todas. Na primeira vez, o Ivo Lint (Casa de Babel) apresenta a tela; a marca de visto fica no save da Cidade.
+
+## Recompensas da Cidade
+
+- Caixas sempre em par: a Abençoada entrega um item da Lista de Desejos (até 5); a Amaldiçoada entrega o que o Sistema acha que falta e uma de 6 maldições, que dura até cumprir (no máximo 7 dias). A que não foi aberta sussurra o que tinha.
+- Fundo de Recompensas em reais: enche todo mês pelo rank da Licença (editável), aceita depósito e paga os vales. Vale nunca vira dívida; prenda aberta na Zona congela o resgate. O Vale Secreto sorteia da Lista Secreta.
+- Ecos dão +2% de XP e Q na vertente (até +20%), sobem de nível quando invocados e ascendem no 5. Quebra deixa Eco Partido, Revanche e Contenção.
+- Relíquias identificadas vão para os 5 espaços do avatar; 7 únicas. Forja: materiais nos portais (até 3) e 8 receitas.
+- 13 títulos e as molduras da Licença entram no Sistema. Com a Cidade ligada, as chaves custam +50% na loja.
+- Regras e números: `src/70c_city_rewards_data.js`; motor: `79a` e `79b`; janelas: `79c`. Escolhas em `docs/decisoes.md`.
 
 ## Publicação
 
