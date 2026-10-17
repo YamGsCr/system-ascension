@@ -130,7 +130,8 @@ manifest['totalBytes'] = page_bytes + sum(c['bytes'] for c in manifest['chunks']
 write(os.path.join(dist, 'manifest.json'), json.dumps(manifest, ensure_ascii=False, indent=1))
 
 # páginas de teste: na mesma pasta da página, para os caminhos js/ valerem igual
-DOC = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+DOC = ('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+       '<script>window.__TESTPAGE = 1;</script>')   # páginas de teste: o que é só do jogador real (a anistia de 17/10) fica desligado
 with open(os.path.join(root, 'tests', 'mock.js'), encoding='utf8') as fh:
     mock = fh.read()
 test = DOC + '<script>' + mock + '</script></head><body>' + page + '</body></html>'
