@@ -1,18 +1,30 @@
-/* ===== Anistia (pedida em 17/10/2026): as prendas saem e os últimos dias parados viram descanso =====
-   Uma vez só, até 31/10. Na próxima abertura, depois de a nuvem conferir o save e de a Zona julgar o atraso,
-   o Sistema mostra o que encontrou e espera um toque para aplicar:
-   - Zona: a sequência mais recente de faltas vira descanso (como uma trégua), as prendas abertas saem,
-     a multa da sentença ainda não aceita volta e a sequência do Chamado é recontada pelo registro;
-   - Sequência (a chama): os últimos dias sem nada feito ficam protegidos, sem gastar gelo
-     (o gelo já gasto nesses dias volta para o estoque).
-   O registro guarda a anistia em S.pz.anistias. */
+/* ===== Anistias: pedidos feitos no chat, que o próprio app aplica depois de um toque =====
+   Cada pedido vale uma vez, numa janela de datas, e só aparece depois de a nuvem conferir o save e de a Zona julgar o atraso.
+   O Sistema mostra o que encontrou e espera o toque para aplicar.
+   a1 · pedido em 17/10, até 31/10 · foco total no sistema da loja
+     - Zona: a sequência mais recente de faltas vira descanso (como uma trégua), as prendas abertas saem,
+       a multa da sentença ainda não aceita volta e a sequência do Chamado é recontada pelo registro;
+     - Sequência (a chama): os últimos dias sem nada feito ficam protegidos, sem gastar gelo
+       (o gelo já gasto nesses dias volta para o estoque).
+   a2 · pedido em 21/10, de 21/10 até 04/11 · ocupado na hora do chamado
+     - só as prendas abertas das faltas até 21/10 saem; as faltas, a multa e a sequência ficam como estão.
+   O registro guarda cada anistia em S.pz.anistias; a marca de aplicada fica em S.flags (anistia, anistia2). */
 (function(){
-  var ATE = '2026-10-31', PEDIDO = '2026-10-17', MOTIVO = 'foco total no sistema da loja';
+  var PEDIDOS = [
+    {id: 'a1', flag: 'anistia', pedido: '2026-10-17', de: '', ate: '2026-10-31', motivo: 'foco total no sistema da loja'},
+    {id: 'a2', flag: 'anistia2', pedido: '2026-10-21', de: '2026-10-21', ate: '2026-11-04', motivo: 'ocupado na hora do chamado', so: 'prendas'}
+  ];
+  function ped(id){ return PEDIDOS.filter(function(x){ return x.id === id; })[0] || PEDIDOS[0]; }
   function fmt(d){ return d.slice(8, 10) + '/' + d.slice(5, 7); }
 
   /* o que a anistia cobriria agora */
-  App.pzAnPlan = function(){
-    var S = App.S, z = S.pz || {}, t = U.today(), out = {zd: [], pens: [], gem: 0, sd: [], fz: 0, streak: 0, seq: 0};
+  App.pzAnPlan = function(id){
+    var A = ped(id), S = App.S, z = S.pz || {}, t = U.today(), out = {id: A.id, zd: [], pens: [], gem: 0, sd: [], fz: 0, streak: 0, seq: 0};
+    if (A.so === 'prendas') {
+      (z.pens || []).forEach(function(p){ if (p.st === 'open' && (p.f || p.d) <= A.pedido) out.pens.push(p.id); });
+      out.any = !!out.pens.length;
+      return out;
+    }
     if (z.log) {
       var d = (z.log[t] && z.log[t].v === 'miss') ? t : U.addDays(t, -1);
       for (var i = 0; i < 60; i++) {
@@ -54,9 +66,18 @@
     return {seq: seq, clean: clean, best: best};
   }
 
-  App.pzAnApply = function(){
-    var S = App.S, z = S.pz, P = App.pzAnPlan(), t = U.today();
+  App.pzAnApply = function(id){
+    var A = ped(id), S = App.S, z = S.pz, P = App.pzAnPlan(A.id), t = U.today();
     if (!P.any) return null;
+    if (A.so === 'prendas') {
+      var tipos = [];
+      z.pens = z.pens.filter(function(p){ if (P.pens.indexOf(p.id) < 0) return true; tipos.push(p.k); return false; });
+      Object.keys(z.log || {}).forEach(function(d){ var r = z.log[d]; if (r && r.p && P.pens.indexOf(r.p) >= 0) delete r.p; });
+      (z.anistias || (z.anistias = [])).push({at: t, pedido: A.pedido, motivo: A.motivo, so: 'prendas', prendas: P.pens.length, tipos: tipos});
+      S.flags[A.flag] = t;
+      App.commit(['core']);
+      return P;
+    }
     P.zd.forEach(function(d){
       var rec = z.log[d] || (z.log[d] = {});
       rec.v = 'rest'; rec.an = 1; delete rec.p;
@@ -72,53 +93,74 @@
     });
     if (P.fz) { S.owned.freezes = Math.min(SYS.FREEZE_MAX, (S.owned.freezes || 0) + P.fz); S.stats.freezesUsed = Math.max(0, (S.stats.freezesUsed || 0) - P.fz); }
     if (S.streakLost && (S.streakLost.gap || []).every(function(g){ return P.sd.indexOf(g) >= 0; })) S.streakLost = null;
-    (z.anistias || (z.anistias = [])).push({at: t, pedido: PEDIDO, motivo: MOTIVO, zona: P.zd.slice(), prendas: P.pens.length, gem: P.gem, chama: P.sd.slice(), gelo: P.fz});
-    S.flags.anistia = t;
+    (z.anistias || (z.anistias = [])).push({at: t, pedido: A.pedido, motivo: A.motivo, zona: P.zd.slice(), prendas: P.pens.length, gem: P.gem, chama: P.sd.slice(), gelo: P.fz});
+    S.flags[A.flag] = t;
     App.commit(['core']);
     return P;
   };
 
-  /* a oferta: uma vez, até 31/10, depois de a nuvem conferir */
-  function pending(){
-    var S = App.S;
-    if (!S || !S._u || !S.pz || S.flags.anistia || App.ui.anLater || U.today() > ATE) return false;
+  /* a oferta: cada pedido uma vez, dentro da janela dele, depois de a nuvem conferir */
+  function pend(A){
+    var S = App.S, t = U.today();
+    if (!S || !S._u || !S.pz || S.flags[A.flag] || (App.ui.anLater && App.ui.anLater[A.id]) || t > A.ate || (A.de && t < A.de)) return false;
     if (window.__TESTPAGE && !window.__anistia) return false;      /* nas páginas de teste, só quando a suíte pede (tests/anistia.js) */
     if (Store.waking || !Store.settled()) return false;
     return true;
   }
   App.pzAnOffer = function(){
-    if (!pending()) return false;
+    var list = PEDIDOS.filter(pend); if (!list.length) return false;
     if (App.ui.modal && App.ui.modal.type === 'anistia') return true;
     if (App.ui.pz) return false;                                    /* uma tela da Zona já está aberta: o pedido espera ela fechar */
-    var P = App.pzAnPlan();
-    if (!P.any) return false;                                       /* nada a perdoar agora: a oferta continua valendo até o prazo */
-    if (App.ui.modal && !App.ui.modalNext) App.ui.modalNext = App.ui.modal;   /* um level up que estava aberto vem depois */
-    App.ui.modal = {type: 'anistia'}; App.renderModal();
-    return true;
+    for (var i = 0; i < list.length; i++) {
+      if (!App.pzAnPlan(list[i].id).any) continue;                  /* nada a perdoar agora: a oferta continua valendo até o prazo */
+      if (App.ui.modal && !App.ui.modalNext) App.ui.modalNext = App.ui.modal;   /* um level up que estava aberto vem depois */
+      App.ui.modal = {type: 'anistia', id: list[i].id}; App.renderModal();
+      return true;
+    }
+    return false;
   };
   /* a sentença da Zona espera a decisão sobre a anistia */
   var oldPresent = App.pzPresent;
   App.pzPresent = function(){ if (App.pzAnOffer()) return; return oldPresent.apply(this, arguments); };
 
   function span(list){ var a = list.slice().sort(); return a.length === 1 ? fmt(a[0]) : fmt(a[0]) + ' a ' + fmt(a[a.length - 1]); }
-  App.M.anistia = function(){
-    var P = App.pzAnPlan(), rows = [];
+  App.M.anistia = function(m){
+    var A = ped(m && m.id), P = App.pzAnPlan(A.id), rows = [], fim;
     if (!P.any) return '';
-    if (P.zd.length) rows.push(['gate', '<b>' + P.zd.length + (P.zd.length === 1 ? ' falta' : ' faltas seguidas') + ' na Zona</b> (' + span(P.zd) + ') viram descanso. A sequência do Chamado volta a ' + P.seq + '.']);
-    if (P.pens.length) rows.push(['scroll', '<b>' + P.pens.length + (P.pens.length === 1 ? ' prenda sai' : ' prendas saem') + '</b> da Zona.']);
-    if (P.gem) rows.push(['gem', '<b>' + P.gem + ' ◆</b> de multa voltam para o saldo.']);
-    if (P.sd.length) rows.push(['flame', '<b>' + P.sd.length + (P.sd.length === 1 ? ' dia sem nada' : ' dias sem nada') + '</b> (' + span(P.sd) + ') ficam protegidos: a chama segue com ' + P.streak + ' dias' + (P.fz ? ', e ' + P.fz + (P.fz === 1 ? ' gelo gasto volta' : ' gelos gastos voltam') + ' para o estoque' : '') + '.']);
+    if (A.so === 'prendas') {
+      P.pens.forEach(function(id){
+        var p = App.S.pz.pens.filter(function(x){ return x.id === id; })[0]; if (!p) return;
+        var k = SYS.PZ.KINDS.filter(function(x){ return x.id === p.k; })[0] || {n: p.k, ic: 'scroll'};
+        rows.push([k.ic || 'scroll', '<b>' + U.esc(k.n) + '</b> · falta de ' + fmt(p.f || p.d) + (p.over ? ' · vencida' : '') + ': sai da Zona.']);
+      });
+      fim = 'Vale uma vez, até ' + fmt(A.ate) + '. As faltas e a multa continuam no registro; só as prendas saem. Num dia cheio, a trégua ou o descanso declarado antes de o portão abrir evitam a prenda.';
+    } else {
+      if (P.zd.length) rows.push(['gate', '<b>' + P.zd.length + (P.zd.length === 1 ? ' falta' : ' faltas seguidas') + ' na Zona</b> (' + span(P.zd) + ') viram descanso. A sequência do Chamado volta a ' + P.seq + '.']);
+      if (P.pens.length) rows.push(['scroll', '<b>' + P.pens.length + (P.pens.length === 1 ? ' prenda sai' : ' prendas saem') + '</b> da Zona.']);
+      if (P.gem) rows.push(['gem', '<b>' + P.gem + ' ◆</b> de multa voltam para o saldo.']);
+      if (P.sd.length) rows.push(['flame', '<b>' + P.sd.length + (P.sd.length === 1 ? ' dia sem nada' : ' dias sem nada') + '</b> (' + span(P.sd) + ') ficam protegidos: a chama segue com ' + P.streak + ' dias' + (P.fz ? ', e ' + P.fz + (P.fz === 1 ? ' gelo gasto volta' : ' gelos gastos voltam') + ' para o estoque' : '') + '.']);
+      fim = 'Vale uma vez, até ' + fmt(A.ate) + '. O registro da Zona guarda a anistia. Daqui para frente, as regras de sempre: trégua, descanso declarado e pausa para viagem.';
+    }
     return '<section class="win"><div class="win-h">' + U.icon('seal') + '[Sistema] Pedido de anistia</div><div class="stack" style="gap:12px">'
-      + '<p class="dim" style="font-size:13.5px">Pedido em ' + fmt(PEDIDO) + '. Motivo: ' + MOTIVO + '. O Sistema conferiu o registro e encontrou:</p>'
+      + '<p class="dim" style="font-size:13.5px">Pedido em ' + fmt(A.pedido) + '. Motivo: ' + A.motivo + '. O Sistema conferiu o registro e encontrou:</p>'
       + '<ul class="list plain">' + rows.map(function(r){ return '<li><span class="row" style="gap:10px;flex-wrap:nowrap;align-items:flex-start">' + U.icon(r[0]) + '<span>' + r[1] + '</span></span></li>'; }).join('') + '</ul>'
-      + '<p class="faint" style="font-size:12.5px">Vale uma vez, até ' + fmt(ATE) + '. O registro da Zona guarda a anistia. Daqui para frente, as regras de sempre: trégua, descanso declarado e pausa para viagem.</p>'
-      + '<div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="pzAnLater">Agora não</button><button class="btn primary" data-a="pzAnOk">' + U.icon('check') + 'Aplicar a anistia</button></div></div></section>';
+      + '<p class="faint" style="font-size:12.5px">' + fim + '</p>'
+      + '<div class="row" style="justify-content:flex-end"><button class="btn ghost" data-a="pzAnLater" data-id="' + A.id + '">Agora não</button><button class="btn primary" data-a="pzAnOk" data-id="' + A.id + '">' + U.icon('check') + 'Aplicar a anistia</button></div></div></section>';
   };
-  App.A.pzAnOk = function(){
-    var P = App.pzAnApply(); App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal();
-    if (P) App.toast({t: '[Sistema] Anistia aplicada', s: [P.zd.length ? P.zd.length + ' faltas viraram descanso' : '', P.pens.length ? P.pens.length + ' prendas retiradas' : '', P.sd.length ? 'chama protegida (' + P.streak + ' dias)' : ''].filter(Boolean).join(' · ') + '.', ic: 'seal', ms: 8000});
+  function idOf(el){ return (el && el.getAttribute && el.getAttribute('data-id')) || (App.ui.modal && App.ui.modal.id) || 'a1'; }
+  App.A.pzAnOk = function(el){
+    var A = ped(idOf(el)), P = App.pzAnApply(A.id);
+    App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal();
+    if (P) App.toast(A.so === 'prendas'
+      ? {t: '[Sistema] Anistia aplicada', s: P.pens.length + (P.pens.length === 1 ? ' prenda retirada da Zona.' : ' prendas retiradas da Zona.'), ic: 'seal', ms: 8000}
+      : {t: '[Sistema] Anistia aplicada', s: [P.zd.length ? P.zd.length + ' faltas viraram descanso' : '', P.pens.length ? P.pens.length + ' prendas retiradas' : '', P.sd.length ? 'chama protegida (' + P.streak + ' dias)' : ''].filter(Boolean).join(' · ') + '.', ic: 'seal', ms: 8000});
     if (App.pzPaint) App.pzPaint();
     if (App.pzPresent) App.pzPresent();
   };
-  App.A.pzAnLater = function(){ App.ui.anLater = true; App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal(); if (App.pzPresent) App.pzPresent(); };
+  App.A.pzAnLater = function(el){
+    var L = App.ui.anLater && typeof App.ui.anLater === 'object' ? App.ui.anLater : {};
+    L[idOf(el)] = true; App.ui.anLater = L;
+    App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal();
+    if (App.pzPresent) App.pzPresent();
+  };
 })();

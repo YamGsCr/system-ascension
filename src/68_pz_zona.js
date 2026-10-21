@@ -67,9 +67,10 @@ App.pzCard = function(p){
   } else if (p.k === 'banca') {
     var n = E.NODE[b.node];
     body = (n ? '<p>Capítulo sorteado: <b>' + U.esc(n.id + ' · ' + App.chapNode(n).t) + '</b></p><div class="row" style="gap:8px">' + H.wayChip(n.way) + '<button class="btn sm" data-a="openNode" data-id="' + n.id + '">' + U.icon('scroll') + 'Abrir o capítulo</button></div>' : '<p class="dim">O capítulo sorteado não existe mais. Explique qualquer capítulo que você concluiu.</p>')
-      + '<p class="dim" style="font-size:13.5px">Explique como se ensinasse alguém inteligente de fora da área — incluindo quando isso dá errado. Colar definição não passa.</p>'
+      + '<p class="dim" style="font-size:13.5px">' + App.PZ_BANCA.pedido + '</p>'
       + App.pzArea(p, 't', 'Com as suas palavras, com exemplo e com o modo de falha', 400, 8)
-      + (ai && n ? '' : App.pzCrit(p, ['KNOW — expliquei sem consultar, com exemplo e limites', 'DECIDE — comparei alternativas e justifiquei', 'FAIL — descrevi como falha, como detecto e como recupero', 'TEACH — um leigo inteligente entenderia']));
+      + (ai && n ? '<p class="faint" style="font-size:12.5px">O Examinador avalia só este resumo: ' + App.PZ_BANCA.crit.map(function(c){ return '<b>' + c[0] + '</b> ' + c[1]; }).join('; ') + '. Não cobra a missão do capítulo, o entregável nem ferramentas.</p>'
+        : App.pzCrit(p, App.PZ_BANCA.crit.map(function(c){ return c[0] + ' — ' + c[2]; })));
     foot = '<span></span>' + (ai && n ? '<button class="btn primary" data-a="pzGrade" data-id="' + id + '"' + (busy ? ' disabled' : '') + '>' + U.icon('oracle') + 'Entregar ao Examinador</button>' : '<button class="btn primary" data-a="pzPay" data-id="' + id + '">' + U.icon('check') + 'Entregar</button>');
   } else if (p.k === 'autopsia') {
     body = '<p class="dim" style="font-size:13.5px">Causa, não culpa. O objetivo é consertar o sistema que te fez faltar, não se punir por ter faltado.</p>'
@@ -215,11 +216,31 @@ App.pzGen = function(id, silent){
 };
 App.pzTypingIn = function(id){ var a = document.activeElement, card = document.getElementById('pen-' + id); return !!(a && card && card.contains(a) && (a.tagName === 'TEXTAREA' || a.tagName === 'INPUT')); };
 App.A.pzGenBtn = function(el){ App.pzGen(el.getAttribute('data-id'), false); };
+/* banca: o Examinador julga pelo mesmo pedido que aparece na tela. A ficha do capítulo entra só como referência
+   (resumo, tópicos e modos de falha); a missão prática, o entregável, o teach-back próprio do capítulo e as ferramentas ficam de fora */
+App.PZ_BANCA = {
+  pedido: 'Explique como se ensinasse alguém inteligente de fora da área — incluindo quando isso dá errado. Colar definição não passa.',
+  crit: [['KNOW', 'explica com palavras suas, com um exemplo e os limites', 'expliquei sem consultar, com exemplo e limites'],
+    ['DECIDE', 'mostra pelo menos uma escolha ou troca (o que se ganha e o que se perde)', 'mostrei uma escolha ou troca e justifiquei'],
+    ['FAIL', 'conta como dá errado, como perceber e como corrigir', 'contei como dá errado, como percebo e como corrijo'],
+    ['TEACH', 'um leigo inteligente entenderia, sem jargão solto', 'um leigo inteligente entenderia']]
+};
+App.pzBancaPrompt = function(n, txt){
+  var w = App.way(n.way), arc = E.arcOf(n), t = (App.chapNode ? App.chapNode(n) : n).t;
+  var ctx = '=== BANCA DA ZONA DE PENALIDADE ===\nO pedido mostrado ao jogador foi exatamente: "' + App.PZ_BANCA.pedido + '"\n'
+    + 'É um resumo geral do capítulo para um leigo inteligente, escrito sem consulta. Não é a entrega da quest do capítulo: não cobre a missão prática, o entregável, o cliente ou a persona da missão, ferramentas, técnicas nem nomes de autores, e não exija passar por todos os tópicos. '
+    + 'Termos da área valem quando o próprio texto os explica. Analogias e exemplos do dia a dia contam a favor. Erro de digitação só pesa se atrapalhar o entendimento.\n'
+    + 'Julgue só o que foi pedido: ' + App.PZ_BANCA.crit.map(function(c){ return c[0] + ' (' + c[1] + ')'; }).join('; ') + '. DECIDE pode aparecer dentro de um exemplo.\n\n'
+    + 'CAMINHO: ' + w.name + '\nARCO: ' + arc.n + '\nCAPÍTULO: ' + n.id + ' — ' + t + '\nRESUMO: ' + n.s
+    + '\nTÓPICOS DO CAPÍTULO (referência para conferir se o que ele diz está certo, não lista de presença): ' + (n.st || []).join('; ')
+    + '\nCOMO O TEMA DÁ ERRADO NA PRÁTICA (referência): ' + (n.f || '');
+  return App.examGradePrompt({text: ctx}, {mode: 'teach', text: txt});
+};
 App.A.pzGrade = function(el){
   var id = el.getAttribute('data-id'), p = App.pzPen(id); if (!p || p.st !== 'open' || !App.pzAI() || App.ui.pzBusy[id]) return;
   var txt = ((p.dr || {}).t || '').trim(), min = p.k === 'banca' ? 400 : 600, pass = p.k === 'banca' ? 70 : 65, prompt;
   if (txt.length < min) { App.ui.pzErr[id] = 'Mínimo de ' + min + ' caracteres. Faltam ' + (min - txt.length) + '.'; App.renderView(); return; }
-  prompt = p.k === 'banca' ? App.examGradePrompt(App.examCtx({kind:'node', id:p.body.node}), {mode:'teach', text:txt}) : App.pzPromptGrade(p, txt);
+  prompt = p.k === 'banca' ? App.pzBancaPrompt(E.NODE[p.body.node], txt) : App.pzPromptGrade(p, txt);
   App.ui.pzBusy[id] = 'grade'; delete App.ui.pzErr[id]; delete App.ui.pzRes[id]; App.renderView();
   App.sample.json(prompt, {cache:false}).then(function(raw){
     var q = App.pzPen(id); if (!q || q.st !== 'open') return;

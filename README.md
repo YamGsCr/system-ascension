@@ -49,7 +49,7 @@ node tests/run.js cidade mdev  # só algumas
 O runner roda 2 suítes por vez (`JOBS=n` muda), guarda os logs em `tests/logs/` e sai com erro se alguma falhar.
 O GitHub Actions (`.github/workflows/ci.yml`) faz build e testes a cada push e guarda o `dist/` montado como artefato da execução.
 
-Suítes principais: `catalog` (os 245 modelos de portal), `citymotor` (nascimento, prazos, drop com distribuição, Licença e economia), `cidade` e `cidade2` (a aba, o mapa e jogar na tela), `cityui` (carregamento, apresentação do Ivo, janelas e a tela sem rolar em 6 tamanhos), `recompensas` (caixas, maldições, Fundo e vales, Ecos, Relíquias, Forja, títulos e corrupção), `anistia` (a anistia de 17/10), `split` (build em blocos), `citysave` (o 4º save), `mdev` e `syncrace` (sincronização entre aparelhos), `v14*` (Zona), `v12`/`v13` e as sondas antigas `v2`–`v11`.
+Suítes principais: `catalog` (os 245 modelos de portal), `citymotor` (nascimento, prazos, drop com distribuição, Licença e economia), `cidade` e `cidade2` (a aba, o mapa e jogar na tela), `cityui` (carregamento, apresentação do Ivo, janelas e a tela sem rolar em 6 tamanhos), `recompensas` (caixas, maldições, Fundo e vales, Ecos, Relíquias, Forja, títulos e corrupção), `anistia` (as anistias de 17/10 e 21/10 e a banca da Zona), `split` (build em blocos), `citysave` (o 4º save), `mdev` e `syncrace` (sincronização entre aparelhos), `v14*` (Zona), `v12`/`v13` e as sondas antigas `v2`–`v11`.
 
 ## Saves
 
