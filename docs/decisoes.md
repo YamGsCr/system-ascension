@@ -54,3 +54,6 @@ Quando uma resposta em aberto for dada, ela entra aqui e no `CONF`.
 | Memória | O modelo devolve, a cada resposta, o que ela sabe dele (até 600 caracteres). Só as 10 últimas mensagens vão no prompt. |
 | Afinidade | Começa em 20 com a Alpha e 10 com as outras; cada resposta mexe ±2. Por enquanto só aparece; os efeitos ficam para os blocos de projetos. |
 | Convocação | Aparece uma vez por sessão, depois dos pedidos da Zona e do level up; "agora não" adia 3 dias. |
+| Fichas | Calibradas em nov/2026 com a wiki da Fandom (Beta, Gamma, Zeta; as outras páginas não abriram), TV Tropes, Wikipedia e MyAnimeList, resumidas com palavras próprias: fachada, tom, como fala, manias, relações no Garden, trato com o agente e limites. Manias entram no prompt com a regra de usar no máximo uma por resposta. |
+| Romance | A devoção de cada uma é ao mestre Shadow; com o agente a relação é de trabalho, nunca romântica. |
+| Limites por ficha | Delta nunca manda treino que machuca nem pula descanso; Eta nunca incentiva cortar sono ou risco à saúde; Gamma nunca sugere golpe ou enganar cliente. |

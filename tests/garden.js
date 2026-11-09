@@ -113,6 +113,10 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
   ok(r.sig === 8, 'cada uma com o seu sigilo (os retratos entram quando chegarem)');
   ok(new RegExp('Número ' + num).test(r.agent) && /contato direta: Alpha/.test(r.agent) && /deus ex machina/.test(r.agent) && /nem nos Melhores Amigos/.test(r.agent), 'a ficha do agente: número, contato, missão e sigilo');
   ok(/Respostas de IA hoje: 0 de 20/.test(r.view), 'o contador de respostas de IA do dia');
+  r = await p.evaluate(() => SYS.SG.MEMBROS.filter(M => !(M.fala && M.voz && M.agente && M.nunca && M.manias.length >= 3 && M.rel.length >= 3 && ['ola', 'falta', 'cumpriu', 'sumiu', 'semIA'].every(k => (M.falas[k] || []).length > 0))).map(M => M.id));
+  ok(r.length === 0, 'as 7 fichas calibradas estão completas: tom, como fala, manias, relações, trato com o agente, limites e falas prontas' + (r.length ? ' (faltando: ' + r.join(',') + ')' : ''));
+  r = await p.evaluate(() => SYS.SG.MAP.delta.falas);
+  ok(Object.keys(r).every(k => r[k].every(t => /Delta/.test(t))), 'a Delta fala de si mesma na terceira pessoa em todas as falas prontas');
 
   sec('o canal: saudação pronta');
   const before = await p.evaluate(() => window.__mock.samples.length);
@@ -138,6 +142,8 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
   ok(/=== NOVA MENSAGEM DO AGENTE ===\nRelatório de hoje: estudei 2 horas de redes\./.test(P), 'e a mensagem do agente');
   ok(/Nunca critique descanso declarado/.test(P) && /saia do jogo/.test(P) && /não repita falas, bordões nem cenas/.test(P) && /Nunca invente dados/.test(P), 'com as regras da técnica, da saída do jogo, da obra e dos dados');
   ok(new RegExp('Número ' + num + '\\. Veio da Terra').test(P) && /Contato direta dele no Garden: Alpha/.test(P) && /Intensidade que ele pediu: padrao/.test(P), 'e com a ficha do agente');
+  ok(/Fachada pública/.test(P) === false && /Como fala: frases curtas e completas/.test(P) && /Manias \(no máximo uma por resposta, só quando couber\): trabalha além da conta/.test(P), 'a ficha calibrada vai no prompt: como fala e manias com moderação');
+  ok(/No Garden: lealdade absoluta ao mestre Shadow/.test(P) && /a Delta só obedece a ela e ao mestre/.test(P) && /Nunca: perder a compostura/.test(P) && /nunca romântica/.test(P), 'as relações no Garden, os limites dela e a regra de que com o agente é trabalho, nunca romance');
   c = await canal(p, 'alpha');
   s = await st(p);
   ok(c.n === 3 && c.last.de === 'alpha' && /qual é a entrega de hoje/.test(c.last.t) && c.last.h === 'neutra', 'a resposta chega no canal');
@@ -200,6 +206,8 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
   await p.fill('.sg-input textarea', 'oi, Beta'); await p.click('.sg-input [data-a="sgSend"]'); await run(p, 600);
   const P2 = await p.evaluate(() => window.__mock.sg || '');
   ok(/Você interpreta Beta/.test(P2) && new RegExp('Noctis \\(Número ' + num + '\\)').test(P2) && /Contato direta dele no Garden: Zeta/.test(P2) && /Intensidade que ele pediu: pesada \(provoque forte/.test(P2), 'o prompt muda junto: Beta, Noctis, contato Zeta, intensidade pesada');
+  ok(/Fachada pública: Natsume Kafka/.test(P2) && /rivalidade secreta com a Epsilon/.test(P2) && /cobaia favorita da Eta/.test(P2), 'a Beta leva a fachada de romancista e as relações dela (Epsilon, Eta)');
+  ok(await p.evaluate(() => { const d = document.querySelector('.sg-ficha'); return !!d && !d.open && /Ficha de Beta/.test(d.textContent) && /Natsume Kafka/.test(d.textContent) && d.querySelectorAll('li').length >= 8; }), 'o canal traz a ficha dela, recolhida');
   ok(/AGENTE: oi, Beta/.test(P2) === false && /=== CONVERSA RECENTE ===\nBETA: /.test(P2), 'a conversa recente vai no prompt (a saudação dela), e a mensagem nova só no fim');
 
   sec('não lidas');

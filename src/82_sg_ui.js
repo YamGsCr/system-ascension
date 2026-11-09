@@ -187,12 +187,22 @@
     var last = G().canal[id].m.filter(function(x){ return x.de === id && x.h; }).slice(-1)[0];
     return last && last.h !== 'neutra' ? '<span class="chip">' + U.esc(last.h) + '</span>' : '';
   }
+  /* a ficha dela, recolhida: o mesmo material que vai no prompt */
+  function fichaHTML(M){
+    var li = function(a){ return '<ul>' + (a || []).map(function(x){ return '<li>' + U.esc(x) + '</li>'; }).join('') + '</ul>'; };
+    return '<details class="sg-ficha"><summary>Ficha de ' + M.n + '</summary><dl class="cy-rdlist">'
+      + (M.fachada ? '<dt>Fachada</dt><dd>' + U.esc(M.fachada) + '</dd>' : '')
+      + '<dt>Tom</dt><dd>' + U.esc(M.voz) + '</dd><dt>Como fala</dt><dd>' + U.esc(M.fala) + '</dd>'
+      + '<dt>Manias</dt><dd>' + li(M.manias) + '</dd><dt>No Garden</dt><dd>' + li(M.rel) + '</dd>'
+      + '<dt>Com você</dt><dd>' + U.esc(M.agente) + '</dd></dl></details>';
+  }
   function canal(id){
     var g = G(), M = SG.MAP[id], w = App.way(M.way);
     var draft = (App.ui.sgDraft || {})[id] || '', busy = !!App.ui.sgBusy;
     return '<section class="win sg-canal" style="--sc:' + M.cor + '"><div class="sg-canal-h"><a class="iconbtn" href="#/garden" aria-label="Voltar ao conselho">' + U.icon('back') + '</a>' + App.sgFace(id, 44)
       + '<div class="stack" style="gap:3px;min-width:0"><b class="sg-nome">' + M.n + '</b><span class="faint" style="font-size:12.5px">' + U.esc(M.papel) + '</span></div>'
       + '<div class="row" style="gap:6px;margin-left:auto">' + wayChip(w) + '<span id="sgHumor">' + humorHTML(id) + '</span></div></div>'
+      + fichaHTML(M)
       + '<div class="sg-chat" id="sgChat" aria-live="polite">' + chatHTML(id) + '</div>'
       + '<div class="sg-quick">' + [['relatorio', 'Relatório de hoje'], ['tarefa', 'Me dá uma tarefa'], ['desabafo', 'Hoje tá difícil']].map(function(q){ return '<button class="chip" data-a="sgQuick" data-id="' + id + '" data-q="' + q[0] + '">' + q[1] + '</button>'; }).join('') + '</div>'
       + '<div class="sg-input"><textarea data-i="sgDraft" data-id="' + id + '" rows="2" maxlength="' + SG.TXT_MAX + '" placeholder="Mensagem para ' + M.n + ' (Enter envia, Shift+Enter quebra a linha)">' + U.esc(draft) + '</textarea>'

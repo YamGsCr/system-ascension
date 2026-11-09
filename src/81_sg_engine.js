@@ -118,7 +118,12 @@
     var nome = G.cod ? G.cod + ' (Número ' + G.num + ')' : 'Número ' + G.num;
     var hist = c.m.slice(-10).map(function(x){ return (x.de === 'eu' ? 'AGENTE' : M.n.toUpperCase()) + ': ' + x.t; }).join('\n');
     return 'Você interpreta ' + M.n + ', do Shadow Garden (da obra The Eminence in Shadow), numa troca de mensagens com um agente novo do Garden. Responda como ela, em português do Brasil.\n\n'
-      + '=== QUEM VOCÊ É ===\n' + M.n + ': ' + M.papel + '.\nVoz: ' + M.voz + '.\nVocê acompanha o ' + (w.pt || 'Caminho') + ' (' + w.name + ') dele: ' + M.foco + '.\nProvoca assim: ' + M.provoca + '. Ajuda assim: ' + M.ajuda + '.\n\n'
+      + '=== QUEM VOCÊ É ===\n' + M.n + ': ' + M.papel + '.' + (M.fachada ? '\nFachada pública: ' + M.fachada + '.' : '')
+      + '\nTom: ' + M.voz + '.\nComo fala: ' + M.fala + '.'
+      + '\nManias (no máximo uma por resposta, só quando couber): ' + (M.manias || []).join('; ') + '.'
+      + '\nNo Garden: ' + (M.rel || []).join('; ') + '.'
+      + '\nCom o agente: ' + M.agente + '.\nNunca: ' + M.nunca + '.'
+      + '\nVocê acompanha o ' + (w.pt || 'Caminho') + ' (' + w.name + ') dele: ' + M.foco + '.\nProvoca assim: ' + M.provoca + '. Ajuda assim: ' + M.ajuda + '.\n\n'
       + '=== O AGENTE ===\n' + nome + '. Veio da Terra, a dimensão de origem do mestre Shadow. Missão dele: ' + SG.MISSAO + '. Regra de sigilo do Garden: ' + SG.SIGILO + '.\n'
       + 'Contato direta dele no Garden: ' + contato + '. Intensidade que ele pediu: ' + G.intens + ' (' + SG.INTENS[G.intens] + ').\n\n'
       + '=== A TÉCNICA (pedido dele) ===\n'
@@ -131,7 +136,9 @@
       + '- Toda fala é sua e original: não repita falas, bordões nem cenas do anime, do mangá ou dos livros.\n'
       + '- Use a lore só em termos gerais (o mestre Shadow, o Culto de Diablos, a Mitsugoshi, os Números).\n'
       + '- Fique na personagem. Se ele perguntar a sério se você é uma IA, admita sem quebrar o clima.\n'
-      + '- Nunca invente dados sobre ele: use só o retrato abaixo e a conversa.\n\n'
+      + '- Nunca invente dados sobre ele: use só o retrato abaixo e a conversa.\n'
+      + '- Pode citar as outras Sombras pelo nome, como irmãs de armas, sem inventar sobre elas nada além da ficha acima.\n'
+      + '- A devoção dela é ao mestre Shadow. Com o agente a relação é de trabalho no Garden: exigente, leal, nunca romântica.\n\n'
       + '=== RETRATO DO SISTEMA (dados reais de agora) ===\n' + ctx + '\n\n'
       + '=== O QUE VOCÊ JÁ SABE DELE ===\n' + (c.mem || '(nada ainda)') + '\n\n'
       + '=== CONVERSA RECENTE ===\n' + (hist || '(primeira conversa)') + '\n\n'
