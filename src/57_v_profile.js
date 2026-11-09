@@ -33,8 +33,9 @@ App.V.perfil = function(){
     + '<label class="fld" style="margin:4px 0 6px">Hora do reset diário (o dia do Sistema vira nesse horário)<select data-c="pReset">'+[4,5,6,7,8,9,10].map(function(h){ return '<option value="'+h+'"'+(+S.settings.resetHour === h ? ' selected' : '')+'>'+String(h).padStart(2,'0')+':00'+(h === 8 ? ' (padrão)' : '')+'</option>'; }).join('')+'</select></label>'
     + '<label class="check"><input type="checkbox" data-c="pMotion"'+(S.settings.motion ? ' checked' : '')+'><span><b>Animações</b><br><span class="dim" style="font-size:13.5px">Janelas do Sistema “materializando”, brilhos e molduras animadas.</span></span></label>'
     + '<label class="check"><input type="checkbox" data-c="pCity"'+(S.settings.cityBeta ? ' checked' : '')+'><span><b>Cidade (beta)</b><br><span class="dim" style="font-size:13.5px">Liga a aba Cidade: portais nascem todo dia nos 7 distritos, com prazo, drop e Licença de Caçador. Desligada, a Cidade congela: nada vence nem quebra.</span></span></label>'
+    + '<label class="check"><input type="checkbox" data-c="pSombras"'+(S.settings.sombras ? ' checked' : '')+'><span><b>Visão de Ascensão das Sombras</b><br><span class="dim" style="font-size:13.5px">Veste o app com a atmosfera do Shadow Garden e abre a aba do conselho. Desligar devolve o Sistema de sempre; nada do Garden se perde.</span></span></label>'
     + '<p class="faint mono" style="font-size:11.5px;margin-top:6px">Início no Sistema: '+U.fmtDate(S.start)+' · principais desde '+U.fmtDate(S.settings.season.start)+'</p></div></section>';
-  var sizes = Store.DOCS.map(function(k){ var n = JSON.stringify(App.docs()[k]).length; return '<div class="stack" style="gap:3px"><div class="row between mono" style="font-size:11.5px"><span>'+{core:'Progresso',journal:'Diário & Mundo Aberto',notes:'Notas das quests',city:'Cidade'}[k]+'</span><span class="dim">'+Math.round(n/1024)+' KB / '+Math.round(Store.LIMIT/1000)+' KB</span></div>'+H.bar(U.pct(n, Store.LIMIT), n > 200000 ? 'warnbar thin' : 'thin')+'</div>'; }).join('');
+  var sizes = Store.DOCS.map(function(k){ var n = JSON.stringify(App.docs()[k]).length; return '<div class="stack" style="gap:3px"><div class="row between mono" style="font-size:11.5px"><span>'+({core:'Progresso',journal:'Diário & Mundo Aberto',notes:'Notas das quests',city:'Cidade'}[k] || Store.LABEL[k] || k)+'</span><span class="dim">'+Math.round(n/1024)+' KB / '+Math.round(Store.LIMIT/1000)+' KB</span></div>'+H.bar(U.pct(n, Store.LIMIT), n > 200000 ? 'warnbar thin' : 'thin')+'</div>'; }).join('');
   var save = '<section class="win"><div class="win-h">'+U.icon('cloud')+'Save</div><div class="stack" style="gap:10px"><p id="syncbox" style="font-size:14px">'+App.syncDetail()+'</p>'+sizes
     + '<div class="row"><button class="btn" data-a="exportSave">'+U.icon('download')+'Exportar save (.json)</button><button class="btn" data-a="importSave">'+U.icon('upload')+'Importar save</button></div>'
     + '<div class="hr"></div><div class="row between"><span class="dim" style="font-size:13.5px">Recomeçar do zero apaga progresso, diário, notas e a Cidade.</span><button class="btn sm danger" data-a="resetOpen">'+U.icon('trash')+'Resetar Sistema</button></div></div></section>';
@@ -53,7 +54,7 @@ App.A.scMove = function(el){ var sc = App.S.profile.showcase, i = +el.getAttribu
 App.A.scRm = function(el){ App.S.profile.showcase.splice(+el.getAttribute('data-i2'), 1); App.commit(['core']); };
 
 /* ---------- save: exportar, importar, resetar ---------- */
-App.saveJSON = function(){ return JSON.stringify({app:'system-ascension', v:2, exportedAt:new Date().toISOString(), core:App.S, journal:App.J, notes:App.N, city:App.city}, null, 1); };
+App.saveJSON = function(){ return JSON.stringify({app:'system-ascension', v:2, exportedAt:new Date().toISOString(), core:App.S, journal:App.J, notes:App.N, city:App.city, sg:App.sg}, null, 1); };
 App.A.exportSave = function(){
   var data = App.saveJSON(), name = 'system-ascension-save-' + U.today() + '.json';
   if (App.downloads && App.downloads.save) {
@@ -88,8 +89,9 @@ App.A.importDo = function(){
   var m = App.ui.modal; if (!m || !m.data) return; var o = m.data;
   App.S = E.fill(o.core, E.newState()); App.J = E.fill(o.journal && typeof o.journal === 'object' ? o.journal : E.newJournal(), E.newJournal()); App.N = E.fill(o.notes && typeof o.notes === 'object' ? o.notes : E.newNotes(), E.newNotes());
   App.city = E.cityFill(o.city && typeof o.city === 'object' ? o.city : E.newCity()); App.ui.cy = null;
+  if (E.sgFill) App.sg = E.sgFill(o.sg && typeof o.sg === 'object' ? o.sg : E.newSg());
   App.ui.modal = null; E.checkAch(App.S, App.J); App.D = E.derive(App.S, App.J);
-  App.commit(['core','journal','notes','city'], {quiet:true});
+  App.commit(['core','journal','notes','city'].concat(App.sg ? ['sg'] : []), {quiet:true});
   App.toast({t:'Save importado', s:'Bem-vindo de volta, '+H.pname()+'.', ic:'upload'});
 };
 App.A.resetOpen = function(){ App.ui.modal = {type:'reset', txt:''}; App.renderModal(); };
@@ -99,8 +101,8 @@ App.M.reset = function(m){
 App.I.resetTxt = function(el){ if (!App.ui.modal) return; App.ui.modal.txt = el.value.trim().toUpperCase(); var b = App.$('modal').querySelector('[data-a="resetDo"]'); if (b) b.disabled = App.ui.modal.txt !== 'RESETAR'; };
 App.A.resetDo = function(){
   if (!App.ui.modal || App.ui.modal.txt !== 'RESETAR') return;
-  App.S = E.newState(); App.J = E.newJournal(); App.N = E.newNotes(); App.city = E.cityFill(E.newCity()); App.ui.modal = null; App.ui.f = {}; App.ui.cy = null;
-  App.D = E.derive(App.S, App.J); App.commit(['core','journal','notes','city'], {quiet:true}); App.go('status');
+  App.S = E.newState(); App.J = E.newJournal(); App.N = E.newNotes(); App.city = E.cityFill(E.newCity()); if (E.sgFill) App.sg = E.sgFill(E.newSg()); App.ui.modal = null; App.ui.f = {}; App.ui.cy = null;
+  App.D = E.derive(App.S, App.J); App.commit(['core','journal','notes','city'].concat(App.sg ? ['sg'] : []), {quiet:true}); App.go('status');
   App.toast({t:'Sistema reiniciado', s:'Nível 1 de novo. O NPC voltou. Bora.', ic:'sparkle'});
 };
 

@@ -36,6 +36,7 @@ CHUNKS = [
     ('sync', '64_'),
     ('zona', '65_'),
     ('cidade', '70_'),
+    ('garden', '80_'),
     ('boot', '99_'),
 ]
 PAGE_LIMIT = 200000      # a página em si não pode voltar a engordar: o peso vai para os blocos

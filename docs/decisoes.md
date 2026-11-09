@@ -42,3 +42,15 @@ Pontos em que a Bíblia depende de um sistema que ainda não existe. Ficaram ass
 | Retratos e cenas | A aba existe na Sala de Troféus e abre com as Facções e os Laços. |
 
 Quando uma resposta em aberto for dada, ela entra aqui e no `CONF`.
+
+## Escolhas do Shadow Garden (SG0 a SG4)
+
+| Tema | Como ficou |
+|---|---|
+| Uma chave só | `settings.sombras` liga a atmosfera e a aba juntas. As funções do Sistema não mudam de nome, só a voz e o visual. |
+| Número do agente | Tirado do save (criação e início), igual em todo aparelho; nunca 559, 664, 665 ou 666. |
+| Obra | Nomes e lore só em termos gerais. Toda fala pronta é escrita do zero e o prompt proíbe repetir falas, bordões e cenas. Sigilos originais (letras gregas em moldura) até os retratos chegarem. |
+| IA | Cada resposta custa uma chamada (perto de 3 mil tokens). Padrão de 20 por dia (10 a 40 nos Ajustes do Garden). Erro não conta no limite. Sem IA, a fala pronta "linha cifrada". |
+| Memória | O modelo devolve, a cada resposta, o que ela sabe dele (até 600 caracteres). Só as 10 últimas mensagens vão no prompt. |
+| Afinidade | Começa em 20 com a Alpha e 10 com as outras; cada resposta mexe ±2. Por enquanto só aparece; os efeitos ficam para os blocos de projetos. |
+| Convocação | Aparece uma vez por sessão, depois dos pedidos da Zona e do level up; "agora não" adia 3 dias. |
