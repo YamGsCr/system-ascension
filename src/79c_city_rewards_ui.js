@@ -109,7 +109,8 @@
     'eco-asc': function(l){ return 'O Eco ' + l.n + ' ascendeu em ' + dn(l.d) + '.'; },
     'eco-junta': function(l){ return 'Dois Ecos viraram um: ' + l.n + '.'; },
     'eco-apos': function(l){ return 'O Eco ' + l.n + ' se aposentou e deixou Poeira.'; },
-    carimbo: function(l){ return 'Carimbo de Prazo em ' + l.n + ': +24 h.'; }
+    carimbo: function(l){ return 'Carimbo de Prazo em ' + l.n + ': +24 h.'; },
+    anistia: function(l){ return 'Anistia do Sistema: o que aconteceu na Cidade de ' + dd(l.de) + ' a ' + dd(l.ate) + ' foi perdoado' + (l.corr ? ', a corrupção voltou' : '') + (l.mald ? ', as maldições acabaram' : '') + '.'; }
   });
 
   /* ---------- itens novos no drop ---------- */

@@ -1,6 +1,7 @@
 /* anistia · o pedido de 17/10: faltas seguidas da Zona viram descanso, prendas saem, multa da sentença volta,
    a chama fica protegida sem gastar gelo; uma vez só, até 31/10, e "agora não" deixa para a próxima abertura.
    O pedido de 21/10: só as prendas das faltas até 21/10 saem, de 21/10 a 04/11.
+   O pedido de 09/11: a Zona e a Cidade do período (de 22/10 até a aplicação), sem mexer na chama.
    E a banca da Zona: o Examinador julga pelo mesmo pedido que aparece na tela */
 const L = require('./v14lib.js'); const { ok, sec, open, at, run, prime } = L;
 const DAYS = (a, b) => { const out = []; let d = new Date(a + 'T12:00:00'); const e = new Date(b + 'T12:00:00'); while (d <= e) { out.push(d.toISOString().slice(0, 10)); d = new Date(d.getTime() + 864e5); } return out; };
@@ -20,7 +21,7 @@ const st = p => p.evaluate(() => { const A = SYS.App, S = A.S, z = S.pz, m = doc
   let { p, ctx } = await open(b, '2026-10-01T08:00:00', () => { window.__anistia = 1; });
   await prime(p, true); await seed(p);
   await at(p, '2026-10-11T21:00:00', 2500);
-  let s = await st(p);
+  let s = await st(p), r;
   ok(s.seq === 11 && s.streak === 11 && s.modal !== 'anistia', 'antes: 11 dias de Zona cumprida e chama com 11 dias, nada a perdoar (' + s.seq + '/' + s.streak + ')');
   await p.evaluate(() => { SYS.App.pzHide(); SYS.App.ui.modal = null; SYS.App.renderModal(); });
 
@@ -112,6 +113,50 @@ const st = p => p.evaluate(() => { const A = SYS.App, S = A.S, z = S.pz, m = doc
   await at(p, '2026-11-05T20:00:00', 4000);
   s = await st(p);
   ok(s.mid !== 'a2' && s.open >= 2, 'depois de 04/11 o pedido de 21/10 não aparece mais');
+  await ctx.close();
+
+  sec('pedido de 09/11: Zona e Cidade do período, sem mexer na chama');
+  ({ p, ctx } = await open(b, '2026-10-01T08:00:00', () => { window.__anistia = 1; }));
+  await prime(p, true); await seed(p);
+  await p.evaluate((days) => {
+    const A = SYS.App, S = A.S, z = S.pz, need = S.settings.dailies.length, q = {};
+    S.settings.dailies.forEach(k => { q[k] = 1; });
+    days.forEach(d => { z.log[d] = {v: 'ok', a: 2}; z.tot.ok++; S.daily[d] = {q: Object.assign({}, q), need: need}; });
+    z.seq += days.length; z.best = z.seq; z.clean = z.seq; z.last = days[days.length - 1];
+    S.flags.anistia = '2026-10-17'; S.flags.anistia2 = '2026-10-21';
+    SYS.Store.asAuto(() => A.commit(['core'], {quiet: true}));
+  }, DAYS('2026-10-12', '2026-10-21'));
+  await at(p, '2026-10-21T21:00:00', 2500);
+  await p.evaluate(() => { const A = SYS.App; A.citySet(true); A.city.vis = {ivo: '2026-10-21'}; A.commit(['city'], {quiet: true}); });
+  await run(p, 600);
+  await at(p, '2026-10-23T12:00:00', 3000);
+  await p.evaluate(() => {
+    const A = SYS.App, E = SYS.E, C = A.city, S = A.S, now = Date.now(); C.lic.r = 'C';
+    C.portals.push({id: 'qx1', n: 'Portal Quebrado', d: 'piscinas', way: 'aesthetic', rua: 1, r: 'C', st: 'open', born: new Date(now - 4 * 864e5).toISOString(), due: new Date(now - 36e5).toISOString(), in: new Date(now - 2 * 864e5).toISOString(), mods: [], crit: ['a']});
+    E.cyExpire(C, S, now); E.cyMaldAdd(C, S, 'posseiro', {});
+    A.pzHide(); A.ui.modal = null; A.renderModal(); A.commit(['city'], {quiet: true});
+  });
+  r = await p.evaluate(() => ({ corr: SYS.App.city.dist.piscinas.corr, mald: SYS.E.cyMald(SYS.App.city).length, eco: SYS.App.city.ecos.filter(e => e.st === 'partido').length }));
+  ok(r.corr === 1 && r.mald === 1 && r.eco === 1, 'antes: a quebra de 23/10 corrompeu as Piscinas, deixou um Eco Partido, e o Posseiro está ativo');
+  await at(p, '2026-11-09T20:00:00', 4000);
+  s = await st(p);
+  const g0 = s.gout, chama0 = await p.evaluate(() => JSON.stringify([SYS.App.S.streakLost, SYS.App.S.daily['2026-10-25'] || null]));
+  ok(s.modal === 'anistia' && s.mid === 'a3' && !s.ov, 'em 09/11, com as anistias de outubro já usadas, o pedido novo aparece antes da sentença');
+  ok(/fora de operação até agora/.test(s.txt) && /19 faltas na Zona entre 22\/10 e 09\/11/.test(s.txt) && /3 prendas saem/.test(s.txt) && /◆ de multa do período/.test(s.txt), 'mostra as 19 faltas do período, as 3 prendas e a multa');
+  ok(/Corrupção volta/.test(s.txt) && /Piscinas 1 → 0/.test(s.txt) && /1 maldição acaba/.test(s.txt) && /Quebras do período perdoadas/.test(s.txt), 'e a Cidade: corrupção de volta, a maldição e o que a quebra deixou');
+  const gemA = await p.evaluate(() => SYS.App.D.gem);
+  await p.click('.modal [data-a="pzAnOk"]'); await run(p, 800);
+  s = await st(p);
+  r = await p.evaluate(() => { const A = SYS.App, C = A.city, z = A.S.pz; return {
+    rest: Object.keys(z.log).filter(d => d >= '2026-10-22' && d <= '2026-11-09' && z.log[d].v === 'rest' && z.log[d].an).length,
+    corr: C.dist.piscinas.corr, mald: SYS.E.cyMald(C).length, posse: C.portals.filter(p => p.posse).length, eco: C.ecos.filter(e => e.st === 'partido').length,
+    qb: (C.quebras || []).filter(q => q.perdoada).length, log: C.log.some(l => l.k === 'anistia'), flag: A.S.flags.anistia3, an: z.anistias.slice(-1)[0].so,
+    chama: JSON.stringify([A.S.streakLost, A.S.daily['2026-10-25'] || null]) }; });
+  const gemB = await p.evaluate(() => SYS.App.D.gem);
+  ok(r.rest === 19 && s.open === 0 && s.seq === 21 && !s.show, 'aplicado: as 19 faltas viram descanso, as prendas saem e a sequência volta a 21');
+  ok(s.gout < g0 && gemB - gemA === g0 - s.gout, 'a multa do período volta para o saldo (+' + (g0 - s.gout) + ' ◆)');
+  ok(r.corr === 0 && r.mald === 0 && r.posse === 0 && r.eco === 0 && r.qb === 1 && r.log, 'Cidade: Piscinas limpas, maldição e portal do Posseiro fora, Eco Partido fora, quebra perdoada, celular avisa');
+  ok(r.chama === chama0 && r.flag === '2026-11-09' && r.an === 'periodo', 'a chama fica como estava; o registro guarda a anistia de 09/11');
   await ctx.close();
 
   sec('banca: o Examinador julga o pedido da tela');
