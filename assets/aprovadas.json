@@ -1,0 +1,11 @@
+{
+ "_": "O que o Claude abriu e aprovou para o Artifact. O build --publicar só leva artes das Sombras e arquivos _local.js que estejam aqui com o mesmo sha256: mudou o arquivo, ele sai da publicação até nova revisão.",
+ "revisado": "2026-11-10",
+ "src/83_sg_arte_local.js": "2cd524c8c8114c1b3a3c99294fd727980c85f6b9868b1b3821428edc754ac856",
+ "assets/img/sg-delta.png": "b8c1338eb44c9a2ebebcb154ca8f4e5b9ede3328f94662205385951669b9ad06",
+ "assets/img/sg-delta-full.png": "b8c1338eb44c9a2ebebcb154ca8f4e5b9ede3328f94662205385951669b9ad06",
+ "assets/img/sg-eta.png": "f859eff5d866171551a4b4ad0efb1bd5819a2441b6449cb92ec58ef66e965133",
+ "assets/img/sg-eta-full.png": "8a748027b012fd0697560bcc2dec5fe7f62e6f0dc4e48860fdf3ca62abe88b00",
+ "assets/img/sg-gamma.png": "f9e533d8af414a936062ada677d7f32fe46a1af862ccbfc179f25fa7254b2892",
+ "assets/img/sg-gamma-full.png": "f9e533d8af414a936062ada677d7f32fe46a1af862ccbfc179f25fa7254b2892"
+}

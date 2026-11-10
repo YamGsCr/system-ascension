@@ -12,9 +12,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   console.log('\n— arquivos —');
   const man = JSON.parse(fs.readFileSync(path.join(DIST, 'manifest.json'), 'utf8'));
   const page = fs.readFileSync(path.join(DIST, man.page), 'utf8');
-  const srcs = fs.readdirSync(SRC).filter(f => f.endsWith('.js') && !f.endsWith('_local.js')).sort();
+  const ROOT = path.join(__dirname, '..');
+  const aprov = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'aprovadas.json'), 'utf8')); } catch (e) { return {}; } })();
+  const sha = rel => { let d = fs.readFileSync(path.join(ROOT, rel)); if (rel.endsWith('.js')) d = Buffer.from(d.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'); return require('crypto').createHash('sha256').update(d).digest('hex'); };
+  const okLocal = f => aprov['src/' + f] === sha('src/' + f);
+  const srcs = fs.readdirSync(SRC).filter(f => f.endsWith('.js') && (!f.endsWith('_local.js') || okLocal(f))).sort();
   const listed = man.chunks.reduce((a, c) => a.concat(c.src), []);
-  ok(JSON.stringify(listed) === JSON.stringify(srcs), 'todo arquivo de publicação entra em exatamente um bloco, na ordem de antes; arquivos _local.js ficam fora (' + srcs.length + ' arquivos, ' + man.chunks.length + ' blocos)');
+  ok(JSON.stringify(listed) === JSON.stringify(srcs), 'todo arquivo de publicação entra em exatamente um bloco, na ordem de antes; arquivos _local.js só entram aprovados (' + srcs.length + ' arquivos, ' + man.chunks.length + ' blocos)');
+  const sgImgs = Object.keys(man.images).filter(k => /^sg-/.test(k));
+  ok(sgImgs.every(k => /\.webp$/.test(man.images[k]) || ['png', 'jpg', 'jpeg', 'webp'].some(e => aprov['assets/img/' + k + '.' + e] === (fs.existsSync(path.join(ROOT, 'assets/img', k + '.' + e)) ? sha('assets/img/' + k + '.' + e) : null))),
+    'arte das Sombras só entra na publicação aprovada por hash; o resto usa o recorte (' + sgImgs.filter(k => !/\.webp$/.test(man.images[k])).join(', ') + ')');
   const tags = (page.match(/<script src="([^"]+)"><\/script>/g) || []).map(t => t.match(/src="([^"]+)"/)[1]);
   ok(JSON.stringify(tags) === JSON.stringify(man.chunks.map(c => c.file)), 'a página chama os blocos na ordem do manifest');
   ok(tags.every(t => /^js\/[a-z]+\.[0-9a-f]{10}\.js$/.test(t) && fs.existsSync(path.join(DIST, t))), 'todo bloco chamado existe, com caminho relativo e hash no nome');

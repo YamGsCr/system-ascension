@@ -56,28 +56,19 @@ Os testes valem sobre o build de publicação: rode `python build.py --publicar`
 
 - As artes completas ficam em `assets/img/sg-<id>.*` (e `sg-<id>-full.*`). São do Yam e do GPT.
 - Elas ficam só na pasta, fora do git: `assets/img/sg-*` está no `.gitignore`. Não use `git add -f` nelas. Cópia de segurança fica por conta do Yam (a branch `gpt/arte-local` no GitHub guarda a versão de 10/11).
-- O Claude não abre, não vê, não recorta e não edita essas artes, e elas não entram no que ele publica: o build `--publicar` ignora `assets/img/sg-*` e usa os retratos de rosto e ombros de `assets/recortes/` (480 × 480).
+- Uma arte só vai para o Artifact depois que o Claude abre e aprova. A aprovação fica em `assets/aprovadas.json` (no git), com o sha256 de cada arquivo: o build `--publicar` só leva arte das Sombras e `src/*_local.js` que estejam lá com o mesmo hash. Trocou o arquivo, ele sai da publicação até nova revisão.
+- O que passa: arte feita do zero, sem clima sensual (roupa casual, moletom ou o uniforme das Sombras de um jeito sóbrio). Remendo de uma arte reprovada não passa. A decisão é do Claude, por imagem.
+- Na publicação, a arte aprovada em PNG sai em JPG (qualidade 88, uns 300 KB). Onde não há arte aprovada, entram os retratos de rosto e ombros de `assets/recortes/` (480 × 480).
 - No build local, as artes de `assets/img` têm prioridade; os recortes só entram onde não há arte.
-- A exibição das artes completas (CSS e retrato da cena) fica num arquivo próprio, `src/83_sg_arte_local.js`, do Yam e do GPT. Arquivos `src/*_local.js` só entram no build local; o `--publicar` os ignora, e o Claude não os edita.
+- A exibição das artes completas (CSS e retrato da cena) fica num arquivo próprio, `src/83_sg_arte_local.js`, do Yam e do GPT. O Claude não o edita; ele entra na publicação aprovado por hash, como as artes.
+- Aviso para o GPT: o `arteLocal()` do 83 só reconhece arte em JPG (`/\.jpe?g/`). Com as artes novas em PNG, o build local não aplica o enquadramento; a publicação funciona porque sai em JPG. Se ajustar o 83 para aceitar PNG, avise: o Claude revisa e atualiza o hash.
 - Ganchos para esse arquivo: `App.sgFace(id, size)` devolve o avatar redondo (cartões, canal, dossiê) e `App.sgRetratoHTML(M)` devolve o retrato da cena do conselho. Para trocar, guarde o original e envolva: `var old = App.sgRetratoHTML; App.sgRetratoHTML = function(M){ ... }`. CSS pode entrar por um `<style>` criado pelo próprio arquivo.
 - A suíte `arte_local` (`tests/arte_local.js`) roda o `83_sg_arte_local.js` com imagens falsas e confere os ganchos. Mudou o arquivo, ajuste a suíte junto.
 
-## Estado atual (10/11/2026, v20.5)
+## Estado atual (10/11/2026, v20.6)
 
-- `main` = v20.5: a v20.4 publicada mais o código da `gpt/arte-local` (o `83_sg_arte_local.js`, a suíte `arte_local` e o `.gitignore`). O que vai para o Artifact não mudou.
-- O stash antigo ("WIP on main: 55136a3") já não existe; não há o que dropar.
+- `main` = v20.6 (publicada): as artes aprovadas da Gamma, da Delta e da Eta no Artifact, com o `83_sg_arte_local.js`.
+- Artes reprovadas na revisão de 10/11: Alpha, Beta e Epsilon. Seguem com o recorte de rosto e ombros até chegar arte nova feita do zero.
+- Próximo do GPT: artes novas da Alpha, da Beta e da Epsilon, e as da Zeta e do Shadow, em branch nova saída da `main`. Avise o Claude para revisar.
 - Próximo do Claude: SG-B (SG5 a SG8: projetos, eventos, posto e medida), um bloco por vez.
-- Próximo do GPT: as artes da Zeta e do Shadow, em branch nova saída da `main`. Retrato de rosto e ombros em `assets/recortes/sg-<id>.webp` (480 × 480) entra na publicação sem mexer em código; a arte completa fica em `assets/img`, fora do git.
 - Depois do SG-B: avaliar a versão fora do Artifact (Firebase e servidor da API). O GPT dá a segunda opinião de arquitetura.
-
-### Passagem para a v20.5 (uma vez, na pasta do Yam)
-
-A `gpt/arte-local` ainda tem as artes e a `.vs/` no git. Tirar do git antes de trocar de branch, senão o checkout apaga os arquivos da pasta:
-
-```
-git rm -r --cached -q .vs "assets/img/sg-*"
-git commit -m "Artes e .vs saem do git: ficam só na pasta"
-git fetch "Claude outputs/system-ascension-v20-5.bundle" main:main
-git checkout main
-git push origin main gpt/arte-local
-```

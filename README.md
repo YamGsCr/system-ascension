@@ -30,7 +30,7 @@ python3 build.py --publicar   # o que vai para o Artifact e o que os testes usam
 python3 build.py              # build local, com as artes de assets/img
 ```
 
-O modo `--publicar` ignora as artes das Sombras (`assets/img/sg-*`) e os arquivos `src/*_local.js`, e usa os retratos de `assets/recortes/`. Quem faz o quê e o fluxo com git: [AGENTS.md](AGENTS.md).
+O modo `--publicar` só leva as artes das Sombras (`assets/img/sg-*`) e os arquivos `src/*_local.js` aprovados em `assets/aprovadas.json` (mesmo sha256); a arte em PNG sai em JPG, e onde não há arte aprovada entram os retratos de `assets/recortes/`. Quem faz o quê e o fluxo com git: [AGENTS.md](AGENTS.md).
 
 Gera em `dist/`:
 
@@ -82,7 +82,7 @@ As janelas formam uma pilha: ← ou Esc voltam uma, ✕ ou clicar fora fecham to
 - Uma chave no Perfil (ou a convocação, uma vez) liga a Visão de Ascensão das Sombras: o app muda de nome, veste a skin sombria com névoa, a voz passa de [Sistema] para [Visão] e a aba Shadow Garden entra no menu. Desligar devolve tudo; nada do Garden se perde.
 - A cerimônia de entrada apresenta as Sete Sombras e dá o Número do agente (fixo, tirado do save). O conselho mostra os 7 membros, um por Caminho, com afinidade e mensagens não lidas.
 - Cada canal começa com uma fala pronta do dia (sem gastar IA). A resposta da IA leva o retrato real do Sistema (nível, diárias, Caminhos, Zona, Cidade), a memória dela sobre o agente e as regras: provocar com dica concreta, nunca criticar descanso, sair do jogo se ele estiver mal de verdade, falas sempre originais. Limite de respostas por dia nos Ajustes do Garden.
-- Retratos: `assets/recortes/sg-<id>.webp` (rosto e ombros, 480 × 480) entram no lugar do sigilo sem mexer em código, nos cartões, no canal e na cena do conselho. As artes completas ficam em `assets/img`, fora do git (`.gitignore`), e só aparecem no build local, pelo `src/83_sg_arte_local.js` (ver AGENTS.md).
+- Retratos: `assets/recortes/sg-<id>.webp` (rosto e ombros, 480 × 480) entram no lugar do sigilo sem mexer em código, nos cartões, no canal e na cena do conselho. As artes completas ficam em `assets/img`, fora do git (`.gitignore`), e são mostradas pelo `src/83_sg_arte_local.js`. Na publicação só entram as aprovadas em `assets/aprovadas.json`, conferidas por sha256 (ver AGENTS.md).
 - Dados e falas prontas: `src/80_sg_data.js`; motor e prompt: `81`; tela: `82`.
 
 ## Publicação

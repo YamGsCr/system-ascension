@@ -10,8 +10,9 @@ Saída em dist/ (a pasta inteira é o que se publica):
 Dois modos:
   python build.py              build local: usa tudo o que estiver em assets/img e em src/
   python build.py --publicar   build de publicação (o que vai para o Artifact e o que os testes usam):
-                               ignora as artes das Sombras (assets/img/sg-*) e os arquivos src/*_local.js,
-                               e usa os retratos de assets/recortes/
+                               só leva as artes das Sombras (assets/img/sg-*) e os arquivos src/*_local.js
+                               aprovados em assets/aprovadas.json (mesmo sha256); a arte aprovada sai em JPG;
+                               onde não há arte aprovada, usa os retratos de assets/recortes/
   single/system-ascension.html   versão de arquivo único, como reserva
 
 Os blocos são scripts clássicos carregados em ordem, cada um com "use strict": a mesma semântica
@@ -61,6 +62,26 @@ def write(path, text):
         f.write(text)
 
 
+def sha256_de(path):
+    with open(path, 'rb') as fh:
+        data = fh.read()
+    if path.endswith('.js'):
+        data = data.replace(b'\r\n', b'\n')   # o mesmo hash no Windows e no Linux
+    return hashlib.sha256(data).hexdigest()
+
+
+# o que o Claude revisou e aprovou para a publicação: caminho relativo -> sha256
+try:
+    with open(os.path.join(root, 'assets', 'aprovadas.json'), encoding='utf8') as fh:
+        APROVADAS = json.load(fh)
+except FileNotFoundError:
+    APROVADAS = {}
+
+
+def aprovada(rel):
+    return APROVADAS.get(rel) == sha256_de(os.path.join(root, rel))
+
+
 def chunk_of(fname):
     pick = None
     for name, start in CHUNKS:
@@ -71,7 +92,8 @@ def chunk_of(fname):
     return pick
 
 
-files = sorted(f for f in os.listdir(src) if f.endswith('.js') and not (PUBLICAR and f.endswith('_local.js')))
+files = sorted(f for f in os.listdir(src) if f.endswith('.js')
+               and not (PUBLICAR and f.endswith('_local.js') and not aprovada('src/' + f)))
 head = read('00_head.html')
 body = read('01_body.html')
 
@@ -106,17 +128,32 @@ asrc = os.path.join(root, 'assets', 'img')
 arec = os.path.join(root, 'assets', 'recortes')
 fontes = []
 if os.path.isdir(asrc):
-    fontes += [(asrc, f) for f in sorted(os.listdir(asrc)) if not (PUBLICAR and f.startswith('sg-'))]
+    fontes += [(asrc, f) for f in sorted(os.listdir(asrc))
+               if not (PUBLICAR and f.startswith('sg-') and not aprovada('assets/img/' + f))]
 if os.path.isdir(arec):
-    # recortes de rosto e ombros: na publicação substituem as artes; no build local só entram onde não há arte
+    # recortes de rosto e ombros: entram onde não há arte (na publicação, onde não há arte aprovada)
     tem = set(os.path.splitext(f)[0] for _, f in fontes)
-    fontes += [(arec, f) for f in sorted(os.listdir(arec)) if PUBLICAR or os.path.splitext(f)[0] not in tem]
+    fontes += [(arec, f) for f in sorted(os.listdir(arec)) if os.path.splitext(f)[0] not in tem]
+
+
+def jpg_de(path):
+    # arte aprovada em PNG vai para a publicação como JPG: uns 300 KB em vez de 2 MB por imagem
+    import io
+    from PIL import Image
+    buf = io.BytesIO()
+    Image.open(path).convert('RGB').save(buf, 'JPEG', quality=88, optimize=True, progressive=True)
+    return buf.getvalue()
+
+
 if fontes:
     os.makedirs(os.path.join(dist, 'img'), exist_ok=True)
     for pasta, f in fontes:
         stem, ext = os.path.splitext(f)
-        with open(os.path.join(pasta, f), 'rb') as fh:
-            data = fh.read()
+        if PUBLICAR and pasta == asrc and f.startswith('sg-') and ext.lower() == '.png':
+            data, ext = jpg_de(os.path.join(pasta, f)), '.jpg'
+        else:
+            with open(os.path.join(pasta, f), 'rb') as fh:
+                data = fh.read()
         rel = 'img/' + stem + '.' + hashlib.sha256(data).hexdigest()[:10] + ext
         with open(os.path.join(dist, rel), 'wb') as fh:
             fh.write(data)
