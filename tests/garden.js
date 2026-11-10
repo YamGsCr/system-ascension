@@ -111,8 +111,8 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
     sig: [].map.call(document.querySelectorAll('.sg-card svg.sg-sig'), e => e.closest('.sg-card').getAttribute('data-id') || 'shadow').join(','), imgs: [].map.call(document.querySelectorAll('.sg-card img.sg-face'), e => e.closest('.sg-card').getAttribute('data-id')).join(','), agent: (document.querySelector('.sg-agent') || {}).textContent || '', view: document.getElementById('view').textContent }));
   ok(r.cards.join(',') === 'alpha,beta,gamma,delta,epsilon,zeta,eta' && r.off === 1, 'as 7 Sombras em cartões, mais o Shadow observando');
   ok(r.imgs === 'alpha,beta,gamma,delta,epsilon,eta' && r.sig === 'zeta,shadow', 'seis retratos nos cartões; Zeta e Shadow seguem com o sigilo até a arte chegar');
-  const loaded = await p.evaluate(() => [].map.call(document.querySelectorAll('.sg-card img.sg-face'), e => e.complete && e.naturalWidth === 360 && e.naturalHeight === 360).every(Boolean));
-  ok(loaded, 'os retratos carregam (360 × 360, rosto e ombros)');
+  const loaded = await p.evaluate(() => [].map.call(document.querySelectorAll('.sg-card img.sg-face'), e => e.complete && e.naturalWidth === 480 && e.naturalHeight === 480).every(Boolean));
+  ok(loaded, 'os retratos carregam (480 × 480, rosto e ombros)');
   ok(new RegExp('Número ' + num).test(r.agent) && /contato direta: Alpha/.test(r.agent) && /deus ex machina/.test(r.agent) && /nem nos Melhores Amigos/.test(r.agent), 'a ficha do agente: número, contato, missão e sigilo');
   ok(/Respostas de IA hoje: 0 de 20/.test(r.view), 'o contador de respostas de IA do dia');
   r = await p.evaluate(() => SYS.SG.MEMBROS.filter(M => !(M.fala && M.voz && M.agente && M.nunca && M.manias.length >= 3 && M.rel.length >= 3 && ['ola', 'falta', 'cumpriu', 'sumiu', 'semIA'].every(k => (M.falas[k] || []).length > 0))).map(M => M.id));

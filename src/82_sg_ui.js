@@ -99,7 +99,7 @@
     var f = T.L[T.i], M = SG.MAP[f.quem] || SG.MAP.alpha, w = App.way(M.way), last = T.i === T.L.length - 1, src = App.img('sg-' + M.id);
     T.full = App.sgFill(f.t); T.k = 0;
     el.style.setProperty('--wc', M.cor);
-    el.innerHTML = '<div class="cyt-dim"></div><div class="sgt-face">' + (src ? '<img class="sgt-img" src="' + src + '" alt="" draggable="false">' : App.sgSigil(M.id, 150)) + '</div>'
+    el.innerHTML = '<div class="cyt-dim"></div><div class="sgt-face' + (src ? ' sgt-portrait sgt-' + M.id : ' sgt-sigil') + '">' + (src ? '<img class="sgt-img" src="' + src + '" alt="" draggable="false">' : App.sgSigil(M.id, 150)) + '</div>'
       + '<div class="cyt-box" role="dialog" aria-modal="true" aria-label="' + U.esc(M.n) + '"><div class="cyt-name"><b>' + U.esc(M.n) + '</b><span>' + U.esc(M.id === 'shadow' ? 'o mestre' : 'Shadow Garden' + (w ? ' · ' + w.name : '')) + '</span></div>'
       + '<p class="cyt-txt" aria-live="polite"></p><div class="cyt-ft"><span class="cyt-n mono">' + (T.i + 1) + '/' + T.L.length + '</span><span class="cyt-hint">toque para continuar</span>'
       + '<button class="btn sm ghost" data-a="sgCenaSkip">Pular</button><button class="btn sm primary" data-a="sgCenaNext">' + (last ? 'Fechar' : 'Continuar') + '</button></div></div>';
