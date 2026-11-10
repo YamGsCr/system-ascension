@@ -89,6 +89,11 @@
   App.init = function(){ var r = oldInit.apply(this, arguments); setTimeout(App.sgConvite, 2500); return r; };
 
   /* ---------- cenas do conselho: placa de nome, texto que vai aparecendo, sigilo no lugar do retrato ---------- */
+  /* gancho: o retrato da cena (um arquivo src/*_local.js pode trocar a exibição no build local) */
+  App.sgRetratoHTML = function(M){
+    var src = App.img('sg-' + M.id);
+    return '<div class="sgt-face' + (src ? ' sgt-portrait sgt-' + M.id : ' sgt-sigil') + '">' + (src ? '<img class="sgt-img" src="' + src + '" alt="" draggable="false">' : App.sgSigil(M.id, 150)) + '</div>';
+  };
   function talkEl(){
     var el = document.getElementById('sgtalk');
     if (!el) { el = document.createElement('div'); el.id = 'sgtalk'; el.className = 'cyt sgt'; document.body.appendChild(el); el.addEventListener('click', function(ev){ if (ev.target.closest && ev.target.closest('[data-a]')) return; App.A.sgCenaNext(); }); }
@@ -96,10 +101,10 @@
   }
   function show(){
     var T = App.ui.sgTalk, el = talkEl(); if (!T) return;
-    var f = T.L[T.i], M = SG.MAP[f.quem] || SG.MAP.alpha, w = App.way(M.way), last = T.i === T.L.length - 1, src = App.img('sg-' + M.id);
+    var f = T.L[T.i], M = SG.MAP[f.quem] || SG.MAP.alpha, w = App.way(M.way), last = T.i === T.L.length - 1;
     T.full = App.sgFill(f.t); T.k = 0;
     el.style.setProperty('--wc', M.cor);
-    el.innerHTML = '<div class="cyt-dim"></div><div class="sgt-face' + (src ? ' sgt-portrait sgt-' + M.id : ' sgt-sigil') + '">' + (src ? '<img class="sgt-img" src="' + src + '" alt="" draggable="false">' : App.sgSigil(M.id, 150)) + '</div>'
+    el.innerHTML = '<div class="cyt-dim"></div>' + App.sgRetratoHTML(M)
       + '<div class="cyt-box" role="dialog" aria-modal="true" aria-label="' + U.esc(M.n) + '"><div class="cyt-name"><b>' + U.esc(M.n) + '</b><span>' + U.esc(M.id === 'shadow' ? 'o mestre' : 'Shadow Garden' + (w ? ' · ' + w.name : '')) + '</span></div>'
       + '<p class="cyt-txt" aria-live="polite"></p><div class="cyt-ft"><span class="cyt-n mono">' + (T.i + 1) + '/' + T.L.length + '</span><span class="cyt-hint">toque para continuar</span>'
       + '<button class="btn sm ghost" data-a="sgCenaSkip">Pular</button><button class="btn sm primary" data-a="sgCenaNext">' + (last ? 'Fechar' : 'Continuar') + '</button></div></div>';

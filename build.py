@@ -6,6 +6,12 @@ Saída em dist/ (a pasta inteira é o que se publica):
   img/<nome>.<hash>.webp  as imagens de assets/img (retrato, carregamento, personagens)
   manifest.json           quais arquivos de src/ foram para cada bloco, com tamanhos
   test*.html              as páginas das suítes de teste (mesma pasta, mesmos blocos)
+
+Dois modos:
+  python build.py              build local: usa tudo o que estiver em assets/img e em src/
+  python build.py --publicar   build de publicação (o que vai para o Artifact e o que os testes usam):
+                               ignora as artes das Sombras (assets/img/sg-*) e os arquivos src/*_local.js,
+                               e usa os retratos de assets/recortes/
   single/system-ascension.html   versão de arquivo único, como reserva
 
 Os blocos são scripts clássicos carregados em ordem, cada um com "use strict": a mesma semântica
@@ -13,6 +19,8 @@ do script único de antes, desde que nenhum código de topo use uma função dec
 posterior (o teste tests/split.js confere que a página monta igual nas duas versões).
 """
 import hashlib, json, os, shutil, sys
+
+PUBLICAR = '--publicar' in sys.argv[1:]
 
 root = os.path.dirname(os.path.abspath(__file__))
 src = os.path.join(root, 'src')
@@ -63,7 +71,7 @@ def chunk_of(fname):
     return pick
 
 
-files = sorted(f for f in os.listdir(src) if f.endswith('.js'))
+files = sorted(f for f in os.listdir(src) if f.endswith('.js') and not (PUBLICAR and f.endswith('_local.js')))
 head = read('00_head.html')
 body = read('01_body.html')
 
@@ -95,11 +103,19 @@ for name, _ in CHUNKS:
 shutil.rmtree(os.path.join(dist, 'img'), ignore_errors=True)
 imgs = {}
 asrc = os.path.join(root, 'assets', 'img')
+arec = os.path.join(root, 'assets', 'recortes')
+fontes = []
 if os.path.isdir(asrc):
+    fontes += [(asrc, f) for f in sorted(os.listdir(asrc)) if not (PUBLICAR and f.startswith('sg-'))]
+if os.path.isdir(arec):
+    # recortes de rosto e ombros: na publicação substituem as artes; no build local só entram onde não há arte
+    tem = set(os.path.splitext(f)[0] for _, f in fontes)
+    fontes += [(arec, f) for f in sorted(os.listdir(arec)) if PUBLICAR or os.path.splitext(f)[0] not in tem]
+if fontes:
     os.makedirs(os.path.join(dist, 'img'), exist_ok=True)
-    for f in sorted(os.listdir(asrc)):
+    for pasta, f in fontes:
         stem, ext = os.path.splitext(f)
-        with open(os.path.join(asrc, f), 'rb') as fh:
+        with open(os.path.join(pasta, f), 'rb') as fh:
             data = fh.read()
         rel = 'img/' + stem + '.' + hashlib.sha256(data).hexdigest()[:10] + ext
         with open(os.path.join(dist, rel), 'wb') as fh:
@@ -146,6 +162,6 @@ write(os.path.join(dist, 'test_legacy.html'), legacy)
 single = open(os.path.join(dist, 'single', PAGE), encoding='utf8').read()
 write(os.path.join(dist, 'single', 'test.html'), DOC + '<script>' + mock + '</script></head><body>' + single + '</body></html>')
 
-print('página %d bytes · %d blocos · total %d bytes' % (page_bytes, len(manifest['chunks']), manifest['totalBytes']))
+print('página %d bytes · %d blocos · total %d bytes · %s' % (page_bytes, len(manifest['chunks']), manifest['totalBytes'], 'publicação' if PUBLICAR else 'local'))
 for c in manifest['chunks']:
     print('  %-28s %8d bytes  %2d arquivos' % (c['file'], c['bytes'], len(c['src'])))

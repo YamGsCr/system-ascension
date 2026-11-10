@@ -34,7 +34,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Build
-        run: python3 build.py
+        run: python3 build.py --publicar
 
       - name: Testes
         run: node tests/run.js
