@@ -46,7 +46,7 @@ const st = p => p.evaluate(() => {
     talk: !!document.querySelector('#sgtalk.on'), toasts: document.getElementById('toasts').textContent, view: document.getElementById('view').textContent };
 });
 const cloud = (p, k) => p.evaluate(k => { const key = Object.keys(window.__mock.db).find(x => new RegExp('/' + k + '$').test(x)); return key ? JSON.parse(window.__mock.db[key]) : null; }, k);
-const talk = p => p.evaluate(() => { const t = document.getElementById('sgtalk'); if (!t || !t.classList.contains('on')) return null; return { name: t.querySelector('.cyt-name b').textContent, txt: t.querySelector('.cyt-txt').textContent, n: t.querySelector('.cyt-n').textContent, sig: !!t.querySelector('.sgt-face svg.sg-sig') }; });
+const talk = p => p.evaluate(() => { const t = document.getElementById('sgtalk'); if (!t || !t.classList.contains('on')) return null; return { name: t.querySelector('.cyt-name b').textContent, txt: t.querySelector('.cyt-txt').textContent, n: t.querySelector('.cyt-n').textContent, sig: !!t.querySelector('.sgt-face svg.sg-sig'), img: (t.querySelector('.sgt-face img.sgt-img') || {}).getAttribute ? t.querySelector('.sgt-face img.sgt-img').getAttribute('src') : '' }; });
 const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; return { n: c.m.length, last: c.m[c.m.length - 1] || null, mem: c.mem, lido: c.lido, unread: SYS.App.sgNaoLidas(id), dom: document.querySelectorAll('#sgChat .sg-msg').length, ela: document.querySelectorAll('#sgChat .sg-msg.ela').length, status: (document.getElementById('sgStatus') || {}).textContent || '' }; }, id);
 
 (async () => {
@@ -89,7 +89,7 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
   sec('a cerimônia de entrada');
   await go(p, '#/garden'); await run(p, 100);
   r = await talk(p);
-  ok(r && r.name === 'Alpha' && r.n === '1/11' && r.sig, 'na primeira visita a cerimônia começa: Alpha, 11 falas, sigilo no lugar do retrato');
+  ok(r && r.name === 'Alpha' && r.n === '1/11' && /^img\/sg-alpha\.[0-9a-f]{10}\.webp$/.test(r.img) && !r.sig, 'na primeira visita a cerimônia começa: Alpha, 11 falas, com o retrato dela (' + (r && r.img) + ')');
   ok(r && r.txt.indexOf('Número ' + num) === 0, 'e ela chama o agente pelo número (' + (r && r.txt.slice(0, 40)) + '…)');
   const names = [r && r.name];
   for (let i = 0; i < 10; i++) { await p.click('#sgtalk [data-a="sgCenaNext"]'); await run(p, 30); const t = await talk(p); names.push(t && t.name); }
@@ -108,9 +108,11 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
 
   sec('o conselho');
   r = await p.evaluate(() => ({ cards: [].map.call(document.querySelectorAll('.sg-card[data-a="sgOpen"]'), e => e.getAttribute('data-id')), off: document.querySelectorAll('.sg-card.off').length,
-    sig: document.querySelectorAll('.sg-card svg.sg-sig').length, agent: (document.querySelector('.sg-agent') || {}).textContent || '', view: document.getElementById('view').textContent }));
+    sig: [].map.call(document.querySelectorAll('.sg-card svg.sg-sig'), e => e.closest('.sg-card').getAttribute('data-id') || 'shadow').join(','), imgs: [].map.call(document.querySelectorAll('.sg-card img.sg-face'), e => e.closest('.sg-card').getAttribute('data-id')).join(','), agent: (document.querySelector('.sg-agent') || {}).textContent || '', view: document.getElementById('view').textContent }));
   ok(r.cards.join(',') === 'alpha,beta,gamma,delta,epsilon,zeta,eta' && r.off === 1, 'as 7 Sombras em cartões, mais o Shadow observando');
-  ok(r.sig === 8, 'cada uma com o seu sigilo (os retratos entram quando chegarem)');
+  ok(r.imgs === 'alpha,beta,gamma,delta,epsilon,eta' && r.sig === 'zeta,shadow', 'seis retratos nos cartões; Zeta e Shadow seguem com o sigilo até a arte chegar');
+  const loaded = await p.evaluate(() => [].map.call(document.querySelectorAll('.sg-card img.sg-face'), e => e.complete && e.naturalWidth === 360 && e.naturalHeight === 360).every(Boolean));
+  ok(loaded, 'os retratos carregam (360 × 360, rosto e ombros)');
   ok(new RegExp('Número ' + num).test(r.agent) && /contato direta: Alpha/.test(r.agent) && /deus ex machina/.test(r.agent) && /nem nos Melhores Amigos/.test(r.agent), 'a ficha do agente: número, contato, missão e sigilo');
   ok(/Respostas de IA hoje: 0 de 20/.test(r.view), 'o contador de respostas de IA do dia');
   r = await p.evaluate(() => SYS.SG.MEMBROS.filter(M => !(M.fala && M.voz && M.agente && M.nunca && M.manias.length >= 3 && M.rel.length >= 3 && ['ola', 'falta', 'cumpriu', 'sumiu', 'semIA'].every(k => (M.falas[k] || []).length > 0))).map(M => M.id));
@@ -253,7 +255,7 @@ const canal = (p, id) => p.evaluate(id => { const c = SYS.App.sg.canal[id]; retu
   }
   await p.evaluate(() => SYS.App.sgEntrada()); await run(p, 50);
   r = await p.evaluate(() => { const b = document.querySelector('#sgtalk .cyt-box').getBoundingClientRect(), f = document.querySelector('#sgtalk .sgt-face').getBoundingClientRect(); return { box: b.top, face: f.bottom, w: b.width }; });
-  ok(r.face <= r.box + 2 && r.w <= 390, 'na cerimônia, o sigilo fica acima da caixa de fala');
+  ok(r.face <= r.box + 2 && r.w <= 390, 'na cerimônia, o retrato fica acima da caixa de fala');
   ok(p.errs.length === 0, 'sem erro de JS ' + p.errs.slice(0, 3).join(' | '));
   await ctx.close();
 

@@ -78,7 +78,7 @@ As janelas formam uma pilha: ← ou Esc voltam uma, ✕ ou clicar fora fecham to
 - Uma chave no Perfil (ou a convocação, uma vez) liga a Visão de Ascensão das Sombras: o app muda de nome, veste a skin sombria com névoa, a voz passa de [Sistema] para [Visão] e a aba Shadow Garden entra no menu. Desligar devolve tudo; nada do Garden se perde.
 - A cerimônia de entrada apresenta as Sete Sombras e dá o Número do agente (fixo, tirado do save). O conselho mostra os 7 membros, um por Caminho, com afinidade e mensagens não lidas.
 - Cada canal começa com uma fala pronta do dia (sem gastar IA). A resposta da IA leva o retrato real do Sistema (nível, diárias, Caminhos, Zona, Cidade), a memória dela sobre o agente e as regras: provocar com dica concreta, nunca criticar descanso, sair do jogo se ele estiver mal de verdade, falas sempre originais. Limite de respostas por dia nos Ajustes do Garden.
-- Retratos: `assets/img/sg-<id>.webp` (alpha, beta, gamma, delta, epsilon, zeta, eta, shadow) entram no lugar do sigilo sem mexer em código.
+- Retratos: `assets/img/sg-<id>.webp` (alpha, beta, gamma, delta, epsilon, zeta, eta, shadow) entram no lugar do sigilo sem mexer em código. São recortes de rosto e ombros, 360 × 360, mostrados em círculo com o anel da cor dela (cartões, canal e cerimônia).
 - Dados e falas prontas: `src/80_sg_data.js`; motor e prompt: `81`; tela: `82`.
 
 ## Publicação
