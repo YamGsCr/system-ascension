@@ -4,3 +4,8 @@ tests/logs/
 tests/shots/
 *.log
 .DS_Store
+*.bundle
+Claude outputs/
+.vs/
+# artes das Sombras: ficam só na pasta do Yam e do GPT, fora do git e da publicação
+assets/img/sg-*
