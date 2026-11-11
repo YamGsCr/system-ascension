@@ -36,6 +36,9 @@ Os testes valem sobre o build de publicação: rode `python build.py --publicar`
 - Shadow Garden: lore da obra só em termos gerais. Toda fala é original; nada de falas, bordões ou cenas copiadas do anime, do mangá ou dos livros.
 - Fichas das Sombras em `src/80_sg_data.js`; prompt e conversa em `src/81_sg_engine.js`; tela em `src/82_sg_ui.js`.
 - As regras da técnica no prompt não saem: provocar sempre com uma dica concreta, nunca criticar descanso, nunca zombar de saúde, corpo, aparência, família, relacionamentos ou dinheiro pessoal, e sair do jogo com cuidado se o Yam parecer mal de verdade.
+- A voz (v20.7): elas falam como pessoas do Garden, nunca como assistente. Uma coisa por mensagem; ao avaliar algo, primeiro o que funcionou, depois o trecho reescrito na voz dela; emoção; pergunta no fim; nada de lista, markdown ou frase de assistente. Cada ficha diz como ela ensina, elogia, se apega e se interessa (`ensina`, `elogia`, `gosta`, `curiosa`) e o que sabe da Terra pelo mestre (`terra`, a Sabedoria das Sombras). O canon é flexível.
+- `E.sgVoz` é a rede de segurança: desfaz lista, markdown e tique de assistente na resposta da IA e no histórico. `E.sgTiques` aponta o que sobrou. A suíte `voz` barra o tom de lista e de assistente nas fichas, nas falas prontas e no prompt: fala nova precisa passar nela.
+- Modo protótipo (Ajustes do Garden, `sg.proto`): medidores de Philia (afeto e sentimento, o amor de amizade dela pelo agente) e Interesse, de 0 a 100 em 5 níveis, em `sg.philia` e `sg.inter`. Só aparecem e só andam com o modo ligado. Philia nunca vira romance: o amor delas, no sentido da obra, é do mestre Shadow, e com o agente nunca há romance, flerte ou ciúme.
 
 ## Quem faz o quê
 
@@ -65,9 +68,10 @@ Os testes valem sobre o build de publicação: rode `python build.py --publicar`
 - Ganchos para esse arquivo: `App.sgFace(id, size)` devolve o avatar redondo (cartões, canal, dossiê) e `App.sgRetratoHTML(M)` devolve o retrato da cena do conselho. Para trocar, guarde o original e envolva: `var old = App.sgRetratoHTML; App.sgRetratoHTML = function(M){ ... }`. CSS pode entrar por um `<style>` criado pelo próprio arquivo.
 - A suíte `arte_local` (`tests/arte_local.js`) roda o `83_sg_arte_local.js` com imagens falsas e confere os ganchos. Mudou o arquivo, ajuste a suíte junto.
 
-## Estado atual (10/11/2026, v20.6)
+## Estado atual (11/11/2026, v20.7)
 
-- `main` = v20.6 (publicada): as artes aprovadas da Gamma, da Delta e da Eta no Artifact, com o `83_sg_arte_local.js`.
+- `main` = v20.7 (publicada): a voz nova das Sombras no canal (fichas, prompt, `E.sgVoz` e a suíte `voz`) e o modo protótipo com Philia e Interesse. As artes aprovadas da Gamma, da Delta e da Eta seguem no Artifact, com o `83_sg_arte_local.js`.
+- A v20.7 mexe em `src/00_head.html`, `80_sg_data.js`, `81_sg_engine.js`, `82_sg_ui.js` e `tests/run.js`, e não toca no `83` nem na `tests/arte_local.js`. Para pegar com a `gpt/roupas-garden` aberta: `git fetch "Claude outputs/system-ascension-v20-7.bundle" main:main`, e depois `git rebase main` na branch do GPT, quando ele quiser.
 - Artes reprovadas na revisão de 10/11: Alpha, Beta e Epsilon. Seguem com o recorte de rosto e ombros até chegar arte nova feita do zero.
 - Próximo do GPT: artes novas da Alpha, da Beta e da Epsilon, e as da Zeta e do Shadow, em branch nova saída da `main`. Avise o Claude para revisar.
 - Próximo do Claude: SG-B (SG5 a SG8: projetos, eventos, posto e medida), um bloco por vez.
