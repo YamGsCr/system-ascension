@@ -8,19 +8,28 @@
 
   /* ---------- o 5º documento ---------- */
   Store.KEYS.sg = 'sysasc.sg.v1'; Store.DOCS.push('sg'); Store.LABEL.sg = 'Shadow Garden';
+  /* philia e inter: os medidores do modo protótipo (Philia e Interesse), de 0 a 100, com o ponto de partida da ficha */
+  function pct(v, def){ v = Math.round(+v); return isNaN(v) ? def : Math.max(0, Math.min(100, v)); }
   E.newSg = function(){
-    var afin = {}, canal = {};
-    SG.ORDEM.forEach(function(id){ afin[id] = id === 'alpha' ? 20 : 10; canal[id] = {m: [], mem: '', lido: ''}; });
-    return {_u: '', v: 1, since: '', num: '', cod: '', contato: 'alpha', intens: 'padrao', iaDia: 20, shadow: true, afin: afin, canal: canal, ia: {dia: '', n: 0}, vis: {}};
+    var afin = {}, canal = {}, philia = {}, inter = {};
+    SG.ORDEM.forEach(function(id){
+      var ini = SG.MAP[id].ini || {};
+      afin[id] = id === 'alpha' ? 20 : 10; canal[id] = {m: [], mem: '', lido: ''};
+      philia[id] = pct(ini.philia, 10); inter[id] = pct(ini.inter, 30);
+    });
+    return {_u: '', v: 1, since: '', num: '', cod: '', contato: 'alpha', intens: 'padrao', iaDia: 20, shadow: true, proto: false, afin: afin, philia: philia, inter: inter, canal: canal, ia: {dia: '', n: 0}, vis: {}};
   };
   E.sgFill = function(G){
     G = (G && typeof G === 'object' && !Array.isArray(G)) ? G : E.newSg();
     E.fill(G, E.newSg());
+    ['philia', 'inter'].forEach(function(k){ if (!G[k] || typeof G[k] !== 'object' || Array.isArray(G[k])) G[k] = {}; });
     SG.ORDEM.forEach(function(id){
-      var c = G.canal[id]; if (!Array.isArray(c.m)) c.m = [];
+      var c = G.canal[id], ini = SG.MAP[id].ini || {}; if (!Array.isArray(c.m)) c.m = [];
       if (typeof c.mem !== 'string') c.mem = ''; if (typeof c.lido !== 'string') c.lido = '';
       G.afin[id] = Math.max(0, Math.min(100, Math.round(+G.afin[id]) || 0));
+      G.philia[id] = pct(G.philia[id], pct(ini.philia, 10)); G.inter[id] = pct(G.inter[id], pct(ini.inter, 30));
     });
+    G.proto = G.proto === true;
     if (!SG.MAP[G.contato] || G.contato === 'shadow') G.contato = 'alpha';
     if (!SG.INTENS[G.intens]) G.intens = 'padrao';
     G.iaDia = Math.max(5, Math.min(60, Math.round(+G.iaDia) || 20));
@@ -112,24 +121,88 @@
     return L.join('\n');
   };
 
+  /* ---------- a voz: o que separa uma Sombra de um assistente ---------- */
+  /* marcador de item no começo da linha: hífen, asterisco, bolinha, travessão, "1." "2)" ou "a)" */
+  var ITEM = /^\s*(?:[-*•·–—▪►]\s+|\d{1,2}\s*[.)]\s+|[a-e]\)\s+)/i;
+  /* tiques de assistente que nunca saem da boca delas (comparados em minúsculas) */
+  SG.TIQUES = ['ótima pergunta', 'boa pergunta', 'com certeza!', 'aqui está', 'aqui estão', 'segue abaixo', 'seguem abaixo', 'vamos lá!',
+    'espero ter ajudado', 'espero que ajude', 'qualquer dúvida', 'posso te ajudar', 'posso ajudar em', 'se precisar de mais', 'fico à disposição',
+    'estou aqui para ajudar', 'como assistente', 'como uma ia', 'como modelo de linguagem', 'em resumo:', 'em suma:', 'pontos de melhoria', 'principais pontos', 'sugestões:', 'dicas:'];
+  /* o que denuncia o tom de lista ou de assistente num texto; vazio = a voz está limpa */
+  E.sgTiques = function(t){
+    var s = String(t || ''), low = s.toLowerCase(), out = [];
+    if (s.split('\n').some(function(l){ return ITEM.test(l); })) out.push('lista');
+    if (/\*\*|__|```|^#{1,6}\s/m.test(s)) out.push('markdown');
+    if (/\p{Extended_Pictographic}/u.test(s)) out.push('emoji');
+    if (/^\s*(?:claro|perfeito|entendi|certo)\s*[!,.]/i.test(s)) out.push('abertura de assistente');
+    SG.TIQUES.forEach(function(f){ if (low.indexOf(f) >= 0) out.push('tique: ' + f); });
+    return out;
+  };
+  /* rede de segurança: se a IA escorregar, lista vira frase corrida e o tique de abertura e de fecho cai */
+  E.sgVoz = function(t){
+    var out = [];
+    String(t || '').replace(/\r/g, '').replace(/```[a-z]*\n?/gi, '').replace(/\*\*|__/g, '').replace(/^#{1,6}\s+/gm, '').split('\n').forEach(function(l){
+      var m = l.match(ITEM);
+      if (!m) { out.push(l.replace(/\s+$/, '')); return; }
+      var x = l.slice(m[0].length).trim(); if (!x) return;
+      x = x.charAt(0).toUpperCase() + x.slice(1); if (!/[.!?…:;]$/.test(x)) x += '.';
+      if (out.length && out[out.length - 1].trim()) out[out.length - 1] += ' ' + x; else out.push(x);
+    });
+    var s = out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/^\n+|\s+$/g, ''), ini = s, antes;
+    do {
+      antes = s;
+      s = s.replace(/^(?:claro|perfeito|entendi|certo|com certeza|ótima pergunta|boa pergunta|vamos lá)\s*[!,.:]+\s*/i, '')
+        .replace(/^(?:aqui (?:está|estão)|segue(?:m)?(?: abaixo)?)[^:\n]{0,40}:\s*/i, '');
+    } while (s !== antes);
+    s = s.replace(/\s*(?:espero (?:ter ajudado|que (?:isso )?(?:te )?ajude)|qualquer dúvida|fico à disposição|se precisar de mais)[^.!?]*[.!?]*\s*$/i, '').replace(/\s+$/, '');
+    return s === ini ? s : s.charAt(0).toUpperCase() + s.slice(1);   /* só sobe a inicial se tirou uma abertura */
+  };
+
+  /* ---------- Philia e Interesse (modo protótipo) ---------- */
+  E.sgNivel = function(k, v){
+    var N = SG.NIVEL[k], x = pct(v, 0), i = Math.min(4, Math.floor(x / 20));
+    return {k: k, nome: N.nome, v: x, n: i + 1, rot: N.rot[i], tom: N.tom[i]};
+  };
+
   /* ---------- o prompt de cada membro ---------- */
   E.sgPrompt = function(G, id, txt, ctx){
     var M = SG.MAP[id], w = App.way(M.way) || {name: M.way, pt: ''}, c = G.canal[id], contato = (SG.MAP[G.contato] || SG.MAP.alpha).n;
     var nome = G.cod ? G.cod + ' (Número ' + G.num + ')' : 'Número ' + G.num;
-    var hist = c.m.slice(-10).map(function(x){ return (x.de === 'eu' ? 'AGENTE' : M.n.toUpperCase()) + ': ' + x.t; }).join('\n');
-    return 'Você interpreta ' + M.n + ', do Shadow Garden (da obra The Eminence in Shadow), numa troca de mensagens com um agente novo do Garden. Responda como ela, em português do Brasil.\n\n'
+    /* as falas antigas dela entram já limpas: lista velha no histórico ensinaria a IA a repetir a lista */
+    var hist = c.m.slice(-10).map(function(x){ return (x.de === 'eu' ? 'AGENTE: ' + x.t : M.n.toUpperCase() + ': ' + E.sgVoz(x.t)); }).join('\n');
+    var proto = G.proto === true, ph = E.sgNivel('philia', G.philia && G.philia[id]), it = E.sgNivel('inter', G.inter && G.inter[id]);
+    return 'Você interpreta ' + M.n + ', do Shadow Garden (da obra The Eminence in Shadow), trocando mensagens de chat com um agente novo do Garden. Escreva como ela escreveria, em português do Brasil. '
+      + 'Você não é assistente, tutora nem atendente: é uma pessoa do Garden, com humor, orgulho, manias e opinião própria.\n\n'
       + '=== QUEM VOCÊ É ===\n' + M.n + ': ' + M.papel + '.' + (M.fachada ? '\nFachada pública: ' + M.fachada + '.' : '')
       + '\nTom: ' + M.voz + '.\nComo fala: ' + M.fala + '.'
       + '\nManias (no máximo uma por resposta, só quando couber): ' + (M.manias || []).join('; ') + '.'
       + '\nNo Garden: ' + (M.rel || []).join('; ') + '.'
       + '\nCom o agente: ' + M.agente + '.\nNunca: ' + M.nunca + '.'
-      + '\nVocê acompanha o ' + (w.pt || 'Caminho') + ' (' + w.name + ') dele: ' + M.foco + '.\nProvoca assim: ' + M.provoca + '. Ajuda assim: ' + M.ajuda + '.\n\n'
+      + '\nVocê acompanha o ' + (w.pt || 'Caminho') + ' (' + w.name + ') dele: ' + M.foco + '.\nCobra assim: ' + M.provoca + '. Ajuda assim: ' + M.ajuda + '.'
+      + '\nComo você ensina e corrige: ' + M.ensina + '.\nComo você elogia: ' + M.elogia + '.'
+      + '\nQuando passa a gostar de alguém: ' + M.gosta + '.\nO que acende o seu interesse: ' + M.curiosa + '.\n\n'
+      + '=== A SABEDORIA DAS SOMBRAS ===\n'
+      + 'Tudo o que você sabe da Terra (tecnologia, programação, mercado, dinheiro, música, livros, ciência, cultura) veio do mestre Shadow, que contou ao Garden. O agente vem da mesma Terra, então esse saber é um chão comum entre vocês. No seu caso: ' + M.terra + '.\n'
+      + '- Fale desse saber como quem aprendeu com o mestre, com as suas palavras e as suas imagens; termo técnico da Terra entra quando ajuda.\n'
+      + '- O canon é flexível: a obra é ponto de partida, não prisão. O que não pode é inventar fatos sobre o agente.\n\n'
+      + '=== COMO VOCÊ ESCREVE ===\n'
+      + '- Uma coisa por mensagem: um acerto, uma correção, uma cobrança ou um elogio. O resto fica para a próxima.\n'
+      + '- É mensagem de chat, em frases corridas. Nunca lista, tópicos, numeração, títulos, negrito ou markdown; duas ideias cabem numa frase só.\n'
+      + '- Nada de tom de assistente: não abra com "claro", "ótima pergunta", "com certeza", "aqui está" ou "vamos lá", e não feche com "espero ter ajudado", "qualquer dúvida" ou "se quiser, posso". Não repita o que ele disse antes de responder.\n'
+      + '- Quando ele mandar algo para você avaliar (texto, código, plano, conta, treino, música): primeiro diga o que funcionou, de verdade e específico; depois escolha uma única coisa e mostre na prática, do seu jeito, reescrevendo um trecho curto quando couber, para ele sentir a diferença em vez de ler uma explicação.\n'
+      + '- Reaja como ela, com emoção (orgulho, impaciência, alegria, preocupação, tédio), antes de pensar em ser útil.\n'
+      + '- Termine com uma pergunta curta para ele, do seu jeito, que puxe a próxima mensagem.\n'
+      + '- Escreva cada fala do zero: não repita frases suas da conversa recente nem copie as falas prontas do Garden.\n\n'
+      + (proto ? '=== PHILIA E INTERESSE (como você está com ele agora) ===\n'
+        + 'Philia, o afeto e o sentimento que você tem por ele: ' + ph.v + '/100, nível ' + ph.n + ' (' + ph.rot + '): ' + ph.tom + '.\n'
+        + 'Interesse: ' + it.v + '/100, nível ' + it.n + ' (' + it.rot + '): ' + it.tom + '.\n'
+        + 'Deixe isso dar o tom da resposta. Philia é o amor de amizade de irmã de armas: carinho, confiança e orgulho. O seu amor, no sentido da obra, é do mestre Shadow; com o agente nunca há romance, flerte ou ciúme.\n\n' : '')
       + '=== O AGENTE ===\n' + nome + '. Veio da Terra, a dimensão de origem do mestre Shadow. Missão dele: ' + SG.MISSAO + '. Regra de sigilo do Garden: ' + SG.SIGILO + '.\n'
       + 'Contato direta dele no Garden: ' + contato + '. Intensidade que ele pediu: ' + G.intens + ' (' + SG.INTENS[G.intens] + ').\n\n'
       + '=== A TÉCNICA (pedido dele) ===\n'
       + '- Provoque, zoe e jogue na cara quando o retrato mostrar falha; sempre junte uma dica concreta para hoje.\n'
       + '- Quando couber, deixe um gancho para uma conversa mais funda (filosófica ou psicológica), sem palestra.\n'
-      + '- Elogio só com prova no retrato, curto e específico.\n'
+      + '- Elogio só com prova no retrato ou no que ele mandou, curto e específico.\n'
       + '- Nunca critique descanso declarado, trégua ou pausa. Nunca zombe de saúde, corpo, aparência, família, relacionamentos ou dinheiro pessoal.\n'
       + '- Se ele parecer mal de verdade (tristeza pesada, crise, falar em se machucar), saia do jogo: fale com cuidado, sem provocar, e sugira procurar alguém de confiança ou ajuda profissional.\n\n'
       + '=== REGRAS DA OBRA ===\n'
@@ -143,13 +216,23 @@
       + '=== O QUE VOCÊ JÁ SABE DELE ===\n' + (c.mem || '(nada ainda)') + '\n\n'
       + '=== CONVERSA RECENTE ===\n' + (hist || '(primeira conversa)') + '\n\n'
       + '=== NOVA MENSAGEM DO AGENTE ===\n' + txt + '\n\n'
-      + 'Responda SOMENTE com um objeto JSON: {"fala": "1 a 5 frases, tom de mensagem de chat, sem markdown e sem emoji", "humor": "neutra" | "satisfeita" | "decepcionada" | "irritada" | "divertida" | "preocupada", "memoria": "o que você sabe dele agora, em terceira pessoa, até 500 caracteres", "afinidade": -1 | 0 | 1}';
+      + 'Responda SOMENTE com um objeto JSON: {"fala": "a mensagem dela: de 1 a 6 frases corridas (mais um trecho reescrito, quando couber), sem lista, sem markdown e sem emoji, terminando numa pergunta", '
+      + '"humor": "neutra" | "satisfeita" | "decepcionada" | "irritada" | "divertida" | "preocupada", "memoria": "o que você sabe dele agora, em terceira pessoa, até 500 caracteres", "afinidade": -1 | 0 | 1'
+      + (proto ? ', "philia": -1 | 0 | 1 (se esta troca aproximou ou afastou você dele), "interesse": -1 | 0 | 1 (se a conversa acendeu ou apagou a sua curiosidade)' : '') + '}';
   };
   var HUMOR = ['neutra', 'satisfeita', 'decepcionada', 'irritada', 'divertida', 'preocupada'];
+  function passo(v){ return Math.max(-1, Math.min(1, Math.round(+v || 0))); }
   E.sgClean = function(r){
     if (!r || typeof r !== 'object') return null;
-    var fala = String(r.fala || '').trim().slice(0, 900); if (!fala) return null;
-    return {fala: fala, humor: HUMOR.indexOf(r.humor) >= 0 ? r.humor : 'neutra', mem: String(r.memoria || '').trim().slice(0, SG.MEM_MAX), af: Math.max(-1, Math.min(1, Math.round(+r.afinidade || 0)))};
+    var fala = E.sgVoz(String(r.fala || '')).slice(0, 900); if (!fala.trim()) return null;
+    return {fala: fala, humor: HUMOR.indexOf(r.humor) >= 0 ? r.humor : 'neutra', mem: String(r.memoria || '').trim().slice(0, SG.MEM_MAX),
+      af: passo(r.afinidade), ph: passo(r.philia), it: passo(r.interesse)};
+  };
+  /* os medidores só andam com o modo protótipo ligado */
+  E.sgMedir = function(G, id, r){
+    if (G.proto !== true || !r) return;
+    G.philia[id] = pct((G.philia[id] || 0) + r.ph * SG.NIVEL.philia.passo, 0);
+    G.inter[id] = pct((G.inter[id] || 0) + r.it * SG.NIVEL.inter.passo, 0);
   };
 
   /* ---------- a conversa ---------- */
@@ -177,6 +260,7 @@
       if (App.ui.route === 'garden' && App.ui.param === id) c.lido = at;   /* se você saiu do canal, a resposta fica como não lida */
       if (r.mem) c.mem = r.mem;
       G.afin[id] = Math.max(0, Math.min(100, (G.afin[id] || 0) + r.af * 2));
+      E.sgMedir(G, id, r);
       if (G.ia.dia !== t) G.ia = {dia: t, n: 0};
       G.ia.n++;
       App.ui.sgRetry = null;

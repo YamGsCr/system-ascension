@@ -1303,6 +1303,22 @@ html.cy-full .view{max-width:none;padding:0;gap:0;overflow:hidden}
 .sg-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--sc);color:#08060f;font:700 10.5px/1 var(--f-mono);letter-spacing:0;vertical-align:2px}
 .sg-aff{display:block;height:3px;background:var(--line);overflow:hidden}
 .sg-aff i{display:block;height:100%;background:var(--sc,var(--glow))}
+/* Shadow Garden · modo protótipo: medidores de Philia e Interesse (v20.7) */
+.sg-proto{display:grid;gap:6px;padding:8px 10px;border:1px dashed color-mix(in srgb,var(--sc,var(--glow)) 45%,var(--line))}
+.sg-med{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:8px;align-items:center}
+.sg-med-n{font:600 10.5px/1.4 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.sg-med-bar{display:block;height:5px;background:var(--line);overflow:hidden}
+.sg-med-bar i{display:block;height:100%;background:var(--sc,var(--glow));transition:width .4s}
+.sg-med-inter .sg-med-bar i{background:color-mix(in srgb,var(--sc,var(--glow)) 45%,var(--text))}
+.sg-med-r{min-width:108px;font-size:10.5px;color:var(--faint);white-space:nowrap;text-align:right}
+.sg-card .sg-proto{padding:4px 0 0;border:0;gap:3px}
+.sg-card .sg-med{grid-template-columns:62px minmax(0,1fr) auto}
+.sg-card .sg-med-n{font-size:9.5px}
+.sg-card .sg-med-r{min-width:0}
+.sg-protorow{display:grid;grid-template-columns:auto 72px minmax(0,1fr);gap:10px;align-items:center}
+.sg-protorow b{color:var(--sc);font:700 13px/1 var(--f-display);letter-spacing:.08em}
+.sg-protorow .sg-proto{border:0;padding:0}
+@media(max-width:600px){.sg-med{grid-template-columns:70px minmax(0,1fr) auto}.sg-protorow{grid-template-columns:auto minmax(0,1fr)}.sg-protorow .sg-proto{grid-column:1/-1}}
 .sg-card .sg-aff{position:absolute;left:12px;right:12px;bottom:7px;height:2px}
 .sg-affrow{display:grid;grid-template-columns:auto 76px minmax(0,1fr) 28px;gap:10px;align-items:center}
 .sg-affrow b{color:var(--sc);font:700 13px/1 var(--f-display);letter-spacing:.08em}

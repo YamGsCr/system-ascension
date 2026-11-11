@@ -143,6 +143,15 @@
   };
   App.A.sgEntrada = function(){ App.sgEntrada(); };
 
+  /* ---------- modo protótipo: Philia e Interesse ---------- */
+  function medidor(id, k){
+    var N = E.sgNivel(k, (G()[k] || {})[id]);
+    return '<div class="sg-med sg-med-' + k + '" title="' + U.esc(N.nome + ': ' + SG.NIVEL[k].dica) + '"><span class="sg-med-n">' + N.nome + '</span>'
+      + '<span class="sg-med-bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + N.v + '" aria-label="' + N.nome + '"><i style="width:' + N.v + '%"></i></span>'
+      + '<span class="sg-med-r mono">nv ' + N.n + ' · ' + N.rot + '</span></div>';
+  }
+  App.sgMedidores = function(id){ return G().proto ? '<div class="sg-proto">' + medidor(id, 'philia') + medidor(id, 'inter') + '</div>' : ''; };
+
   /* ---------- a aba ---------- */
   function wayChip(w){ return w ? '<span class="chip" style="color:' + w.color + '">' + U.icon(w.icon) + U.esc(w.name) + '</span>' : ''; }
   function off(){
@@ -164,7 +173,7 @@
       var M = SG.MAP[id], w = App.way(M.way), c = g.canal[id], u = App.sgNaoLidas(id), last = c.m[c.m.length - 1];
       return '<button class="sg-card" style="--sc:' + M.cor + '" data-a="sgOpen" data-id="' + id + '">' + App.sgFace(id, 48)
         + '<span class="stack" style="gap:3px;min-width:0"><b>' + M.n + (u ? ' <span class="sg-badge">' + u + '</span>' : '') + '</b>' + wayChip(w)
-        + '<span class="sg-last">' + U.esc(last ? (last.de === 'eu' ? 'você: ' : '') + last.t : M.papel) + '</span></span>'
+        + '<span class="sg-last">' + U.esc(last ? (last.de === 'eu' ? 'você: ' : '') + last.t : M.papel) + '</span>' + App.sgMedidores(id) + '</span>'
         + '<span class="sg-aff" title="Afinidade ' + g.afin[id] + '"><i style="width:' + g.afin[id] + '%"></i></span></button>';
     }).join('');
     if (g.shadow) cards += '<div class="sg-card off" style="--sc:' + SG.SHADOW.cor + '">' + App.sgSigil('shadow', 48) + '<span class="stack" style="gap:3px;min-width:0"><b>Shadow</b><span class="sg-last">o mestre observa; aparece nos marcos grandes</span></span></div>';
@@ -199,7 +208,10 @@
       + (M.fachada ? '<dt>Fachada</dt><dd>' + U.esc(M.fachada) + '</dd>' : '')
       + '<dt>Tom</dt><dd>' + U.esc(M.voz) + '</dd><dt>Como fala</dt><dd>' + U.esc(M.fala) + '</dd>'
       + '<dt>Manias</dt><dd>' + li(M.manias) + '</dd><dt>No Garden</dt><dd>' + li(M.rel) + '</dd>'
-      + '<dt>Com você</dt><dd>' + U.esc(M.agente) + '</dd></dl></details>';
+      + '<dt>Com você</dt><dd>' + U.esc(M.agente) + '</dd>'
+      + (M.ensina ? '<dt>Ensina</dt><dd>' + U.esc(M.ensina) + '</dd><dt>Elogia</dt><dd>' + U.esc(M.elogia) + '</dd><dt>Quando gosta</dt><dd>' + U.esc(M.gosta) + '</dd>'
+        + '<dt>Interesse</dt><dd>' + U.esc(M.curiosa) + '</dd><dt>Da Terra</dt><dd>' + U.esc(M.terra) + '</dd>' : '')
+      + '</dl></details>';
   }
   function canal(id){
     var g = G(), M = SG.MAP[id], w = App.way(M.way);
@@ -207,7 +219,7 @@
     return '<section class="win sg-canal" style="--sc:' + M.cor + '"><div class="sg-canal-h"><a class="iconbtn" href="#/garden" aria-label="Voltar ao conselho">' + U.icon('back') + '</a>' + App.sgFace(id, 44)
       + '<div class="stack" style="gap:3px;min-width:0"><b class="sg-nome">' + M.n + '</b><span class="faint" style="font-size:12.5px">' + U.esc(M.papel) + '</span></div>'
       + '<div class="row" style="gap:6px;margin-left:auto">' + wayChip(w) + '<span id="sgHumor">' + humorHTML(id) + '</span></div></div>'
-      + fichaHTML(M)
+      + '<div id="sgProto">' + App.sgMedidores(id) + '</div>' + fichaHTML(M)
       + '<div class="sg-chat" id="sgChat" aria-live="polite">' + chatHTML(id) + '</div>'
       + '<div class="sg-quick">' + [['relatorio', 'Relatório de hoje'], ['tarefa', 'Me dá uma tarefa'], ['desabafo', 'Hoje tá difícil']].map(function(q){ return '<button class="chip" data-a="sgQuick" data-id="' + id + '" data-q="' + q[0] + '">' + q[1] + '</button>'; }).join('') + '</div>'
       + '<div class="sg-input"><textarea data-i="sgDraft" data-id="' + id + '" rows="2" maxlength="' + SG.TXT_MAX + '" placeholder="Mensagem para ' + M.n + ' (Enter envia, Shift+Enter quebra a linha)">' + U.esc(draft) + '</textarea>'
@@ -222,7 +234,11 @@
       + '<section class="win"><div class="win-h">' + U.icon('user') + U.esc(App.sgNome()) + '<a class="act" href="#/garden">conselho</a></div><div class="stack" style="gap:12px">'
       + '<dl class="cy-rdlist">' + rows.map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + U.esc(String(r[1])) + '</dd>'; }).join('') + '</dl>'
       + '<div class="row" style="gap:8px;align-items:flex-end"><label class="fld" style="flex:1;min-width:180px">Codinome (vazio = só o número)<input type="text" maxlength="24" data-i="sgCod" value="' + U.esc((App.ui.sgCod != null ? App.ui.sgCod : g.cod) || '') + '"></label><button class="btn" data-a="sgCodSave">Salvar</button></div></div></section>'
-      + '<section class="win"><div class="win-h">' + U.icon('star') + 'Afinidade</div><div class="stack" style="gap:6px">' + aff + '</div></section>';
+      + '<section class="win"><div class="win-h">' + U.icon('star') + 'Afinidade</div><div class="stack" style="gap:6px">' + aff + '</div></section>'
+      + (g.proto ? '<section class="win sg-protowin"><div class="win-h">' + U.icon('eye') + 'Modo protótipo · Philia e Interesse</div><div class="stack" style="gap:10px">'
+        + '<p class="dim" style="font-size:13px">' + U.esc(SG.NIVEL.philia.nome + ': ' + SG.NIVEL.philia.dica + '. ' + SG.NIVEL.inter.nome + ': ' + SG.NIVEL.inter.dica + '.') + '</p>'
+        + SG.ORDEM.map(function(id){ var M = SG.MAP[id]; return '<div class="sg-protorow" style="--sc:' + M.cor + '">' + App.sgFace(id, 26) + '<b>' + M.n + '</b>' + App.sgMedidores(id) + '</div>'; }).join('')
+        + '</div></section>' : '');
   }
   function ajustes(){
     var g = G();
@@ -231,8 +247,9 @@
       + '<section class="win"><div class="win-h">' + U.icon('shield') + 'Conselho<a class="act" href="#/garden">voltar</a></div><div class="stack" style="gap:14px">'
       + '<label class="fld">Contato direta<select data-c="sgContato">' + SG.ORDEM.map(function(id){ return '<option value="' + id + '"' + (g.contato === id ? ' selected' : '') + '>' + SG.MAP[id].n + '</option>'; }).join('') + '</select></label>'
       + '<div class="stack" style="gap:6px"><span class="eyebrow">Intensidade</span>' + seg('sgIntens', [['leve', 'leve'], ['padrao', 'padrão'], ['pesada', 'pesada']], g.intens) + '<span class="faint" style="font-size:12.5px">' + U.esc(SG.INTENS[g.intens]) + '.</span></div>'
-      + '<div class="stack" style="gap:6px"><span class="eyebrow">Respostas de IA por dia</span>' + seg('sgIaDia', SG.IA_DIA.map(function(n){ return [n, n]; }), g.iaDia) + '<span class="faint" style="font-size:12.5px">Cada resposta usa uns 3 mil tokens do seu uso do Claude.</span></div>'
+      + '<div class="stack" style="gap:6px"><span class="eyebrow">Respostas de IA por dia</span>' + seg('sgIaDia', SG.IA_DIA.map(function(n){ return [n, n]; }), g.iaDia) + '<span class="faint" style="font-size:12.5px">Cada resposta usa uns 4 mil tokens do seu uso do Claude.</span></div>'
       + '<label class="check"><input type="checkbox" data-c="sgShadow"' + (g.shadow ? ' checked' : '') + '><span><b>Shadow nas cenas</b><br><span class="dim" style="font-size:13.5px">O mestre aparece, raro, nas cenas do conselho.</span></span></label>'
+      + '<label class="check"><input type="checkbox" data-c="sgProto"' + (g.proto ? ' checked' : '') + '><span><b>Modo protótipo</b><br><span class="dim" style="font-size:13.5px">Mostra os medidores em teste de cada Sombra: Philia (afeto e sentimento, o amor de amizade dela por você, nunca romance) e Interesse (a curiosidade dela pelo que você faz). Eles só andam com o modo ligado.</span></span></label>'
       + '</div></section>'
       + '<section class="win"><div class="win-h">' + U.icon('moon') + 'Saída</div><div class="stack" style="gap:10px"><p class="dim" style="font-size:13.5px">Desligar devolve o nome, a voz e o visual do Sistema de sempre e esconde a aba. Nada do Garden se perde.</p>'
       + '<div class="row"><button class="btn danger" data-a="sgSair">Desligar a ' + SG.APP + '</button></div></div></section>';
@@ -263,6 +280,7 @@
     ch.innerHTML = chatHTML(id); ch.scrollTop = ch.scrollHeight;
     if (st) st.innerHTML = statusHTML(id);
     var hm = App.$('sgHumor'); if (hm) hm.innerHTML = humorHTML(id);
+    var pr = App.$('sgProto'); if (pr) pr.innerHTML = App.sgMedidores(id);
     var b = document.querySelector('.sg-input [data-a="sgSend"]'); if (b) b.disabled = !!App.ui.sgBusy;
   };
 
@@ -293,5 +311,6 @@
   App.A.sgIntens = function(el){ var v = el.getAttribute('data-v'); if (!SG.INTENS[v]) return; G().intens = v; App.commit(['sg']); };
   App.A.sgIaDia = function(el){ var v = +el.getAttribute('data-v'); if (SG.IA_DIA.indexOf(v) < 0) return; G().iaDia = v; App.commit(['sg']); };
   App.C.sgShadow = function(el){ G().shadow = !!el.checked; App.commit(['sg']); };
+  App.C.sgProto = function(el){ G().proto = !!el.checked; App.commit(['sg']); };
   App.A.sgSair = function(){ ligar(false); App.go('status'); };
 })();
