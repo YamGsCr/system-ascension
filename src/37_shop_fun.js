@@ -50,17 +50,17 @@ SYS.shop('navigation', [
  {id:'ns_f8',tier:'epic',n:'Monitor extra só para planilha',rule:'até R$ 1.200',cd:72},
  {id:'ns_f9',tier:'legendary',n:'Viagem curta paga 100% com o dinheiro de lazer acumulado',rule:'orçamento de lazer, reserva intacta',seals:1,cd:168}
 ]);
-SYS.shop('ars', [
- {id:'ms_f1',tier:'common',n:'Energético de madrugada de estúdio',c:12,rule:'até R$ 15',rep:1,lim:'semana'},
- {id:'ms_f2',tier:'common',n:'O cabo ou adaptador que sumiu de novo',c:15,rule:'até R$ 60',rep:1,lim:'mês'},
- {id:'ms_f3',tier:'uncommon',n:'Camiseta de banda ou de selo',rule:'até R$ 150'},
- {id:'ms_f4',tier:'uncommon',n:'Vinil de um álbum que te formou',rule:'até R$ 250'},
- {id:'ms_f5',tier:'uncommon',n:'Jogo rítmico (osu!, Muse Dash e afins)',rule:'até R$ 80'},
- {id:'ms_f6',tier:'rare',n:'Pôster ou flyer de rave emoldurado',rule:'até R$ 200'},
- {id:'ms_f7',tier:'rare',n:'Fone bluetooth casual (esse não é referência, é para o ônibus)',rule:'até R$ 400'},
- {id:'ms_f8',tier:'rare',n:'Pelúcia ou boneco do mascote do seu selo',rule:'até R$ 250'},
- {id:'ms_f9',tier:'epic',n:'Ingresso VIP de festival ou rave',rule:'até R$ 600',cd:72},
- {id:'ms_f10',tier:'legendary',n:'Arte encomendada do logo do seu projeto (ilustrador de verdade)',rule:'até R$ 900',seals:1,cd:168}
+SYS.shop('vitruviano', [
+ {id:'ms_f1',tier:'common',br:'har',n:'Energético de madrugada de estúdio',c:12,rule:'até R$ 15',rep:1,lim:'semana'},
+ {id:'ms_f2',tier:'common',br:'har',n:'O cabo ou adaptador que sumiu de novo',c:15,rule:'até R$ 60',rep:1,lim:'mês'},
+ {id:'ms_f3',tier:'uncommon',br:'har',n:'Camiseta de banda ou de selo',rule:'até R$ 150'},
+ {id:'ms_f4',tier:'uncommon',br:'har',n:'Vinil de um álbum que te formou',rule:'até R$ 250'},
+ {id:'ms_f5',tier:'uncommon',br:'har',n:'Jogo rítmico (osu!, Muse Dash e afins)',rule:'até R$ 80'},
+ {id:'ms_f6',tier:'rare',br:'har',n:'Pôster ou flyer de rave emoldurado',rule:'até R$ 200'},
+ {id:'ms_f7',tier:'rare',br:'har',n:'Fone bluetooth casual (esse não é referência, é para o ônibus)',rule:'até R$ 400'},
+ {id:'ms_f8',tier:'rare',br:'har',n:'Pelúcia ou boneco do mascote do seu selo',rule:'até R$ 250'},
+ {id:'ms_f9',tier:'epic',br:'har',n:'Ingresso VIP de festival ou rave',rule:'até R$ 600',cd:72},
+ {id:'ms_f10',tier:'legendary',br:'har',n:'Arte encomendada do logo do seu projeto (ilustrador de verdade)',rule:'até R$ 900',seals:1,cd:168}
 ]);
 SYS.shop('founder', [
  {id:'fo_f1',tier:'common',n:'Café especial em grão para o balcão',c:20,rule:'até R$ 60',rep:1,lim:'semana'},
@@ -76,15 +76,18 @@ SYS.shop('founder', [
  {id:'fo_f11',tier:'legendary',n:'Confraternização de fim de ano decente',rule:'orçamento separado',seals:2,cd:168}
 ]);
 SYS.shop('mind', [
- {id:'mi_f1',tier:'common',n:'Chá bom ou café no fim da tarde',c:12,rule:'até R$ 30',rep:1,lim:'semana'},
- {id:'mi_f2',tier:'common',n:'Incenso, vela ou difusor',c:18,rule:'até R$ 60',rep:1,lim:'mês'},
  {id:'mi_f3',tier:'uncommon',n:'Boneco do Verity (não pergunta, só compra)',d:'Zero utilidade. Cem por cento necessário.',rule:'até R$ 250'},
  {id:'mi_f4',tier:'uncommon',n:'Quebra-cabeça de 1000 peças',rule:'até R$ 150'},
  {id:'mi_f5',tier:'uncommon',n:'Cubo mágico ou fidget de mesa',rule:'até R$ 120'},
  {id:'mi_f6',tier:'uncommon',n:'Jogo indie de 4 horas que mexe com a cabeça',rule:'até R$ 60',rep:1,lim:'mês'},
  {id:'mi_f7',tier:'rare',n:'Conjunto de dados de RPG bonito demais',rule:'até R$ 250'},
- {id:'mi_f8',tier:'rare',n:'Almofada e manta boas para ler',rule:'até R$ 300'},
  {id:'mi_f9',tier:'epic',n:'O jogo AAA do ano (aquele que você esperou)',rule:'até R$ 350',cd:168},
- {id:'mi_f10',tier:'epic',n:'Fone com cancelamento de ruído',rule:'até R$ 1.500',cd:168},
- {id:'mi_f11',tier:'legendary',n:'Um dia inteiro offline num lugar bonito',rule:'agenda limpa, celular no modo avião',seals:1,cd:168}
+ {id:'mi_f10',tier:'epic',n:'Fone com cancelamento de ruído',rule:'até R$ 1.500',cd:168}
+]);
+/* ritual de leitura calma: foi para a Philosophia do Vitruviano junto com a base do Mind */
+SYS.shop('vitruviano', [
+ {id:'mi_f1',tier:'common',br:'phi',n:'Chá bom ou café no fim da tarde',c:12,rule:'até R$ 30',rep:1,lim:'semana'},
+ {id:'mi_f2',tier:'common',br:'phi',n:'Incenso, vela ou difusor',c:18,rule:'até R$ 60',rep:1,lim:'mês'},
+ {id:'mi_f8',tier:'rare',br:'phi',n:'Almofada e manta boas para ler',rule:'até R$ 300'},
+ {id:'mi_f11',tier:'legendary',br:'phi',n:'Um dia inteiro offline num lugar bonito',rule:'agenda limpa, celular no modo avião',seals:1,cd:168}
 ]);

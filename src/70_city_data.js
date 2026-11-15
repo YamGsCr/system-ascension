@@ -27,8 +27,9 @@ SYS.CITY = {
     {id: 'servidores', way: 'architect', n: 'Sala de Servidores', curto: 'Servidores', ic: 'd_servers', col: 0, row: 0,
       ruas: ['Campanha · Atos I a X', 'Arcos laterais'], sel: [{arcs: ['act1','act2','act3','act4','act5','act6','act7','act8','act9','act10']}, {arcs: ['s1','s2','s3','s4','s5']}],
       clas: [['Contadores de Ciclos', 'Tudo tem custo. O que não foi medido foi pago às cegas.'], ['Casa de Babel', 'Código é texto para gente; a máquina só lê de passagem.'], ['Ordem do Prumo', 'Ou está no prumo, ou não está.']]},
-    {id: 'estudio', way: 'ars', n: 'Estúdio sem Janela', curto: 'Estúdio', ic: 'd_studio', col: 1, row: 0,
-      ruas: ['Ouvido e Teoria', 'MIDI e Produção', 'Cordas'], sel: [{tronco: true}, {br: 'midi'}, {br: 'str'}],
+    {id: 'estudio', way: 'vitruviano', n: 'Estúdio sem Janela', curto: 'Estúdio', ic: 'd_studio', col: 1, row: 0,
+      /* desde a v21 o Estúdio é a Harmonia do Vitruviano: as ruas puxam os arcos da antiga base, da Produção e das Cordas */
+      ruas: ['Ouvido e Teoria', 'MIDI e Produção', 'Cordas'], sel: [{arcs: ['hp1','m1','m2']}, {arcs: ['m3','m4','m5','m6','m7','m8','ms1','ms2','m10']}, {arcs: ['mc1','mc2','mc3','m9','mcs1']}],
       clas: [['Seita do Amen', 'Corta no tempo errado. De propósito.'], ['Ordem do Contraponto', 'Duas vozes, nenhuma obedece, e mesmo assim soa.']]},
     {id: 'piscinas', way: 'aesthetic', n: 'Piscinas', curto: 'Piscinas', ic: 'd_pools', col: 2, row: 0,
       ruas: ['Calistenia', 'Cuidado', 'Estilo e Didática', 'Contemplação'], sel: [{br: 'cal'}, {br: 'cui'}, {br: 'sty'}, {br: 'con'}], fis: [0],
@@ -40,7 +41,8 @@ SYS.CITY = {
       ruas: ['Economia Básica', 'Ações e ETFs', 'Gerenciamento', 'Tesouraria e Capital'], sel: [{br: 'eco'}, {br: 'inv'}, {br: 'ger'}, {br: 'tes'}],
       clas: [['Liga do Livro-Razão', 'Centavo que some volta. Com juros.'], ['Navegadores da Maré', 'Ninguém prevê a maré; a gente lê e ajusta a vela.']]},
     {id: 'biblioteca', way: 'mind', n: 'Biblioteca às 3h', curto: 'Biblioteca', ic: 'd_library', col: 0, row: 2,
-      ruas: ['Pensamento', 'Hiperfocos e Arquivos', 'Jogos e Sistemas'], sel: [{tronco: true}, {br: 'hip'}, {br: 'jog'}],
+      /* a rua Pensamento puxa os nós da antiga base do Mind, que hoje moram no Vitruviano (sel.way); a recompensa segue do distrito */
+      ruas: ['Pensamento', 'Hiperfocos e Arquivos', 'Jogos e Sistemas'], sel: [{way: 'vitruviano', arcs: ['pa1','i1','i2','i3','i4','i5','i6','is1','is2']}, {br: 'hip'}, {br: 'jog'}],
       clas: [['Círculo da Lamparina', 'Defina os termos. Depois a gente briga.'], ['Casa da Sombra', 'O que você não olha, olha você.'], ['Arquivistas do Hiperfoco', 'Tudo que você amou por uma semana merece uma ficha.']]},
     {id: 'galeria', way: 'flaneur', n: 'Galeria Coberta', curto: 'Galeria', ic: 'd_gallery', col: 1, row: 2,
       ruas: ['Observação e Leitura', 'Ofício da Escrita', 'Teoria e Academia', 'Publicação'], sel: [{br: 'obs'}, {br: 'ofi'}, {br: 'aca'}, {br: 'pub'}],

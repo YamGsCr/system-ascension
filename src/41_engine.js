@@ -116,7 +116,7 @@ E.newState = function(){
   return {
     v:2, _u:'', createdAt:new Date().toISOString(), start:t, lastSeen:t,
     profile:{name:'', sig:'Ainda renderizando.', avatar:'sigil', emoji:'🗡️', title:null, namecard:'nc_window', frame:'fr_basic', fx:null, showcase:[]},
-    settings:{skin:'sk_system', openWorld:false, readWay:'flaneur', dailies:SYS.DAILIES.filter(function(d){return d.def;}).map(function(d){return d.id;}), season:{focus:['architect','ars'], fixed:['aesthetic','founder','mind'], main:'architect', a:'ars', b:'aesthetic', start:t}, motion:true, resetHour:SYS.RESET_HOUR, extrasPin:[], cityBeta:false},
+    settings:{skin:'sk_system', openWorld:false, readWay:'flaneur', dailies:SYS.DAILIES.filter(function(d){return d.def;}).map(function(d){return d.id;}), season:{focus:['architect','vitruviano'], fixed:['aesthetic','founder','mind'], main:'architect', a:'vitruviano', b:'aesthetic', start:t}, motion:true, resetHour:SYS.RESET_HOUR, extrasPin:[], cityBeta:false},
     nodes:{}, gates:{}, books:{}, ach:{}, buys:[], pending:[], sysbuys:[],
     owned:{skins:[], namecards:[], frames:[], fx:[], tickets:0, custom:false, freezes:0, keys:{E:0, D:0, C:0, B:0, A:0, S:0}, showcase12:false},
     inv:{pos:[], snaps:[], alloc:{cx:10, rf:40, rv:45, alt:5}, cost:0, upd:''},

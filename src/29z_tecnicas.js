@@ -484,7 +484,7 @@ SYS.track('V46', 'orcamento', {
 });
 
 /* ---------- ARS · DAW ---------- */
-SYS.choice({key:'daw', way:'ars', n:'DAW principal', q:'Em qual DAW você vai morar?',
+SYS.choice({key:'daw', way:'vitruviano', n:'DAW principal', q:'Em qual DAW você vai morar?',
   why:'Cada DAW tem um jeito de pensar: padrão e playlist (FL), clipe e cena (Live), linha do tempo livre (REAPER), tracker (Renoise). Atalho, roteamento e template só viram reflexo numa casa só. Trocar é possível; dominar uma vale mais que arranhar quatro.',
   opts:[
     {id:'reaper', n:'REAPER', tag:'Leve, barata e customizável até o osso', who:'Quem grava áudio (cordas, voz), edita muito e monta o próprio fluxo'},
@@ -518,7 +518,7 @@ SYS.track('M46', 'daw', {
 });
 
 /* ---------- ARS · software de DJ ---------- */
-SYS.choice({key:'dj', way:'ars', n:'Software de DJ', q:'Em que ecossistema sua biblioteca vai morar?',
+SYS.choice({key:'dj', way:'vitruviano', n:'Software de DJ', q:'Em que ecossistema sua biblioteca vai morar?',
   why:'Cue points, beatgrids e playlists ficam presos ao software. Dá para converter, mas dói. E o software decide o hardware: em clube, quase sempre é CDJ.',
   opts:[
     {id:'rekordbox', n:'rekordbox', tag:'Padrão de clube: prepara o pendrive para CDJ', who:'Quem quer tocar em festa e clube com CDJ/XDJ'},

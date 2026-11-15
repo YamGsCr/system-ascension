@@ -1,57 +1,90 @@
-/* ===== THE ARS SUBTILIOR WAY v2 — vertentes: MIDI & Produção · Cordas ===== */
+/* ===== VITRUVIANO · HARMONIA (o antigo Ars Subtilior): base de ouvido e teoria, Produção e Cordas =====
+   Os IDs (M01…M70, mg*, ms_*) ficam iguais aos do Ars: o progresso salvo acompanha os nós. */
 SYS.lib({
-  makingMusic:{t:'Making Music: 74 Creative Strategies for Electronic Music Producers',a:'Dennis DeSantis (Ableton)',y:'2015 · grátis online',u:'https://makingmusic.ableton.com/',w:'ars',note:'Estratégias para começar, progredir e TERMINAR músicas. Leia um capítulo antes de cada sessão travada.'},
-  mixingSecrets:{t:'Mixing Secrets for the Small Studio',a:'Mike Senior',y:'2ª ed. · 2018',w:'ars',note:'Mixagem em home studio: monitoração, balanço, compressão, EQ, graves e referência.'},
-  masteringAudio:{t:'Mastering Audio: The Art and the Science',a:'Bob Katz',y:'3ª ed. · 2014',w:'ars',note:'Loudness, dinâmica, dither e o que um master deveria fazer.'},
-  welsh:{t:'Welsh’s Synthesizer Cookbook',a:'Fred Welsh',y:'3ª ed.',w:'ars',note:'Receitas de patches para entender síntese recriando sons.'},
-  hooktheory:{t:'Hooktheory I & II',a:'Hooktheory (Anderson, Carlton & Miyakawa)',y:'livros + Hookpad',u:'https://www.hooktheory.com/',w:'ars',note:'Teoria prática a partir de músicas reais: graus, progressões, melodia.'},
-  mtfcm:{t:'Music Theory for Computer Musicians',a:'Michael Hewitt',y:'2008',w:'ars',note:'Teoria musical explicada dentro da DAW e do piano roll.'},
-  energyFlash:{t:'Energy Flash (Generation Ecstasy)',a:'Simon Reynolds',y:'ed. ampliada · 2013',w:'ars',note:'A história da rave, do techno de Detroit ao jungle e ao drum & bass.'},
-  allCrews:{t:'All Crews: Journeys Through Jungle / Drum & Bass Culture',a:'Brian Belle-Fortune',y:'2004',u:'https://allcrew.uk/',w:'ars',note:'A cultura jungle/DnB contada por quem estava lá: DJs, MCs, selos, piratas.'},
-  lastNightDJ:{t:'Last Night a DJ Saved My Life',a:'Bill Brewster & Frank Broughton',y:'ed. revisada',w:'ars',note:'História do DJ e da arte de selecionar.'},
-  howToDJRight:{t:'How to DJ Right',a:'Bill Brewster & Frank Broughton',y:'2003',w:'ars',note:'Técnica e mentalidade de DJ: beatmatching, programação e leitura de pista.'},
-  rhythmScience:{t:'Rhythm Science',a:'Paul D. Miller (DJ Spooky)',y:'2004',w:'ars',note:'Sampling e remix como forma de pensamento.'},
-  sonicWarfare:{t:'Sonic Warfare',a:'Steve Goodman (Kode9)',y:'2010',w:'ars',note:'Som, grave, medo e afeto — teoria escrita por um produtor de bass music.'},
-  fantasmasVida:{t:'Ghosts of My Life',a:'Mark Fisher',y:'2014',pt:'Fantasmas da Minha Vida (Autonomia Literária)',w:'ars',note:'Hauntologia, jungle, Burial e futuros perdidos: a teoria por trás da estética liminal.'},
-  restoRuido:{t:'The Rest Is Noise',a:'Alex Ross',y:'2007',pt:'O Resto é Ruído (Companhia das Letras)',w:'ars',note:'A música do século XX: repertório e ideias para quem compõe.'},
-  oceanSound:{t:'Ocean of Sound',a:'David Toop',y:'1995',w:'ars',note:'Ambient, espaço e escuta: do Debussy ao dub e à eletrônica.'},
-  adlerOrch:{t:'The Study of Orchestration',a:'Samuel Adler',y:'4ª ed. · 2016',w:'ars',note:'A referência de orquestração; foque nos capítulos de cordas.'},
-  rimsky:{t:'Principles of Orchestration',a:'Nikolai Rimsky-Korsakov',y:'domínio público',u:'https://www.gutenberg.org/ebooks/search/?query=principles+of+orchestration',w:'ars',note:'Clássico gratuito sobre combinação de instrumentos.'},
-  halBass:{t:'Hal Leonard Bass Method',a:'Ed Friedland',y:'Complete Edition',w:'ars',note:'Método progressivo de baixo com leitura e groove.'},
-  walkingBass:{t:'Building Walking Bass Lines',a:'Ed Friedland',y:'1995',w:'ars',note:'Como construir linhas que caminham pela harmonia.'},
-  jamerson:{t:'Standing in the Shadows of Motown',a:'Allan “Dr. Licks” Slutsky',y:'1989',w:'ars',note:'A vida e as linhas de James Jamerson — a aula definitiva de groove no baixo.'},
-  musicaCerebro:{t:'This Is Your Brain on Music',a:'Daniel J. Levitin',y:'2006',pt:'A Música no Seu Cérebro',w:'ars',note:'Como o cérebro percebe ritmo, altura, timbre e expectativa.'}
+  makingMusic:{t:'Making Music: 74 Creative Strategies for Electronic Music Producers',a:'Dennis DeSantis (Ableton)',y:'2015 · grátis online',u:'https://makingmusic.ableton.com/',w:'vitruviano',note:'Estratégias para começar, progredir e TERMINAR músicas. Leia um capítulo antes de cada sessão travada.'},
+  mixingSecrets:{t:'Mixing Secrets for the Small Studio',a:'Mike Senior',y:'2ª ed. · 2018',w:'vitruviano',note:'Mixagem em home studio: monitoração, balanço, compressão, EQ, graves e referência.'},
+  masteringAudio:{t:'Mastering Audio: The Art and the Science',a:'Bob Katz',y:'3ª ed. · 2014',w:'vitruviano',note:'Loudness, dinâmica, dither e o que um master deveria fazer.'},
+  welsh:{t:'Welsh’s Synthesizer Cookbook',a:'Fred Welsh',y:'3ª ed.',w:'vitruviano',note:'Receitas de patches para entender síntese recriando sons.'},
+  hooktheory:{t:'Hooktheory I & II',a:'Hooktheory (Anderson, Carlton & Miyakawa)',y:'livros + Hookpad',u:'https://www.hooktheory.com/',w:'vitruviano',note:'Teoria prática a partir de músicas reais: graus, progressões, melodia.'},
+  mtfcm:{t:'Music Theory for Computer Musicians',a:'Michael Hewitt',y:'2008',w:'vitruviano',note:'Teoria musical explicada dentro da DAW e do piano roll.'},
+  energyFlash:{t:'Energy Flash (Generation Ecstasy)',a:'Simon Reynolds',y:'ed. ampliada · 2013',w:'vitruviano',note:'A história da rave, do techno de Detroit ao jungle e ao drum & bass.'},
+  allCrews:{t:'All Crews: Journeys Through Jungle / Drum & Bass Culture',a:'Brian Belle-Fortune',y:'2004',u:'https://allcrew.uk/',w:'vitruviano',note:'A cultura jungle/DnB contada por quem estava lá: DJs, MCs, selos, piratas.'},
+  lastNightDJ:{t:'Last Night a DJ Saved My Life',a:'Bill Brewster & Frank Broughton',y:'ed. revisada',w:'vitruviano',note:'História do DJ e da arte de selecionar.'},
+  howToDJRight:{t:'How to DJ Right',a:'Bill Brewster & Frank Broughton',y:'2003',w:'vitruviano',note:'Técnica e mentalidade de DJ: beatmatching, programação e leitura de pista.'},
+  rhythmScience:{t:'Rhythm Science',a:'Paul D. Miller (DJ Spooky)',y:'2004',w:'vitruviano',note:'Sampling e remix como forma de pensamento.'},
+  sonicWarfare:{t:'Sonic Warfare',a:'Steve Goodman (Kode9)',y:'2010',w:'vitruviano',note:'Som, grave, medo e afeto — teoria escrita por um produtor de bass music.'},
+  fantasmasVida:{t:'Ghosts of My Life',a:'Mark Fisher',y:'2014',pt:'Fantasmas da Minha Vida (Autonomia Literária)',w:'vitruviano',note:'Hauntologia, jungle, Burial e futuros perdidos: a teoria por trás da estética liminal.'},
+  restoRuido:{t:'The Rest Is Noise',a:'Alex Ross',y:'2007',pt:'O Resto é Ruído (Companhia das Letras)',w:'vitruviano',note:'A música do século XX: repertório e ideias para quem compõe.'},
+  oceanSound:{t:'Ocean of Sound',a:'David Toop',y:'1995',w:'vitruviano',note:'Ambient, espaço e escuta: do Debussy ao dub e à eletrônica.'},
+  adlerOrch:{t:'The Study of Orchestration',a:'Samuel Adler',y:'4ª ed. · 2016',w:'vitruviano',note:'A referência de orquestração; foque nos capítulos de cordas.'},
+  rimsky:{t:'Principles of Orchestration',a:'Nikolai Rimsky-Korsakov',y:'domínio público',u:'https://www.gutenberg.org/ebooks/search/?query=principles+of+orchestration',w:'vitruviano',note:'Clássico gratuito sobre combinação de instrumentos.'},
+  halBass:{t:'Hal Leonard Bass Method',a:'Ed Friedland',y:'Complete Edition',w:'vitruviano',note:'Método progressivo de baixo com leitura e groove.'},
+  walkingBass:{t:'Building Walking Bass Lines',a:'Ed Friedland',y:'1995',w:'vitruviano',note:'Como construir linhas que caminham pela harmonia.'},
+  jamerson:{t:'Standing in the Shadows of Motown',a:'Allan “Dr. Licks” Slutsky',y:'1989',w:'vitruviano',note:'A vida e as linhas de James Jamerson — a aula definitiva de groove no baixo.'},
+  musicaCerebro:{t:'This Is Your Brain on Music',a:'Daniel J. Levitin',y:'2006',pt:'A Música no Seu Cérebro',w:'vitruviano',note:'Como o cérebro percebe ritmo, altura, timbre e expectativa.'}
 });
 SYS.lib({
-  danceMusicManual:{t:'Dance Music Manual',a:'Rick Snoman',y:'4ª ed. · 2019',w:'ars',note:'Do sound design ao master, gênero por gênero: o manual mais completo de música eletrônica.'},
-  recordingSecrets:{t:'Recording Secrets for the Small Studio',a:'Mike Senior',y:'2015',w:'ars',note:'Gravar bem em casa: microfonação, DI, sala ruim e captação honesta.'},
-  designingSound:{t:'Designing Sound',a:'Andy Farnell',y:'2010 · MIT Press',w:'ars',note:'Sound design procedural: entender o som como sistema físico antes de sair mexendo em preset.'},
-  sonnenschein:{t:'Sound Design: The Expressive Power of Music, Voice and Sound Effects in Cinema',a:'David Sonnenschein',y:'2001',w:'ars',note:'Como som cria emoção e tensão na tela — a base para trilha de horror e ARG.'},
-  afinacaoMundo:{t:'The Soundscape / A Afinação do Mundo',a:'R. Murray Schafer',y:'1977',pt:'A Afinação do Mundo (Editora Unesp)',w:'ars',note:'Paisagem sonora, escuta e ecologia acústica: o livro que ensina a ouvir o mundo como matéria-prima.'},
-  microsound:{t:'Microsound',a:'Curtis Roads',y:'2001 · MIT Press',w:'ars',note:'Síntese granular e a escala microscópica do som — a teoria por trás das texturas liminais.'},
-  bassGrimoire:{t:'The Bass Grimoire',a:'Adam Kadmon',y:'Carl Fischer',w:'ars',note:'Escalas, modos e acordes desenhados no braço do baixo. Livro de consulta, não de leitura corrida.'},
-  guitarGrimoire:{t:'The Guitar Grimoire: Scales and Modes',a:'Adam Kadmon',y:'Carl Fischer',w:'ars',note:'O mesmo tratado visual para guitarra: shapes, modos e digitações.'},
-  capBass:{t:'Music Theory for the Bass Player',a:'Ariane Cap',y:'2015',w:'ars',note:'Teoria musical aplicada ao braço do baixo, com exercícios e vídeos.'},
-  fretboardLogic:{t:'Fretboard Logic SE',a:'Bill Edwards',y:'ed. especial',w:'ars',note:'O sistema CAGED explicado até virar mapa mental do braço.'},
-  erlewineRepair:{t:'The Guitar Player Repair Guide',a:'Dan Erlewine',y:'3ª ed. · 2007',w:'ars',note:'Regulagem, trastes, elétrica e manutenção — o manual do luthier amador.'},
-  alfredPiano:{t:'Alfred’s Basic Adult All-in-One Course',a:'Willard A. Palmer, Morton Manus & Amanda Vick Lethco',y:'Livro 1',w:'ars',note:'Método de teclado para adultos: leitura, acordes e independência de mãos em doses pequenas.'}
-});
-
-SYS.way({
-  id:'ars', name:'The Ars Subtilior Way', pt:'Caminho do Compositor', attr:'RIT', attrName:'Ritmo', color:'#ff4fd8', icon:'wave',
-  cur:{code:'ARS', name:'Créditos Subtilior'},
-  tagline:'Base comum de ouvido e teoria, e duas vertentes: MIDI & Produção (DAW, breaks, síntese, arranjo, mix, DJ e live) e Cordas (baixo, guitarra, orquestra e gravação).',
-  lore:'Ars subtilior (“a arte mais sutil”) foi um estilo do fim do século XIV, famoso pela complexidade rítmica e pela notação ousada. Seiscentos anos depois, um Amen picotado em compasso ímpar é a mesma heresia.',
-  checks:['Existe áudio exportado (não só projeto aberto)','Explico as escolhas: ritmo, harmonia, timbre e forma','Feito sem atalho que esconda a skill (sync, preset intocado, loop cru)'],
-  tierNames:['Bedroom Ghost','Loop Maker','Break Surgeon','Bass Alchemist','Selector','Subtilior','THE COMPOSER'],
-  branches:[
-    {id:'midi', n:'MIDI & Produção', ic:'wave', d:'DAW como instrumento, MIDI de verdade, breaks, síntese, arranjo, mix, lançamento, DJ e live.', tierNames:['Preset Tourist','Piano Roll Rat','Beat Programmer','Sound Designer','Producer Supremo'], mt:'Mestre da Produção'},
-    {id:'str', n:'Cordas', ic:'star', d:'Baixo, guitarra, escrita para cordas, gravação em casa e luthieria básica.', tierNames:['Dedos Moles','Calejado','Guardião do Groove','Músico de Sessão','String Sorcerer'], mt:'Mestre das Cordas'}
-  ]
+  danceMusicManual:{t:'Dance Music Manual',a:'Rick Snoman',y:'4ª ed. · 2019',w:'vitruviano',note:'Do sound design ao master, gênero por gênero: o manual mais completo de música eletrônica.'},
+  recordingSecrets:{t:'Recording Secrets for the Small Studio',a:'Mike Senior',y:'2015',w:'vitruviano',note:'Gravar bem em casa: microfonação, DI, sala ruim e captação honesta.'},
+  designingSound:{t:'Designing Sound',a:'Andy Farnell',y:'2010 · MIT Press',w:'vitruviano',note:'Sound design procedural: entender o som como sistema físico antes de sair mexendo em preset.'},
+  sonnenschein:{t:'Sound Design: The Expressive Power of Music, Voice and Sound Effects in Cinema',a:'David Sonnenschein',y:'2001',w:'vitruviano',note:'Como som cria emoção e tensão na tela — a base para trilha de horror e ARG.'},
+  afinacaoMundo:{t:'The Soundscape / A Afinação do Mundo',a:'R. Murray Schafer',y:'1977',pt:'A Afinação do Mundo (Editora Unesp)',w:'vitruviano',note:'Paisagem sonora, escuta e ecologia acústica: o livro que ensina a ouvir o mundo como matéria-prima.'},
+  microsound:{t:'Microsound',a:'Curtis Roads',y:'2001 · MIT Press',w:'vitruviano',note:'Síntese granular e a escala microscópica do som — a teoria por trás das texturas liminais.'},
+  bassGrimoire:{t:'The Bass Grimoire',a:'Adam Kadmon',y:'Carl Fischer',w:'vitruviano',note:'Escalas, modos e acordes desenhados no braço do baixo. Livro de consulta, não de leitura corrida.'},
+  guitarGrimoire:{t:'The Guitar Grimoire: Scales and Modes',a:'Adam Kadmon',y:'Carl Fischer',w:'vitruviano',note:'O mesmo tratado visual para guitarra: shapes, modos e digitações.'},
+  capBass:{t:'Music Theory for the Bass Player',a:'Ariane Cap',y:'2015',w:'vitruviano',note:'Teoria musical aplicada ao braço do baixo, com exercícios e vídeos.'},
+  fretboardLogic:{t:'Fretboard Logic SE',a:'Bill Edwards',y:'ed. especial',w:'vitruviano',note:'O sistema CAGED explicado até virar mapa mental do braço.'},
+  erlewineRepair:{t:'The Guitar Player Repair Guide',a:'Dan Erlewine',y:'3ª ed. · 2007',w:'vitruviano',note:'Regulagem, trastes, elétrica e manutenção — o manual do luthier amador.'},
+  alfredPiano:{t:'Alfred’s Basic Adult All-in-One Course',a:'Willard A. Palmer, Morton Manus & Amanda Vick Lethco',y:'Livro 1',w:'vitruviano',note:'Método de teclado para adultos: leitura, acordes e independência de mãos em doses pequenas.'}
 });
 
 /* ---------- BASE COMUM ---------- */
-SYS.arc('ars', { id:'m1', base:1, n:'I · OUVIDO & RITMO', wk:'Base · I', sub:'Som, escuta, subdivisão e treino de ouvido. Vale para quem programa e para quem toca.', nodes:[
+/* ---------- PIANO · instrumento-base da Harmonia (examinadora: Epsilon) ----------
+   O piano é a base de teoria e ouvido. Ele só é comprado depois de 30 dias seguidos de treino de ouvido e teoria
+   (Onda 2 da Rotina, item 12 da lista de compras). A composição entra em dose fixa: uma faixa por mês. */
+SYS.arc('vitruviano', { id:'hp1', br:'har', n:'PIANO · INSTRUMENTO-BASE', wk:'Harmonia · Piano', sub:'O teclado como mapa de teoria e ouvido. A faixa do mês sai dele, não do preset.', nodes:[
+{id:'M71',d:'Piano',t:'Postura, dedilhado & o teclado como mapa',xp:40,cr:14,ach:'Keys Awake',
+  s:'Sentar, posicionar a mão e enxergar as 12 tonalidades no teclado antes de tocar qualquer música.',
+  st:['Altura do banco, punho e relaxamento','Dedilhado de escalas maiores (mão direita, depois esquerda)','Geografia do teclado: grupos de 2 e 3 pretas','Círculo de quintas no teclado','Metrônomo desde o primeiro dia'],
+  wh:[['musictheory.net — lições','https://www.musictheory.net/lessons','curso','EN'],['Functional Ear Trainer','https://www.miles.be/','ferramenta','EN']],
+  bk:[['alfredPiano','Unidades 1 a 5']],
+  q:'15 min/dia por 3 semanas: escalas de dó, sol, ré e fá com as duas mãos no metrônomo, subindo 5 BPM por semana.',
+  dv:'Vídeo da semana 1 e da semana 3', g:'Escalas limpas a 80 BPM em colcheias, sem tensão no punho.',
+  f:'Tocar rápido e sujo; pular o metrônomo; dor no punho ignorada.'},
+{id:'M72',d:'Piano',t:'Leitura nas claves de sol e fá',xp:40,cr:14,
+  s:'Ler o suficiente para tocar uma progressão e uma melodia escrita sem decorar de vídeo.',
+  st:['Pauta, claves e notas suplementares','Ritmo escrito: figuras e pausas','Leitura à primeira vista em doses curtas','Cifra × partitura'],
+  wh:[['musictheory.net — exercícios de leitura','https://www.musictheory.net/exercises','ferramenta','EN']],
+  bk:[['alfredPiano','Leitura em duas claves']],
+  q:'Leia à primeira vista 10 trechos curtos (um por dia útil) e grave o último.',
+  dv:'Log de 10 trechos + gravação', g:'Lê em tempo lento sem parar a cada nota.',
+  f:'Escrever o nome das notas em cima da partitura para sempre.'},
+{id:'M73',d:'Piano',t:'Harmonia ao teclado: voicings, cadências & progressões',xp:45,cr:16,ach:'Voice Leader',
+  s:'Tocar o que a teoria diz: II-V-I, cadências e voicings que soam como as faixas que você ama.',
+  st:['Tríades e tétrades em todas as inversões','Condução de vozes com nota comum','Cadências: perfeita, plagal, de engano','II-V-I e progressões de DnB atmosférico','Mão esquerda de baixo + mão direita de acorde'],
+  wh:[['Hooktheory — Hookpad','https://www.hooktheory.com/','ferramenta','EN'],['musictheory.net — acordes','https://www.musictheory.net/lessons','curso','EN']],
+  bk:[['hooktheory','Graus e progressões'],['mtfcm','Voicings no piano roll']],
+  q:'Toque 5 progressões em 3 tonalidades com condução de vozes e grave uma delas como base de faixa.',
+  dv:'Gravação das 5 progressões + uma base', g:'Troca de acorde sem pular de oitava à toa e explica a função de cada acorde.',
+  f:'Decorar formatos de mão sem saber o grau.'},
+{id:'M74',d:'Acústica',t:'Acústica: série harmônica, timbre & sala',xp:45,cr:16,
+  s:'A ponte com a Mathematica IV: por que o piano e o reese soam como soam, e por que o quarto mente no grave.',
+  st:['Série harmônica e consonância','Timbre como espectro','Envelope e transiente','Modos de sala e posição de escuta','Medir com microfone e espectro'],
+  wh:[['HyperPhysics — Som','http://hyperphysics.phy-astr.gsu.edu/hbase/Sound/soucon.html','site','EN'],['REW — Room EQ Wizard','https://www.roomeqwizard.com/','ferramenta','EN']],
+  bk:[['designingSound','Som como sistema físico']],
+  q:'Grave uma nota do piano e um patch seu, plote os espectros e explique a diferença de timbre.',
+  dv:'Dois espectros + explicação', g:'Aponta os harmônicos e relaciona com o que ouve.',
+  f:'Explicar timbre só com adjetivo.'},
+{id:'M75',d:'BOSS',t:'BOSS · A Faixa sob Restrição',xp:260,cr:90,boss:1,ach:'Restrição Cumprida',
+  s:'Chefe da Epsilon: uma faixa com escala, BPM e duração impostos, com a progressão harmônica tocada ao piano.',
+  st:['Restrição sorteada antes de começar (escala, BPM, duração)','Progressão tocada ao piano e gravada em MIDI','Faixa terminada e exportada','Explicação das escolhas de ritmo, harmonia, timbre e forma'],
+  q:'Sorteie a restrição, toque a progressão ao piano e termine a faixa dentro do mês.',
+  dv:'Faixa exportada + MIDI do piano + nota de escolhas', g:'Todas as restrições cumpridas e a progressão é tocada, não desenhada.',
+  f:'Trocar a restrição no meio porque ficou difícil.'}
+]});
+SYS.gate('vitruviano', {id:'hpg1',arc:'hp1',n:'Selo · Piano',ev:['Vídeos das escalas','Log de leitura + gravação','5 progressões gravadas','Dois espectros comparados','Faixa sob restrição'],oral:'Toque um II-V-I em duas tonalidades e explique a condução de vozes.',fail:'Qual restrição você quase quebrou e por quê?',ach:'vt_hp1',xp:200});
+
+SYS.arc('vitruviano', { id:'m1', br:'har', n:'I · OUVIDO & RITMO', wk:'Harmonia · Base I', sub:'Som, escuta, subdivisão e treino de ouvido. Vale para quem programa e para quem toca.', nodes:[
 {id:'M01',d:'Ouvido',t:'Física do som & escuta ativa',xp:35,cr:12,ach:'Ears Online',
   s:'Separar camadas de uma faixa como quem desmonta um relógio.',
   st:['Frequência, amplitude e fase','Harmônicos e timbre','Espectro: sub (20–60 Hz), graves, médios, agudos','Escuta ativa: separar camadas','Proteção auditiva: volume e pausas (zumbido não volta)','Monitoração: fone vs caixa e a sala'],
@@ -78,7 +111,7 @@ SYS.arc('ars', { id:'m1', base:1, n:'I · OUVIDO & RITMO', wk:'Base · I', sub:'
   f:'Decorar as respostas do app sem cantar; desistir na primeira semana.'}
 ]});
 
-SYS.arc('ars', { id:'m2', base:1, needGate:'mg1', n:'II · TEORIA APLICADA', wk:'Base · II', sub:'Escalas, modos, acordes, melodia e baixo — a gramática que as duas vertentes usam.', nodes:[
+SYS.arc('vitruviano', { id:'m2', br:'har', needGate:'mg1', n:'II · TEORIA APLICADA', wk:'Harmonia · Base II', sub:'Escalas, modos, acordes, melodia e baixo — a gramática que as duas vertentes usam.', nodes:[
 {id:'M04',d:'Teoria',t:'Escalas, modos & tonalidade',xp:45,cr:16,ach:'Dark Modes',
   s:'Cada modo é uma cor emocional — o frígio é o seu melhor amigo no neuro.',
   st:['Maior e menor natural','Menor harmônica e melódica','Modos: dórico, frígio, lídio','Círculo de quintas','Relativas e tonalidade','Pentatônica','Cromatismo e dissonância como textura (techstep/neuro)'],
@@ -106,7 +139,7 @@ SYS.arc('ars', { id:'m2', base:1, needGate:'mg1', n:'II · TEORIA APLICADA', wk:
 ]});
 
 /* ---------- VERTENTE: MIDI & PRODUÇÃO ---------- */
-SYS.arc('ars', { id:'m3', br:'midi', n:'I · MIDI & A DAW COMO INSTRUMENTO', wk:'MIDI · I', sub:'Escolher a ferramenta (sem crack), dominar o protocolo e tocar de verdade dentro dela.', nodes:[
+SYS.arc('vitruviano', { id:'m3', br:'har', sv:'midi', n:'I · MIDI & A DAW COMO INSTRUMENTO', wk:'Harmonia · Produção I', sub:'Escolher a ferramenta (sem crack), dominar o protocolo e tocar de verdade dentro dela.', nodes:[
  {id:'M08',d:'Estúdio',t:'Escolher a DAW & workflow (sem crack)',xp:45,cr:16,ach:'Studio Online',
   s:'Uma DAW licenciada, um template seu, música em menos de 2 minutos.',
   st:['REAPER: licença barata e avaliação de 60 dias — leve, ótima para gravar áudio e cordas','FL Studio: edições diferentes (a Fruity não grava áudio); updates vitalícios; piano roll lendário para breaks','Ableton Live: Intro/Standard/Suite, trial de 30 dias, Session View para live','Renoise (tracker): o DNA do jungle/breakcore, se a cabeça for essa','Por que crack é péssimo negócio: instalador com malware, projeto corrompido, zero update e faixa travada na hora de lançar','Arranjo vs sessão · MIDI vs áudio · roteamento (grupos, sends, returns) · automação','Template pessoal, atalhos e versionamento de projetos'],
@@ -161,7 +194,7 @@ SYS.arc('ars', { id:'m3', br:'midi', n:'I · MIDI & A DAW COMO INSTRUMENTO', wk:
   f:'Gravar, apagar tudo e desenhar de novo “só pra ficar certinho”.'}
 ]});
 
-SYS.arc('ars', { id:'m4', br:'midi', needGate:'mg3', n:'II · BREAKS & DRUMS', wk:'MIDI · II', sub:'A história dos breaks, chopping, two-step, breakcore e processamento.', nodes:[
+SYS.arc('vitruviano', { id:'m4', br:'har', sv:'midi', needGate:'mg3', n:'II · BREAKS & DRUMS', wk:'Harmonia · Produção II', sub:'A história dos breaks, chopping, two-step, breakcore e processamento.', nodes:[
 {id:'M10',d:'Breaks',t:'A história dos breaks',xp:35,cr:12,ach:'Amen, Brother',
   s:'Seis segundos de 1969 que construíram gêneros inteiros.',
   st:['The Winstons — “Amen, Brother” (1969), o break mais sampleado da história','Think (Lyn Collins), Funky Drummer (James Brown), Apache (Incredible Bongo Band)','Hip-hop → breakbeat hardcore → jungle','Samplers Akai (S950/S1000) e o som “crunchy”','Ética: o baterista do Amen, Gregory C. Coleman, nunca recebeu royalties'],
@@ -210,7 +243,7 @@ SYS.arc('ars', { id:'m4', br:'midi', needGate:'mg3', n:'II · BREAKS & DRUMS', w
   f:'Esconder loop cru embaixo de efeito.'}
 ]});
 
-SYS.arc('ars', { id:'m5', br:'midi', needGate:'mg3', n:'III · SÍNTESE & SOUND DESIGN', wk:'MIDI · III', sub:'Subtrativa, wavetable, FM, Reese, sub, atmosferas e o workflow de resampling.', nodes:[
+SYS.arc('vitruviano', { id:'m5', br:'har', sv:'midi', needGate:'mg3', n:'III · SÍNTESE & SOUND DESIGN', wk:'Harmonia · Produção III', sub:'Subtrativa, wavetable, FM, Reese, sub, atmosferas e o workflow de resampling.', nodes:[
 {id:'M16',d:'Síntese',t:'Síntese subtrativa',xp:45,cr:16,ach:'Oscillator Whisperer',
   s:'Recriar sons de ouvido em vez de caçar preset.',
   st:['Osciladores (seno, serra, quadrada)','Filtros (cutoff, ressonância)','Envelopes ADSR','LFO e modulação','Unison e detune','Mono, legato e glide'],

@@ -1,4 +1,4 @@
-/* ===== CIDADE · catálogo · Estúdio sem Janela (The Ars Subtilior Way) ===== */
+/* ===== CIDADE · catálogo · Estúdio sem Janela (Harmonia · The Vitruviano Way) ===== */
 SYS.CITY.CAT = SYS.CITY.CAT || [];
 SYS.CITY.CAT.push(
   /* ---------- E · exercícios curtos (15 a 25 min) ---------- */

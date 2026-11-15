@@ -97,9 +97,9 @@ SYS.shop('mind', [
  {id:'mi_r2',tier:'uncommon',n:'Pelúcia de fantasma, esqueleto ou monstrinho',rule:'até R$ 200'},
  {id:'mi_r3',tier:'rare',n:'Coleção de fitas VHS (ou um videocassete que ainda funciona)',d:'Para a estética, para o medo e para gravar suas próprias fitas.',rule:'até R$ 400'}
 ]);
-SYS.shop('ars', [
- {id:'ms_r1',tier:'uncommon',n:'Trilha sonora de jogo em vinil ou cassete',rule:'até R$ 300'},
- {id:'ms_r2',tier:'rare',n:'Kit de gravação de voz para fitas e transmissões falsas',rule:'até R$ 400',req:'n_M42'}
+SYS.shop('vitruviano', [
+ {id:'ms_r1',tier:'uncommon',br:'har',n:'Trilha sonora de jogo em vinil ou cassete',rule:'até R$ 300'},
+ {id:'ms_r2',tier:'rare',br:'har',n:'Kit de gravação de voz para fitas e transmissões falsas',rule:'até R$ 400',req:'n_M42'}
 ]);
 SYS.shop('flaneur', [
  {id:'fs_r1',tier:'uncommon',n:'Livro de terror analógico, creepypasta impressa ou zine de ARG',rule:'até R$ 150'},

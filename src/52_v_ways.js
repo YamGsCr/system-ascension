@@ -97,7 +97,7 @@ App.nodeStudy = function(n){
   return '<div class="stack" style="gap:6px"><div class="row between"><span class="eyebrow">O que devo estudar</span><span class="mono dim" style="font-size:12px">'+done+'/'+n.st.length+' tópicos</span></div>'+H.bar(U.pct(done, n.st.length))+'</div>'
     + '<div class="stack" style="gap:0">'+n.st.map(function(s, i){ return '<label class="check"><input type="checkbox" data-c="studyTick" data-id="'+n.id+'" data-i="'+i+'"'+(ch.indexOf(i) >= 0 ? ' checked' : '')+'><span>'+U.esc(s)+'</span></label>'; }).join('')+'</div>'
     + '<div class="callout"><h4 style="margin-bottom:6px">Critérios do '+U.esc(w.name)+'</h4><ul class="list">'+w.checks.map(function(c){ return '<li><span>'+U.esc(c)+'</span></li>'; }).join('')+'</ul></div>'
-    + '<p class="faint" style="font-size:13px">Dica do Sistema: marque um tópico só quando conseguir explicá-lo sem olhar. Reler não é aprender — teste-se (Mind Way · P11).</p>';
+    + '<p class="faint" style="font-size:13px">Dica do Sistema: marque um tópico só quando conseguir explicá-lo sem olhar. Reler não é aprender — teste-se (Vitruviano · P11).</p>';
 };
 App.RESICON = {doc:'book', curso:'scroll', 'vídeo':'wave', artigo:'journal', ferramenta:'sparkle', site:'map', 'livro grátis':'book', podcast:'wave', comunidade:'user'};
 App.nodeWhere = function(n){

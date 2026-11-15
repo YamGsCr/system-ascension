@@ -288,7 +288,7 @@ SYS.arc('flaneur', { id:'fs2', br:'ofi', side:1, n:'ARCO LATERAL · O ESTRANHO',
   f:'Puzzle impossível que mata o jogo no dia 1; usar marca ou pessoa real no enredo.'},
 {id:'F29',d:'BOSS',t:'BOSS · O Arquivo',xp:250,cr:90,boss:1,ach:'O Arquivista',
   s:'Série curta de analog horror (3 episódios) ou mini-ARG no seu universo (ex.: Homo Aversus), com texto, som e pistas.',
-  st:['Roteiro e bíblia mínima','Design de som próprio (crossover com o Ars Subtilior)','Lançamento em etapas'],
+  st:['Roteiro e bíblia mínima','Design de som próprio (crossover com a Harmonia do Vitruviano)','Lançamento em etapas'],
   q:'Lance os 3 episódios/etapas com trilha e design de som seus.',
   dv:'O Arquivo publicado', g:'Publicado para público externo, com coerência de mundo e som próprio.',
   f:'Lore gigante e nenhum episódio terminado.'}

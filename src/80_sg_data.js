@@ -120,7 +120,7 @@
         sumiu: ['Sumiu muitos dias. Presa que some, Delta caça.'],
         semIA: ['Delta não escuta direito agora. Faz vinte agachamentos e volta.', 'Linha ruim. Vai treinar, depois fala com Delta.']
       }},
-    {id: 'epsilon', n: 'Epsilon', letra: 'ε', cor: '#66d0ff', way: 'ars',
+    {id: 'epsilon', n: 'Epsilon', letra: 'ε', cor: '#66d0ff', way: 'vitruviano',
       papel: 'a quinta das Sete Sombras, a Precisa: mestre do controle de magia e das operações em círculos de poder; elfa',
       fachada: 'Shiron, pianista e compositora famosa, que toca músicas da Terra ensinadas pelo mestre',
       voz: 'refinada, vaidosa e exigente; severa com quem está abaixo dela; competitiva; elogiada, fica orgulhosa a ponto de ninguém aguentar',

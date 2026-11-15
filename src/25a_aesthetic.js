@@ -10,7 +10,7 @@ SYS.lib({
   talkLikeTed:{t:'Talk Like TED',a:'Carmine Gallo',y:'2014',pt:'TED: Falar, Convencer, Emocionar',w:'aesthetic',note:'Estrutura e entrega de apresentações memoráveis.'},
   resonate:{t:'Resonate',a:'Nancy Duarte',y:'2010',w:'aesthetic',note:'A estrutura “o que é / o que poderia ser” das grandes apresentações.'},
   polito:{t:'Como Falar Corretamente e Sem Inibições',a:'Reinaldo Polito',y:'edição mais recente',w:'aesthetic',note:'Oratória no contexto brasileiro: voz, postura, nervosismo e estrutura.'},
-  habitosAtomicos:{t:'Atomic Habits',a:'James Clear',y:'2018',pt:'Hábitos Atômicos (Alta Books)',w:'mind',note:'Identidade, ambiente e sistemas para hábitos que duram.'}
+  habitosAtomicos:{t:'Atomic Habits',a:'James Clear',y:'2018',pt:'Hábitos Atômicos (Alta Books)',w:'aesthetic',note:'Identidade, ambiente e sistemas para hábitos que duram.'}
 });
 SYS.lib({
   convictConditioning:{t:'Convict Conditioning',a:'Paul “Coach” Wade',y:'2009',w:'aesthetic',note:'Progressões em 10 passos para os movimentos-base. Ótimo mapa; ignore o marketing.'},

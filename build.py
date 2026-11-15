@@ -36,7 +36,7 @@ CHUNKS = [
     ('flaneur', '24a_'),
     ('aesthetic', '25a_'),
     ('navigation', '26a_'),
-    ('ars', '27a_'),
+    ('vitruviano', '27_'),
     ('founder', '28_'),
     ('mind', '29_'),
     ('jogo', '30_'),
@@ -46,6 +46,7 @@ CHUNKS = [
     ('zona', '65_'),
     ('cidade', '70_'),
     ('garden', '80_'),
+    ('opus', '84_'),
     ('boot', '99_'),
 ]
 PAGE_LIMIT = 200000      # a página em si não pode voltar a engordar: o peso vai para os blocos

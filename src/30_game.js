@@ -100,8 +100,8 @@ SYS.DAILIES = [
  {id:'focus',n:'Foco Profundo',d:'60–90 min no nó ativo do seu Caminho principal (o primeiro da lista).',way:'$main',xp:6,cr:3,ic:'target',def:1},
  {id:'move',n:'Movimento',d:'Treino do dia — ou 15 min de mobilidade no dia de descanso.',way:'aesthetic',xp:4,cr:2,ic:'flame',def:1},
  {id:'read',n:'Leitura',d:'20 páginas ou 20 minutos de um livro da Biblioteca.',way:'$read',xp:3,cr:2,ic:'book',def:1},
- {id:'sound',n:'Som',d:'20 min de instrumento, treino de ouvido ou DAW.',way:'ars',xp:3,cr:2,ic:'wave',def:1},
- {id:'log',n:'Registro',d:'3 linhas: o que aprendi, o que travou, próximo passo.',way:'mind',xp:2,cr:1,ic:'pen',def:1},
+ {id:'sound',n:'Som',d:'20 min de piano, treino de ouvido ou DAW.',way:'vitruviano',xp:3,cr:2,ic:'wave',def:1},
+ {id:'log',n:'Registro',d:'3 linhas: o que aprendi, o que travou, próximo passo.',way:'vitruviano',xp:2,cr:1,ic:'pen',def:1},
  {id:'cash',n:'Caixa em Dia',d:'Lançar entradas e saídas (pessoal e negócio).',way:'navigation',xp:2,cr:1,ic:'helm',def:0},
  {id:'deal',n:'Movimento de Fundador',d:'1 ação comercial: follow-up, proposta, post de prova ou conversa com cliente.',way:'founder',xp:2,cr:1,ic:'crown',def:0},
  {id:'grass',n:'Tocar Grama',d:'20 min fora de tela, sem ROI nenhum.',way:null,xp:2,cr:0,gem:3,ic:'grass',def:0}
@@ -166,11 +166,11 @@ SYS.GOAL_SUGGESTIONS = [
  {t:'Publicar o primeiro conto ou zine',way:'flaneur',h:'6m',krs:[['2 contos finalizados (F16)','F16'],['Author Pack (F18)','F18'],['Publicado (F20)','F20']]},
  {t:'5 barras limpas',way:'aesthetic',h:'6m',krs:[['Consistência (E02)','E02'],['Progressão de puxar (E04)','E04']]},
  {t:'Escrever minha IPS v1',way:'navigation',h:'3m',krs:[['Mapa de risco (V05)','V05'],['Renda fixa (V06)','V06'],['IPS v1 (V11)','V11']]},
- {t:'Lançar a primeira faixa de jungle',way:'ars',h:'6m',krs:[['Amen Surgeon (M15)','M15'],['Mix (M24)','M24'],['Lançamento (M26)','M26']]},
- {t:'Tocar um set de drum & bass num rolê real',way:'ars',h:'1a',krs:[['Beatmatching sem sync (M27)','M27'],['Double drops (M28)','M28'],['O Set (M30)','M30'],['Tocar para público',null]]},
+ {t:'Lançar a primeira faixa de jungle',way:'vitruviano',h:'6m',krs:[['Amen Surgeon (M15)','M15'],['Mix (M24)','M24'],['Lançamento (M26)','M26']]},
+ {t:'Tocar um set de drum & bass num rolê real',way:'vitruviano',h:'1a',krs:[['Beatmatching sem sync (M27)','M27'],['Double drops (M28)','M28'],['O Set (M30)','M30'],['Tocar para público',null]]},
  {t:'Fechar o primeiro retainer de CTO fracionado',way:'founder',h:'1a',krs:[['Diagnóstico técnico (B17)','B17'],['Oferta de retainer (B19)','B19'],['Primeiro Retainer (B23)','B23']]},
  {t:'CERNE com as 3 esteiras rodando',way:'founder',h:'3a',krs:[['SaaS com clientes pagantes',null],['Web sob demanda recorrente',null],['Produto local vendido',null],['Métricas SaaS (B06)','B06']]},
- {t:'Terminar o Tratado Pessoal',way:'mind',h:'3a',krs:[['Ensaio & debate (P22)','P22'],['Diálogo Socrático (P23)','P23'],['Tratado Pessoal (P24)','P24']]},
+ {t:'Terminar o Tratado Pessoal',way:'vitruviano',h:'3a',krs:[['Ensaio & debate (P22)','P22'],['Diálogo Socrático (P23)','P23'],['Tratado Pessoal (P24)','P24']]},
  {t:'Derrotar o Cerberus',way:'architect',h:'3a',krs:[['Gate IV · Filial Offline',null],['Gate VII · Produção Hostil',null],['FINAL BOSS · CERBERUS (A94)','A94']]}
 ];
 

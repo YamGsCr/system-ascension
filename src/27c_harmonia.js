@@ -1,5 +1,5 @@
 /* ===== ARS v2 · Vertente Cordas, arco final e selos ===== */
-SYS.arc('ars', { id:'mc1', br:'str', n:'I · FUNDAMENTOS DAS CORDAS', wk:'Cordas · I', sub:'O instrumento por dentro, a mão que obedece e o braço como mapa.', nodes:[
+SYS.arc('vitruviano', { id:'mc1', br:'har', sv:'str', n:'I · FUNDAMENTOS DAS CORDAS', wk:'Harmonia · Cordas I', sub:'O instrumento por dentro, a mão que obedece e o braço como mapa.', nodes:[
  {id:'M53',d:'Cordas',t:'Anatomia, afinação & cuidados',xp:35,cr:12,ach:'String Keeper',
   s:'Instrumento mal cuidado soa mal e te faz achar que o problema é você.',
   st:['Partes: braço, escala, trastes, tensor, ponte, captadores, nut','Calibres de corda, tensão e afinações (padrão, drop, meio tom abaixo)','Trocar cordas do jeito certo e esticar antes de tocar','Afinação: afinador, harmônicos e afinar de ouvido (e conferir depois)','Limpeza, umidade, guardar em case e o que destrói um instrumento','Cabo, bateria do captador ativo e o ruído que some quando você encosta nas cordas','Diagnóstico rápido: trastejo, zumbido, som abafado'],
@@ -32,7 +32,7 @@ SYS.arc('ars', { id:'mc1', br:'str', n:'I · FUNDAMENTOS DAS CORDAS', wk:'Cordas
   f:'Depender só de vídeo “siga as bolinhas”.'}
 ]});
 
-SYS.arc('ars', { id:'mc2', br:'str', needGate:'mg11', n:'II · BAIXO ELÉTRICO', wk:'Cordas · II', sub:'Groove, dub, walking, slap, leitura e o baixo que sustenta breaks.', nodes:[
+SYS.arc('vitruviano', { id:'mc2', br:'har', sv:'str', needGate:'mg11', n:'II · BAIXO ELÉTRICO', wk:'Harmonia · Cordas II', sub:'Groove, dub, walking, slap, leitura e o baixo que sustenta breaks.', nodes:[
 {id:'M31',d:'Cordas',t:'Baixo elétrico: fundamentos',xp:60,cr:20,ach:'Four Strings',
   s:'Groove, pocket e mão que obedece.',
   st:['Postura e mão direita (dedos alternados)','Mão esquerda: um dedo por casa','Abafamento','Notas no braço (casas 0–12)','Raiz, quinta e oitava','Metrônomo lento','Groove e pocket'],
@@ -81,7 +81,7 @@ SYS.arc('ars', { id:'mc2', br:'str', needGate:'mg11', n:'II · BAIXO ELÉTRICO',
   f:'Diminuir o andamento do vídeo e fingir que é o tempo original.'}
 ]});
 
-SYS.arc('ars', { id:'mc3', br:'str', needGate:'mg11', n:'III · GUITARRA', wk:'Cordas · III', sub:'Acordes, riffs, pedais e a guitarra como textura dentro de música eletrônica.', nodes:[
+SYS.arc('vitruviano', { id:'mc3', br:'har', sv:'str', needGate:'mg11', n:'III · GUITARRA', wk:'Harmonia · Cordas III', sub:'Acordes, riffs, pedais e a guitarra como textura dentro de música eletrônica.', nodes:[
 {id:'M33',d:'Cordas',t:'Guitarra: acordes, riffs & textura',xp:50,cr:18,ach:'Six Strings',
   s:'Harmonia na mão e guitarra como textura de produção.',
   st:['Acordes abertos e pestana','Levadas e palhetada','Power chords e riffs','Arpejos e tríades pelo braço','Guitarra como textura: delay, reverb, efeitos'],
@@ -127,7 +127,7 @@ SYS.arc('ars', { id:'mc3', br:'str', needGate:'mg11', n:'III · GUITARRA', wk:'C
   f:'Colar um riff por cima no final e chamar de fusão.'}
 ]});
 
-SYS.arc('ars', { id:'m9', br:'str', needGate:'mg12', n:'IV · ORQUESTRA & GRAVAÇÃO', wk:'Cordas · IV', sub:'Escrever para cordas, gravar em casa e editar takes como gente grande.', nodes:[
+SYS.arc('vitruviano', { id:'m9', br:'har', sv:'str', needGate:'mg12', n:'IV · ORQUESTRA & GRAVAÇÃO', wk:'Harmonia · Cordas IV', sub:'Escrever para cordas, gravar em casa e editar takes como gente grande.', nodes:[
 {id:'M34',d:'Cordas',t:'Escrita para cordas (arranjo orquestral)',xp:50,cr:18,ach:'String Section',
   s:'Cordas que soam como seção, não como teclado barato.',
   st:['Violino, viola, violoncelo e contrabaixo: extensões','Articulações: legato, staccato, spiccato, pizzicato, tremolo','Voicing e divisi','Linhas internas e contraponto','Bibliotecas grátis: BBC Symphony Orchestra Discover e Spitfire LABS','Realismo com CC de dinâmica e expressão','Cordas no liquid e no breakcore orquestral'],
@@ -168,7 +168,7 @@ SYS.arc('ars', { id:'m9', br:'str', needGate:'mg12', n:'IV · ORQUESTRA & GRAVA�
   f:'Gravar o baixo e esconder atrás de um synth porque ficou fora do tempo.'}
 ]});
 
-SYS.arc('ars', { id:'mcs1', br:'str', side:1, needGate:'mg11', n:'ARCO LATERAL · LUTHIERIA & SETUP', wk:'Lateral', sub:'Regular, blindar e consertar o próprio instrumento — com medida, não com fé.', nodes:[
+SYS.arc('vitruviano', { id:'mcs1', br:'har', sv:'str', side:1, needGate:'mg11', n:'ARCO LATERAL · LUTHIERIA & SETUP', wk:'Lateral', sub:'Regular, blindar e consertar o próprio instrumento — com medida, não com fé.', nodes:[
  {id:'M68',d:'Luthieria',t:'Regulagem: tensor, altura & oitavamento',xp:45,cr:16,ach:'Setup Hands',
   s:'Metade dos “problemas de técnica” some depois de uma regulagem de 40 minutos.',
   st:['Ferramentas: chaves, régua de precisão, afinador, calibrador','Relief do braço: medir antes de mexer no tensor, 1/4 de volta por vez','Altura das cordas (action) na 12ª casa e o compromisso com trastejo','Oitavamento: afinar a 12ª casa com o harmônico','Altura dos captadores e equilíbrio entre cordas','Quando parar e levar ao luthier (traste nivelado, nut, eletrônica queimada)','Registrar as medidas antes e depois'],
@@ -194,7 +194,7 @@ SYS.arc('ars', { id:'mcs1', br:'str', side:1, needGate:'mg11', n:'ARCO LATERAL �
 ]});
 
 /* ---------- FINAL ---------- */
-SYS.arc('ars', { id:'m10', n:'X · SUBTILIOR', wk:'Final', sub:'O EP que prova o caminho: máquina e mão, breaks e cordas.', nodes:[
+SYS.arc('vitruviano', { id:'m10', br:'har', n:'X · SUBTILIOR', wk:'Final', sub:'O EP que prova o caminho: máquina e mão, breaks e cordas.', nodes:[
  {id:'M36',d:'BOSS',t:'FINAL BOSS · O EP',xp:600,cr:200,boss:1,final:1,ach:'THE COMPOSER',req:['mg4','mg5','mg6','mg7','mg8','mg9','mg12'],
   s:'EP de 4 faixas (DnB, jungle, breakcore e uma livre) lançado, com cordas tocadas por você, identidade visual própria e um set ao vivo ou stream.',
   st:['Coesão de EP: tonalidades, timbres e narrativa','Identidade visual e texto de apresentação','Cordas reais em pelo menos duas faixas','Performance de lançamento (set ou live PA)'],
@@ -220,4 +220,4 @@ SYS.arc('ars', { id:'m10', n:'X · SUBTILIOR', wk:'Final', sub:'O EP que prova o
  {id:'mg9',arc:'m9',n:'Selo · Orquestra & Gravação',ev:['Intro orquestral','Teste cego de captação','32 compassos para quarteto','Comp de 4 passadas','Boss Cordas & Breaks'],oral:'Explique spiccato, pizzicato e col legno com um exemplo seu.',fail:'Qual take você salvou na edição e devia ter regravado?',ach:'ar_g9',xp:230},
  {id:'mgs2',arc:'mcs1',n:'Selo Lateral · Mãos de Luthier',ev:['Ficha de regulagem antes/depois','Serviço de elétrica com ruído medido','Boss Instrumento Regulado'],oral:'Explique o que o tensor faz e o que ele NÃO faz.',fail:'O que você quase estragou e como parou a tempo?',ach:'ar_s2',xp:170},
  {id:'mg10',arc:'m10',n:'Selo Final · Subtilior',ev:['EP lançado','Set de lançamento'],oral:'Defenda as escolhas do EP: ritmo, harmonia, timbre e forma.',fail:'O que você ainda não sabe fazer e como vai aprender?',ach:'ar_g10',xp:400,final:1}
-].forEach(function(g){ SYS.gate('ars', g); });
+].forEach(function(g){ SYS.gate('vitruviano', g); });

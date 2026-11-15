@@ -1,5 +1,5 @@
 /* ===== ARS v2 · MIDI: arranjo, mix, DJ e arcos laterais ===== */
-SYS.arc('ars', { id:'m6', br:'midi', needGate:'mg4', n:'IV · ARRANJO & GÊNERO', wk:'MIDI · IV', sub:'Forma, escolas de DnB/jungle, techno e o MIDI que se move sozinho.', nodes:[
+SYS.arc('vitruviano', { id:'m6', br:'har', sv:'midi', needGate:'mg4', n:'IV · ARRANJO & GÊNERO', wk:'Harmonia · Produção IV', sub:'Forma, escolas de DnB/jungle, techno e o MIDI que se move sozinho.', nodes:[
 {id:'M20',d:'Arranjo',t:'Arranjo & forma',xp:55,cr:20,ach:'Structure Seer',
   s:'De loop eterno a faixa com história.',
   st:['Frases de 8/16/32 compassos','Intro e outro DJ-friendly','Build, drop, breakdown e segundo drop (switch-up)','Curva de energia','Subtração vs adição','Transições: risers, filtros, rolls, silêncio','Mapear arranjo de referências'],
@@ -40,7 +40,7 @@ SYS.arc('ars', { id:'m6', br:'midi', needGate:'mg4', n:'IV · ARRANJO & GÊNERO'
   f:'Ficar mexendo no snare por 3 meses.'}
 ]});
 
-SYS.arc('ars', { id:'m7', br:'midi', needGate:'mg6', n:'V · MIX, MASTER & LANÇAMENTO', wk:'MIDI · V', sub:'Mixagem, loudness, direitos no Brasil e as versões que o mundo pede.', nodes:[
+SYS.arc('vitruviano', { id:'m7', br:'har', sv:'midi', needGate:'mg6', n:'V · MIX, MASTER & LANÇAMENTO', wk:'Harmonia · Produção V', sub:'Mixagem, loudness, direitos no Brasil e as versões que o mundo pede.', nodes:[
 {id:'M24',d:'Mix',t:'Mixagem',xp:55,cr:20,ach:'Balance Keeper',
   s:'Equilíbrio que traduz em qualquer sistema.',
   st:['Gain staging','EQ subtrativa e mascaramento','Compressão (attack/release)','Espaço: reverb e delay em sends','Estéreo e compatibilidade mono','Referência A/B','Tradução: carro, celular, fone','Ouvido descansado'],
@@ -74,7 +74,7 @@ SYS.arc('ars', { id:'m7', br:'midi', needGate:'mg6', n:'V · MIX, MASTER & LANÇ
   f:'Mandar um WAV de 6 minutos chamado “final_final_2_agora_vai.wav”.'}
 ]});
 
-SYS.arc('ars', { id:'m8', br:'midi', n:'VI · DJ / SELETOR', wk:'MIDI · VI', sub:'Beatmatching sem sync, double drops e programação de set.', nodes:[
+SYS.arc('vitruviano', { id:'m8', br:'har', sv:'midi', n:'VI · DJ / SELETOR', wk:'Harmonia · Produção VI', sub:'Beatmatching sem sync, double drops e programação de set.', nodes:[
 {id:'M27',d:'DJ',t:'Beatmatching sem sync',xp:55,cr:20,ach:'No Sync Needed',
   s:'Sync existe. A skill é não precisar dele.',
   st:['Tempo e pitch fader','Ouvir o “galope” e corrigir','Cue e fone dividido','Frases de 8/16/32 compassos','Contar compassos mentalmente'],
@@ -107,7 +107,7 @@ SYS.arc('ars', { id:'m8', br:'midi', n:'VI · DJ / SELETOR', wk:'MIDI · VI', su
   f:'Set 100% no piloto automático com playlist pronta.'}
 ]});
 
-SYS.arc('ars', { id:'ms1', br:'midi', side:1, needGate:'mg5', n:'ARCO LATERAL · SOUND DESIGN DE HORROR & LIMINAL', wk:'Lateral', sub:'Field recording, granular, silêncio e a sonoridade de creepypasta, analog horror e ARG.', nodes:[
+SYS.arc('vitruviano', { id:'ms1', br:'har', sv:'midi', side:1, needGate:'mg5', n:'ARCO LATERAL · SOUND DESIGN DE HORROR & LIMINAL', wk:'Lateral', sub:'Field recording, granular, silêncio e a sonoridade de creepypasta, analog horror e ARG.', nodes:[
  {id:'M42',d:'Sound Design',t:'Field recording & foley',xp:45,cr:16,ach:'Field Recorder',
   s:'O mundo é a maior biblioteca de samples — e é de graça.',
   st:['Gravador ou celular: níveis, headroom, wind e handling noise','Ambiências: sala vazia, corredor, chuva, mata, motor distante','Foley caseiro: passos, tecido, porta, água, papel','Organizar a biblioteca (nome, local, data, tags)','Direitos: o que você gravou é seu; o que você baixou tem licença','Editar: cortar silêncio, remover ruído sem matar o timbre','Transformar campo em instrumento (pitch, loop, granular)'],
@@ -140,7 +140,7 @@ SYS.arc('ars', { id:'ms1', br:'midi', side:1, needGate:'mg5', n:'ARCO LATERAL ·
   f:'Ficar 3 meses “melhorando o reverb” e nunca publicar.'}
 ]});
 
-SYS.arc('ars', { id:'ms2', br:'midi', side:1, needGate:'mg6', n:'ARCO LATERAL · LIVE PA & PERFORMANCE', wk:'Lateral', sub:'Tocar o próprio material ao vivo: clips, looping, sincronização e um set sem laptop travando.', nodes:[
+SYS.arc('vitruviano', { id:'ms2', br:'har', sv:'midi', side:1, needGate:'mg6', n:'ARCO LATERAL · LIVE PA & PERFORMANCE', wk:'Lateral', sub:'Tocar o próprio material ao vivo: clips, looping, sincronização e um set sem laptop travando.', nodes:[
  {id:'M46',d:'Live',t:'Clip launching & performance',xp:45,cr:16,ach:'Clip Launcher',
   s:'Sua faixa vira peças soltas que você dispara na hora.',
   st:['Session View (Live) / Performance Mode (FL): cenas, clips e follow actions','Quantização de disparo: 1 compasso vs 1/4 e o erro que salva','Preparar a faixa: stems por função, não por instrumento','Mapear controlador: cenas, mute, filtro e efeito por canal','Racks de efeito de performance e macro em um knob','CPU: congelar, bounce e plano B','Ensaiar o set inteiro em pé, como se fosse no palco'],

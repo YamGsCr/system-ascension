@@ -31,7 +31,7 @@
 
   /* nó ativo da rua (o kata é sobre o que você está estudando); "inimigo" = o nó começado há mais tempo */
   E.cyRuaNode = function(S, d, ri, inimigo){
-    var w = SYS.WAYMAP[d.way], sel = (d.sel || [])[ri] || {}; if (!w) return null;
+    var sel = (d.sel || [])[ri] || {}, w = SYS.WAYMAP[sel.way || d.way]; if (!w) return null;   /* sel.way: rua que puxa nós de outro Caminho */
     var arcs = w.arcs.filter(function(a){ return sel.br ? a.br === sel.br : sel.arcs ? sel.arcs.indexOf(a.id) >= 0 : sel.tronco ? !a.br : true; });
     var doing = null, first = null, side = null, old = null, od = '';
     arcs.forEach(function(a){

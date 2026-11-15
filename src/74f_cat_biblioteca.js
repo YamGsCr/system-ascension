@@ -1,4 +1,4 @@
-/* ===== CIDADE · catálogo · Biblioteca às 3h (The Mind Way) ===== */
+/* ===== CIDADE · catálogo · Biblioteca às 3h (The Mind Way; a rua Pensamento puxa nós do Vitruviano) ===== */
 SYS.CITY.CAT = SYS.CITY.CAT || [];
 SYS.CITY.CAT.push(
   /* ---------- E · exercícios curtos que puxam o nó ativo (15 a 25 min) ---------- */

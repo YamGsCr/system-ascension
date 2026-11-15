@@ -1,0 +1,42 @@
+/* ===== VITRUVIANO · SHADOW · SUPERARE MACHINAM =====
+   A integração dos cinco domínios (sem vertente: aparece como "Integração" na trilha). Em cada domínio, achar e
+   corrigir com prova um erro real de uma IA; a banca final é das Sete Sombras. Meta final do Way: superar a máquina. */
+SYS.arc('vitruviano', { id:'sm1', n:'SHADOW · SUPERARE MACHINAM', wk:'Shadow · Integração', sub:'Um erro real de IA por domínio, achado e corrigido com prova. A banca é das Sete Sombras.', nodes:[
+ {id:'SM01',d:'Superare',t:'Mathematica: o erro da máquina na conta',xp:120,cr:42,ach:'Contraprova',
+  s:'Achar uma resposta errada de uma IA em matemática, física ou engenharia e provar o erro com cálculo, código ou medição.',
+  st:['Pergunta que você sabe resolver de ponta a ponta','Registro da resposta da IA com data e modelo','Prova do erro: demonstração, simulação ou medição','Correção escrita'],
+  q:'Registre o erro, a prova e a correção no formato do mini-artigo.',
+  dv:'Mini-artigo do erro', g:'O erro é real (reproduzível) e a prova não depende de outra IA.',
+  f:'Pegar erro de enunciado ambíguo e chamar de erro da máquina.'},
+ {id:'SM02',d:'Superare',t:'Harmonia: o erro da máquina no som',xp:120,cr:42,
+  s:'Achar uma afirmação errada de uma IA sobre teoria, acústica ou produção e provar tocando, medindo ou mostrando o espectro.',
+  st:['Afirmação testável','Teste ao piano ou na DAW','Espectro ou gravação como prova','Correção escrita'],
+  q:'Registre o erro e a prova sonora.',
+  dv:'Registro + áudio ou figura', g:'Outra pessoa ouve ou vê a diferença.',
+  f:'Discutir gosto em vez de fato.'},
+ {id:'SM03',d:'Superare',t:'Philosophia: o erro da máquina no argumento',xp:120,cr:42,
+  s:'Achar uma atribuição errada, um argumento inválido ou uma citação inventada por uma IA e provar com a fonte.',
+  st:['Afirmação com fonte verificável','A fonte primária aberta','O furo lógico ou a citação falsa demonstrados','Correção escrita'],
+  q:'Registre o erro com a página da fonte primária.',
+  dv:'Registro com a fonte', g:'A fonte primária mostra o erro sem interpretação forçada.',
+  f:'Usar tradução ruim como prova.'},
+ {id:'SM04',d:'Superare',t:'Politeia: o erro da máquina na instituição',xp:120,cr:42,
+  s:'Achar um erro de uma IA sobre lei, instituição ou história política e provar com o documento oficial.',
+  st:['Afirmação sobre regra ou fato institucional','Documento oficial com data','Erro demonstrado','Correção escrita'],
+  q:'Registre o erro com o documento oficial.',
+  dv:'Registro com o documento', g:'O documento é oficial e da data certa.',
+  f:'Confundir texto antigo de lei com o vigente.'},
+ {id:'SM05',d:'Superare',t:'Lingua: o erro da máquina na língua',xp:120,cr:42,
+  s:'Achar um erro de gramática, tradução ou nuance de uma IA em inglês, japonês, chinês ou português e provar com fonte de referência.',
+  st:['Frase ou tradução registrada','Referência: dicionário, gramática ou falante nativo','Erro demonstrado','Correção escrita'],
+  q:'Registre o erro com a referência.',
+  dv:'Registro com a referência', g:'A referência é confiável e o erro não é questão de estilo.',
+  f:'Chamar variação regional de erro.'},
+ {id:'SM06',d:'BOSS',t:'FINAL BOSS · A Banca das Sete Sombras',xp:700,cr:240,boss:1,final:1,ach:'Superare Machinam',req:['mtg3','hpg1','pag1','pog1','ldg2'],
+  s:'Defender os cinco erros corrigidos diante das Sete Sombras. A meta final do Vitruviano: superar a máquina, um domínio de cada vez.',
+  st:['Os cinco registros em ordem','Uma defesa oral por domínio','O que cada erro ensina sobre o limite da máquina','O que você ainda não sabe fazer melhor que ela'],
+  q:'Apresente os cinco erros e as provas, e responda às perguntas da banca.',
+  dv:'Dossiê dos cinco erros + defesa registrada', g:'Cinco erros reais, cinco provas que se sustentam sozinhas.',
+  f:'Tratar a vitória como definitiva: a máquina muda toda semana.'}
+]});
+SYS.gate('vitruviano', {id:'smg1',arc:'sm1',n:'Selo Shadow · Superare Machinam',ev:['Erro de Mathematica provado','Erro de Harmonia provado','Erro de Philosophia provado','Erro de Politeia provado','Erro de Lingua provado','Banca das Sete Sombras'],oral:'Qual dos cinco erros diz mais sobre como a máquina pensa?',fail:'Qual erro seu a máquina pegaria hoje?',ach:'vt_sm1',xp:600,final:1});
