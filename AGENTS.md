@@ -86,13 +86,15 @@ Os testes valem sobre o build de publicação: rode `python build.py --publicar`
 - Ganchos para esse arquivo: `App.sgFace(id, size)` devolve o avatar redondo (cartões, canal, dossiê) e `App.sgRetratoHTML(M)` devolve o retrato da cena do conselho. Para trocar, guarde o original e envolva: `var old = App.sgRetratoHTML; App.sgRetratoHTML = function(M){ ... }`. CSS pode entrar por um `<style>` criado pelo próprio arquivo.
 - A suíte `arte_local` (`tests/arte_local.js`) roda o `83_sg_arte_local.js` com imagens falsas e confere os ganchos. Mudou o arquivo, ajuste a suíte junto.
 
-## Estado atual (15/11/2026, v21 em branch)
+## Estado atual (15/11/2026, v21.1 publicada)
 
-- Branch `claude/vitruviano` (saiu da `main` v20.7): a reestruturação v21 do doc SGM-Opus. Ars vira Harmonia; a base do Mind vai para Philosophia, Lingua e Politeia; entra o Vitruviano com Mathematica (7 ranks por Prova), Politeia, Lingua (Trivium e quatro idiomas), Shadow Superare Machinam, Títulos Prokopton e Kalokagathia, a aba SGM-Opus e a Rotina. Ainda não está na `main` nem publicada.
+- `main` = v21.1 (publicada no Artifact em 15/11): a reestruturação v21 do doc SGM-Opus, que veio da branch `claude/vitruviano` por fast-forward. Ars vira Harmonia; a base do Mind vai para Philosophia, Lingua e Politeia; entra o Vitruviano com Mathematica (7 ranks por Prova), Politeia, Lingua (Trivium e quatro idiomas), Shadow Superare Machinam, Títulos Prokopton e Kalokagathia, a aba SGM-Opus e a Rotina. A v21.1 refaz a Politeia (discussão a frio, esquerda e direita com os críticos, Realpolitik e os eixos fora do eixo) e dá a Aristóteles um arco próprio na Philosophia.
 - Mexe em `build.py` (bloco `ars` virou `vitruviano` a partir de `27_`; bloco novo `opus` a partir de `84_`), nos arquivos `27*`, `29_mind.js` (o `29b_mind_side.js` saiu), em referências de `24b`, `25a`, `26a`, `29z`, `30`, `31`, `37`, `38`, `39v`, `41`, `52`, `70`, `74b`, `74f`, `76` e `80_sg_data.js` (só o `way` da Epsilon), e cria `39u`, `42b`, `63b`, `84` a `87` e a suíte `vitruviano`. Não toca no `83` nem nas falas das Sombras.
+- O save de quem já usa migra na primeira abertura (`42b`): XP total igual antes e depois, cópia em `localStorage['sysasc.backup.v21']`.
+- Para o GPT pegar: `git fetch origin` e `git rebase origin/main` na branch dele. Quem mexe em `27*` ou `29*` vai conflitar com a v21: os arquivos do Ars e da base do Mind mudaram de nome e de Caminho.
 - Pendências do doc: o rank do Prokopton foi decidido como IV (Kalokagathia ficou no tier máximo); os marcos das eras que só existem na v0.1 são escritos na tela; o nome do Way físico continua "Calistenia (Aesthetic)".
-- Politeia refeita (v21.1): de instituições para discussão, com os eixos fora do eixo; Aristóteles ganhou arco próprio na Philosophia.
-- Testes: 36 suítes e 1.153 asserções verdes com `JOBS=3`. Com `JOBS=6` a `anistia`, a `cityui` e a `citysave` às vezes falham por tempo (a `anistia` falhou assim também na `main` v20.7); rodadas sozinhas passam.
+- Artes: no Artifact seguem só as aprovadas (Gamma, Delta e Eta). Na pasta do Yam há PNGs da Alpha, da Beta e da Epsilon que ainda não passaram por revisão; ficaram fora.
+- Testes: 36 suítes e 1.153 asserções verdes com `JOBS=3`. Com `JOBS=6` a `anistia`, a `cityui` e a `citysave` às vezes falham por tempo; rodadas sozinhas passam.
 
 ## Estado anterior (11/11/2026, v20.7)
 
