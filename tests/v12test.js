@@ -39,11 +39,11 @@ const ok = (c, m) => { if (c) { oks++; console.log('  ok   ' + m); } else { fail
   ok(d.bad.length === 0, 'SYS._bad vazio (' + JSON.stringify(d.bad) + ')');
   ok(d.branches.length === 2, '2 vertentes no Mind: ' + d.branches.map(x => x.id + '/' + x.nodes + 'nós/' + x.xp + 'xp').join(' '));
   ok(d.branches.every(x => x.tier === 5), 'cada vertente tem 5 tiers calculados');
-  ok(d.nodes === 84, 'Mind com 84 nós (era 32) — ' + d.nodes);
-  ok(d.baseArcs.length === 7, '7 arcos em Fundamentos: ' + d.baseArcs.join(','));
-  ok(d.integ.join(',') === 'i6', 'só i6 em Integração (selo final): ' + d.integ.join(','));
-  ok(d.gates.length === 18, '18 selos no Mind (6+2 base, 5 hip, 5 jog): ' + d.gates.length);
-  ok(d.shopMind === 67, 'loja do Mind com 67 itens (40 base + 21 jogos + 6 hip): ' + d.shopMind);
+  ok(d.nodes === 52, 'Mind com 52 nós desde a v21 (a base de 32 foi para o Vitruviano) — ' + d.nodes);
+  ok(d.baseArcs.length === 0, 'sem Fundamentos desde a v21 (lógica, filosofia, psicologia e retórica estão no Vitruviano): ' + d.baseArcs.join(','));
+  ok(d.integ.length === 0, 'sem arco de Integração (o i6 é o final da Philosophia): ' + d.integ.join(','));
+  ok(d.gates.length === 10, '10 selos no Mind (5 hip, 5 jog): ' + d.gates.length);
+  ok(d.shopMind === 37, 'loja do Mind com 37 itens (10 gerais + 21 jogos + 6 hip; a leitura calma foi para a Philosophia): ' + d.shopMind);
   ok(d.shopBr.jog === 21 && d.shopBr.hip === 6, 'loja por vertente: ' + JSON.stringify(d.shopBr));
   ok(d.choices.includes('jogo') && d.choices.includes('ritmo'), 'escolhas de trilha: ' + d.choices.join(','));
   ok(d.feats === 27, '27 Feitos nas vertentes de hobby: ' + d.feats);
@@ -61,11 +61,11 @@ const ok = (c, m) => { if (c) { oks++; console.log('  ok   ' + m); } else { fail
       reqOk: w.shop.filter(s => s.req).map(s => s.req.replace('n_', '')).filter(id => !SYS.nodeById(id)) };
   });
   ok(e.reqOk.length === 0, 'todo req de loja aponta para nó existente (' + JSON.stringify(e.reqOk) + ')');
-  ok(e.tiers[5].split(':')[0] > 7000, 'tier máximo reescalou com o conteúdo novo: ' + e.tiers.join(' · '));
+  ok(+e.tiers[5].split(':')[0] === Math.round(0.88 * e.tot / 50) * 50, 'tier máximo acompanha o conteúdo do Mind (88% de ' + e.tot + ' XP): ' + e.tiers.join(' · '));
   console.log('  preços auto: ' + e.shopPrices.join(' '));
 
   console.log('\n— navegação: vertentes renderizam —');
-  for (const [hash, needle] of [['#/caminhos/mind', 'Fundamentos'], ['#/caminhos/mind/hip', 'HIPERFOCO'], ['#/caminhos/mind/jog', 'JOGAR DE PROPÓSITO']]) {
+  for (const [hash, needle] of [['#/caminhos/mind', 'Hiperfocos'], ['#/caminhos/mind/hip', 'HIPERFOCO'], ['#/caminhos/mind/jog', 'JOGAR DE PROPÓSITO']]) {
     await p.goto(F + hash); await p.waitForTimeout(700);
     const txt = await p.evaluate(() => document.body.innerText);
     ok(new RegExp(needle, 'i').test(txt), hash + ' mostra "' + needle + '"');

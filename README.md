@@ -1,6 +1,6 @@
 # System Ascension
 
-Janela de Sistema pessoal: 7 Caminhos de estudo, missões, sequência, Zona de Penalidade, em beta a Cidade de portais e, como atmosfera opcional, a Visão de Ascensão das Sombras com a aba Shadow Garden.
+Janela de Sistema pessoal: 7 Caminhos de estudo (Architect e Vitruviano como principais), missões, sequência, a Rotina em ondas, o SGM-Opus com projetos e compras, Zona de Penalidade, em beta a Cidade de portais e, como atmosfera opcional, a Visão de Ascensão das Sombras com a aba Shadow Garden.
 Roda como um Artifact no claude.ai, com save privado na conta (capacidades `db` e `user`), IA do Examinador (`sample`) e exportação de arquivo (`downloads`).
 
 ## Estrutura

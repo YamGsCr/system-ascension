@@ -57,3 +57,18 @@ Quando uma resposta em aberto for dada, ela entra aqui e no `CONF`.
 | Fichas | Calibradas em nov/2026 com a wiki da Fandom (Beta, Gamma, Zeta; as outras páginas não abriram), TV Tropes, Wikipedia e MyAnimeList, resumidas com palavras próprias: fachada, tom, como fala, manias, relações no Garden, trato com o agente e limites. Manias entram no prompt com a regra de usar no máximo uma por resposta. |
 | Romance | A devoção de cada uma é ao mestre Shadow; com o agente a relação é de trabalho, nunca romântica. |
 | Limites por ficha | Delta nunca manda treino que machuca nem pula descanso; Eta nunca incentiva cortar sono ou risco à saúde; Gamma nunca sugere golpe ou enganar cliente. |
+
+## Escolhas da v21 (Vitruviano, SGM-Opus e Rotina)
+
+| Tema | Como ficou |
+|---|---|
+| Fonte | Doc "SGM-Opus · Arsenal de Recursos", aba Handoff; plano aprovado pelo Yam em 15/11/2026. |
+| Ars Subtilior | Deixa de ser Way. Vira a vertente Harmonia do Vitruviano com os mesmos IDs; a "gramática" do Ars era a teoria musical e ficou na Harmonia. O nome segue como Shadow Level do Sonus. |
+| Mind | Fica com Hiperfocos & Arquivos (a escrita criativa dele) e Jogos & Sistemas. Lógica, retórica e memória foram para a Lingua; filosofia, psicologia, Jung e atenção para a Philosophia; Ética & justiça para a Politeia. |
+| Way físico | Não existe como Way: é a vertente Calistenia do Aesthetic. Os Títulos usam a Calistenia como o corpo. |
+| Mythos | Vai para o Flâneur, onde já mora o worldbuilding. |
+| Títulos | Prokopton no tier IV dos três (marco da tatuagem); Kalokagathia no tier máximo dos três (o ápice, como o termo pede). |
+| Diária Registro | Era do Mind; foi para o Vitruviano com o histórico. |
+| Marcos de era | Os que o doc dá entram prontos; os da v0.1 são escritos na tela antes de fechar a era. |
+| Chefes | Medem, não passam: nota, data e condições, sem XP; simulados como Ommen Bannal. |
+

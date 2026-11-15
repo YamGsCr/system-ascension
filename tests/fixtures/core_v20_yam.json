@@ -1,0 +1,411 @@
+{
+"_nota": "Save real do Yam (core, v20.7) lido do banco do Artifact em 15/11/2026, sem a carteira (inv), sem a Zona (pz) e sem textos livres. XP de referência na v20.7, sem journal: 81 (architect 18, flaneur 6, aesthetic 20, navigation 19, ars 6, founder 0, mind 8; 4 do Sistema).",
+"core": {
+"_u": "2026-11-14T22:58:34.845Z",
+"v": 1,
+"createdAt": "2026-09-17T11:37:24.694Z",
+"start": "2026-09-17",
+"lastSeen": "2026-11-14",
+"ach": {
+"ft_aporte1": "2026-09-22T13:10:33.606Z",
+"pz_first": "2026-10-18T21:02:48.122Z",
+"sys_extra1": "2026-09-22T00:13:48.907Z",
+"sys_feat1": "2026-09-22T13:10:33.606Z",
+"sys_return": "2026-11-09T15:38:45.240Z",
+"sys_st14": "2026-10-17T20:24:15.630Z",
+"sys_st3": "2026-10-17T20:24:15.630Z",
+"sys_st7": "2026-10-17T20:24:15.630Z",
+"sys_tr1": "2026-09-29T19:51:21.017Z",
+"sys_trswap": "2026-09-29T19:51:39.734Z"
+},
+"books": {
+"elevator": {
+"s": "reading"
+}
+},
+"buys": [],
+"certs": {},
+"chests": {
+"gemBack": 0,
+"log": [],
+"lucky": false,
+"n": 0,
+"pity": {}
+},
+"ctr": {},
+"customTitle": "",
+"daily": {
+"2026-09-19": {
+"need": 5,
+"q": {
+"log": "mind",
+"move": "aesthetic"
+}
+},
+"2026-09-21": {
+"need": 5,
+"q": {
+"focus": "architect",
+"log": "mind",
+"move": "aesthetic",
+"read": "flaneur",
+"sound": "ars"
+},
+"x": {
+"noticia": 1
+}
+},
+"2026-09-22": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-23": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-24": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-25": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-26": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-27": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-28": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-29": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-09-30": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-01": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-02": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-03": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-04": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-05": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-06": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-07": {
+"an": true,
+"frozen": true,
+"gx": 1,
+"need": 5,
+"q": {
+"grass": null
+}
+},
+"2026-10-08": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-09": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-10": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-11": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-12": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-13": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-14": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-15": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-16": {
+"an": true,
+"frozen": true,
+"need": 5,
+"q": {}
+},
+"2026-10-18": {
+"need": 5,
+"q": {
+"log": "mind"
+}
+},
+"2026-10-20": {
+"need": 5,
+"q": {
+"move": "aesthetic",
+"sound": "ars"
+}
+},
+"2026-10-21": {
+"need": 5,
+"q": {
+"focus": "architect"
+}
+},
+"2026-11-09": {
+"gx": 1,
+"need": 5,
+"q": {
+"cash": "navigation",
+"focus": "architect",
+"grass": null,
+"move": "aesthetic"
+}
+},
+"2026-11-10": {
+"need": 5,
+"q": {
+"log": "mind",
+"move": "aesthetic",
+"read": "flaneur"
+}
+}
+},
+"dstats": {
+"arch": null,
+"best": 26,
+"bestExtra": 0
+},
+"dun": null,
+"dunLog": [],
+"exams": {
+"alem": 0,
+"best": 52,
+"passes": 0,
+"phoenix": 0,
+"total": 8
+},
+"feats": {
+"aporte1": {
+"d": "2026-09-22",
+"ev": "(texto removido do fixture)"
+}
+},
+"flags": {
+"anistia": "2026-10-17",
+"anistia2": "2026-10-21",
+"anistia3": "2026-11-09",
+"clutch": false,
+"fzDay": "2026-11-14",
+"konami": false,
+"logo": false,
+"odds": false,
+"returned": 1,
+"sgConvite": "2026-11-09",
+"three": false
+},
+"gates": {},
+"goals": [],
+"hyp": {
+"done": [],
+"fila": [],
+"on": null
+},
+"lvlog": [
+{
+"d": "2026-10-20",
+"l": 2
+}
+],
+"mesa": {
+"cap": 0,
+"cycles": 0,
+"fim": "",
+"ini": "",
+"lock": "",
+"ops": [],
+"teto": 0
+},
+"milestones": [],
+"nodes": {
+"A01": {
+"d0": "2026-09-21",
+"s": "doing"
+}
+},
+"offs": [],
+"owned": {
+"custom": false,
+"frames": [],
+"freezes": 0,
+"fx": [],
+"keys": {
+"A": 0,
+"B": 0,
+"C": 0,
+"D": 0,
+"E": 1,
+"S": 0
+},
+"namecards": [],
+"showcase12": false,
+"skins": [],
+"tickets": 0
+},
+"pending": [],
+"profile": {
+"avatar": "sigil",
+"emoji": "🗡️",
+"frame": "fr_basic",
+"fx": null,
+"name": "",
+"namecard": "nc_window",
+"showcase": [],
+"sig": "Ainda renderizando.",
+"title": null
+},
+"settings": {
+"cityBeta": true,
+"dailies": [
+"focus",
+"move",
+"read",
+"log",
+"cash"
+],
+"extrasPin": [],
+"motion": false,
+"openWorld": false,
+"readWay": "flaneur",
+"resetHour": 8,
+"season": {
+"_m2": 1,
+"_m3": 1,
+"a": "navigation",
+"b": "navigation",
+"fixed": [
+"aesthetic",
+"founder",
+"mind"
+],
+"focus": [
+"architect",
+"navigation"
+],
+"main": "architect",
+"start": "2026-09-17"
+},
+"skin": "sk_system",
+"sombras": true
+},
+"sideq": [],
+"stats": {
+"cdCancel": 0,
+"cdDone": 0,
+"focusSwaps": 4,
+"freezesUsed": 0,
+"repairsUsed": 0,
+"trackSwaps": 3
+},
+"streakLost": {
+"at": "2026-11-14",
+"gap": [
+"2026-11-13",
+"2026-11-12",
+"2026-11-11",
+"2026-11-10",
+"2026-11-09",
+"2026-11-08",
+"2026-11-07",
+"2026-11-06",
+"2026-11-05",
+"2026-11-04"
+],
+"len": 26
+},
+"sysbuys": [],
+"term": {
+"log": [],
+"m": {}
+},
+"tk": {},
+"tracks": {
+"jogo": "tft"
+}
+}
+}
