@@ -247,6 +247,7 @@
       + '<section class="win"><div class="win-h">' + U.icon('shield') + 'Conselho<a class="act" href="#/garden">voltar</a></div><div class="stack" style="gap:14px">'
       + '<label class="fld">Contato direta<select data-c="sgContato">' + SG.ORDEM.map(function(id){ return '<option value="' + id + '"' + (g.contato === id ? ' selected' : '') + '>' + SG.MAP[id].n + '</option>'; }).join('') + '</select></label>'
       + '<div class="stack" style="gap:6px"><span class="eyebrow">Intensidade</span>' + seg('sgIntens', [['leve', 'leve'], ['padrao', 'padrão'], ['pesada', 'pesada']], g.intens) + '<span class="faint" style="font-size:12.5px">' + U.esc(SG.INTENS[g.intens]) + '.</span></div>'
+      + '<div class="stack" style="gap:6px"><span class="eyebrow">Voz</span>' + seg('sgVoz', [['caprichada', 'caprichada'], ['padrao', 'padrão']], g.voz) + '<span class="faint" style="font-size:12.5px">' + U.esc((SG.VOZ[g.voz] || SG.VOZ.caprichada).dica) + '.</span></div>'
       + '<div class="stack" style="gap:6px"><span class="eyebrow">Respostas de IA por dia</span>' + seg('sgIaDia', SG.IA_DIA.map(function(n){ return [n, n]; }), g.iaDia) + '<span class="faint" style="font-size:12.5px">Cada resposta usa uns 4 mil tokens do seu uso do Claude.</span></div>'
       + '<label class="check"><input type="checkbox" data-c="sgShadow"' + (g.shadow ? ' checked' : '') + '><span><b>Shadow nas cenas</b><br><span class="dim" style="font-size:13.5px">O mestre aparece, raro, nas cenas do conselho.</span></span></label>'
       + '<label class="check"><input type="checkbox" data-c="sgProto"' + (g.proto ? ' checked' : '') + '><span><b>Modo protótipo</b><br><span class="dim" style="font-size:13.5px">Mostra os medidores em teste de cada Sombra: Philia (afeto e sentimento, o amor de amizade dela por você, nunca romance) e Interesse (a curiosidade dela pelo que você faz). Eles só andam com o modo ligado.</span></span></label>'
@@ -309,6 +310,7 @@
   };
   App.C.sgContato = function(el){ if (!SG.MAP[el.value]) return; G().contato = el.value; App.commit(['sg']); };
   App.A.sgIntens = function(el){ var v = el.getAttribute('data-v'); if (!SG.INTENS[v]) return; G().intens = v; App.commit(['sg']); };
+  App.A.sgVoz = function(el){ var v = el.getAttribute('data-v'); if (!SG.VOZ[v]) return; G().voz = v; App.commit(['sg']); };
   App.A.sgIaDia = function(el){ var v = +el.getAttribute('data-v'); if (SG.IA_DIA.indexOf(v) < 0) return; G().iaDia = v; App.commit(['sg']); };
   App.C.sgShadow = function(el){ G().shadow = !!el.checked; App.commit(['sg']); };
   App.C.sgProto = function(el){ G().proto = !!el.checked; App.commit(['sg']); };

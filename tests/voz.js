@@ -1,8 +1,10 @@
-/* voz · a voz das Sombras no canal (v20.7): nada de lista nem de tom de assistente.
+/* voz · a voz das Sombras no canal (v20.7 e v20.8): nada de lista, de tom de assistente nem de molde repetido.
    As fichas ganham como cada uma ensina, elogia, se apega e se interessa, e o que sabe da Terra pelo mestre (a Sabedoria das Sombras);
    o prompt pede uma coisa por mensagem, o que funcionou primeiro, o trecho reescrito na voz dela e uma pergunta no fim;
    a rede de segurança (E.sgVoz) desfaz lista, markdown e tique de assistente que a IA deixar escapar, também no histórico;
-   o modo protótipo mostra e move Philia (afeto e sentimento, nunca romance) e Interesse, e desligado não mostra nem move nada. */
+   o modo protótipo mostra e move Philia (afeto e sentimento, nunca romance) e Interesse, e desligado não mostra nem move nada.
+   v20.8: o prompt vira conversa (exemplos do jeito de cada uma, tamanho que varia, retrato como bastidor), lista o que ela já gastou
+   (E.sgGastas), não deixa duas aberturas seguidas pelo número (E.sgVariar) e usa a voz caprichada (modelTier complex) por padrão. */
 const { chromium } = require('playwright');
 const path = require('path');
 const URL = 'file://' + path.join(__dirname, '..', 'dist', 'test.html');
@@ -43,6 +45,14 @@ const go = async (p, h) => {
   r = await p.evaluate(() => { const E = SYS.E; const out = []; SYS.SG.MEMBROS.forEach(M => ['voz', 'fala', 'agente', 'provoca', 'ajuda', 'ensina', 'elogia', 'gosta', 'curiosa', 'terra'].forEach(k => { const t = E.sgTiques(M[k]); if (t.length) out.push(M.id + '.' + k + ': ' + t); })); return out; });
   ok(r.length === 0, 'nenhum campo das fichas tem tom de lista ou de assistente' + (r.length ? ' (' + r.slice(0, 3).join(' | ') + ')' : ''));
 
+  sec('o jeito de cada uma no chat: exemplos');
+  r = await p.evaluate(() => { const E = SYS.E, prontas = {}; SYS.SG.MEMBROS.forEach(M => Object.keys(M.falas).forEach(k => M.falas[k].forEach(f => { prontas[f] = 1; })));
+    return SYS.SG.MEMBROS.map(M => ({ id: M.id, n: (M.exemplos || []).length, ruins: (M.exemplos || []).filter(e => E.sgTiques(e[0]).length || E.sgTiques(e[1]).length).length,
+      longos: (M.exemplos || []).filter(e => e[1].split(/(?<=[.!?…])\s+/).length > 5).length, copia: (M.exemplos || []).filter(e => prontas[e[1]]).length })); });
+  ok(r.every(x => x.n >= 3), 'cada uma tem ao menos 3 trocas de exemplo');
+  ok(r.every(x => !x.ruins && !x.copia), 'os exemplos passam no detector e não repetem as falas prontas');
+  ok(r.every(x => !x.longos), 'e são mensagens de chat: no máximo 5 frases');
+
   sec('as falas prontas: originais, sem lista e sem tique');
   r = await p.evaluate(() => { const E = SYS.E, todas = [], ruins = [], vistas = {}, rep = [];
     SYS.SG.MEMBROS.forEach(M => Object.keys(M.falas).forEach(k => M.falas[k].forEach(f => todas.push([M.id + '.' + k, f]))));
@@ -56,11 +66,13 @@ const go = async (p, h) => {
   r = await p.evaluate(() => { const T = SYS.E.sgTiques; return {
     num: T('1. muda isso\n2. olha essa frase'), hif: T('- muda isso\n- olha essa frase'), bol: T('• muda isso'), neg: T('isso está **ótimo**'), tit: T('## Correções'), emo: T('Bom trabalho 😀'),
     claro: T('Claro! Vou olhar.'), tiques: ['Ótima pergunta, agente.', 'Aqui estão os pontos.', 'Espero ter ajudado.', 'Qualquer dúvida, me chame.', 'Como assistente, eu diria.', 'Pontos de melhoria no seu texto.'].map(t => T(t).length),
+    molde: ['A frase ficou boa, e registro isso com gosto.', 'Pelo retrato, hoje são zero diárias.', 'Depois, se quiser, conversamos sobre o leitor.', 'Considero o capítulo pronto.'].map(t => T(t).length), numero: T('Agente 795, a cena chegou.'),
     limpa: T('Três notebooks antes do almoço… essa abertura tem ritmo. Qual das duas versões soa mais como você?'), meio: T('O passo 2 do seu plano está certo, e o 3 vem antes dele. Por quê?') }; });
   ok(r.num.indexOf('lista') >= 0 && r.hif.indexOf('lista') >= 0 && r.bol.indexOf('lista') >= 0, 'pega lista numerada, com hífen e com bolinha');
   ok(r.neg.indexOf('markdown') >= 0 && r.tit.indexOf('markdown') >= 0 && r.emo.indexOf('emoji') >= 0, 'pega negrito, título e emoji');
   ok(r.claro.indexOf('abertura de assistente') >= 0 && r.tiques.every(n => n > 0), 'pega abertura "Claro!" e os tiques (ótima pergunta, aqui estão, espero ter ajudado, qualquer dúvida, como assistente, pontos de melhoria)');
   ok(!r.limpa.length && !r.meio.length, 'não acusa fala limpa nem número no meio da frase');
+  ok(r.molde.every(n => n > 0) && r.numero.indexOf('abertura com o número') >= 0, 'pega as fórmulas de relatório que a IA repetiu ("registro com gosto", "pelo retrato", "depois, se quiser, conversamos", "considero") e a abertura pelo número');
 
   sec('a rede de segurança');
   r = await p.evaluate(() => { const E = SYS.E, v = E.sgVoz('Claro! Aqui estão minhas sugestões:\n1. muda isso\n2. olha essa frase\n- e tira o **negrito**\nEspero ter ajudado!');
@@ -69,6 +81,8 @@ const go = async (p, h) => {
   ok(r.t.length === 0 && r.v.split('\n').length === 1, 'lista, negrito, "Claro!", "Aqui estão" e "Espero ter ajudado" viram uma frase corrida: ' + JSON.stringify(r.v));
   ok(/muda isso/i.test(r.v) && /olha essa frase/i.test(r.v) && /negrito/.test(r.v), 'sem perder o conteúdo');
   ok(r.cod.indexOf('    public int Soma') >= 0 && r.cena, 'o recuo do código e a fala limpa ficam como estão');
+  r = await p.evaluate(() => SYS.E.sgVoz('A frase da luz ficou inteira. Depois, se quiser, conversamos sobre por que o leitor confia no que vê.'));
+  ok(r === 'A frase da luz ficou inteira.', 'o fecho "Depois, se quiser, conversamos sobre…" cai');
   r = await p.evaluate(() => { const E = SYS.E; return { a: E.sgClean({fala: '- muda isso\n- olha essa frase', humor: 'eufórica', afinidade: 5, philia: 3, interesse: -9}), b: E.sgClean({fala: 'Claro!'}) }; });
   ok(r.a && !/^\s*-/m.test(r.a.fala) && r.a.humor === 'neutra' && r.a.af === 1 && r.a.ph === 1 && r.a.it === -1, 'sgClean limpa a fala e corta os passos em -1, 0 e 1');
   ok(r.b === null, 'resposta que era só tique vira erro, e não balão vazio');
@@ -76,20 +90,37 @@ const go = async (p, h) => {
   sec('o prompt');
   r = await p.evaluate(() => { const E = SYS.E, G = E.sgFill(JSON.parse(JSON.stringify(SYS.E.newSg()))); G.num = '436';
     return SYS.SG.ORDEM.map(id => { const M = SYS.SG.MAP[id], P = E.sgPrompt(G, id, 'Relatório de hoje: treinei e escrevi.', 'RETRATO');
-      const regras = ['Uma coisa por mensagem', 'Nunca lista, tópicos, numeração', 'Nada de tom de assistente', 'primeiro diga o que funcionou', 'reescrevendo um trecho curto', 'Termine com uma pergunta', 'Escreva cada fala do zero',
-        '=== A SABEDORIA DAS SOMBRAS ===', 'veio do mestre Shadow', 'O canon é flexível', 'nunca romântica', 'Você interpreta ' + M.n].filter(s => P.indexOf(s) < 0);
+      const regras = ['Uma coisa por mensagem', 'Isto é um chat entre duas pessoas do Garden', 'quase sempre de 1 a 3 frases', 'não comece pelo número ou codinome dele', 'O retrato do Sistema é bastidor',
+        'Nunca lista, tópicos, numeração', 'Nada de tom de assistente', 'primeiro diga o que funcionou', 'reescrevendo um trecho curto', 'Termine devolvendo a bola', 'Escreva cada fala do zero',
+        '=== A SABEDORIA DAS SOMBRAS ===', 'veio do mestre Shadow', 'O canon é flexível', 'lembrança pequena e plausível é bem-vinda', 'nunca romântica', 'Você interpreta ' + M.n,
+        '=== O SEU JEITO NO CHAT', M.n + ': ' + M.exemplos[0][1], 'ao provocar, sempre junte uma dica concreta para hoje. Sem falha, não precisa dar tarefa'].filter(s => P.indexOf(s) < 0);
       const ficha = ['ensina', 'elogia', 'gosta', 'curiosa', 'terra'].filter(k => P.indexOf(M[k]) < 0);
-      return { id, regras, ficha, proto: /PHILIA E INTERESSE|"philia"|"interesse"/.test(P) }; }); });
+      return { id, regras, ficha, proto: /PHILIA E INTERESSE|"philia"|"interesse"/.test(P), gastou: /O QUE VOCÊ JÁ GASTOU/.test(P) }; }); });
   ok(r.every(x => !x.regras.length), 'as regras da voz estão no prompt das 7' + r.filter(x => x.regras.length).map(x => ' (' + x.id + ': ' + x.regras[0] + ')').join(''));
   ok(r.every(x => !x.ficha.length), 'e a ficha nova entra inteira');
   ok(r.every(x => !x.proto), 'com o protótipo desligado, nada de Philia e Interesse no prompt nem no JSON');
+  ok(r.every(x => !x.gastou), 'sem conversa ainda, não há lista do que ela já gastou');
   r = await p.evaluate(() => { const E = SYS.E, G = E.sgFill({num: '436', proto: true, philia: {zeta: 81}, inter: {zeta: 12}}); return E.sgPrompt(G, 'zeta', 'oi', 'R'); });
   ok(/Philia, o afeto e o sentimento que você tem por ele: 81\/100, nível 5 \(laço\)/.test(r) && /Interesse: 12\/100, nível 1 \(indiferente\)/.test(r), 'com o protótipo ligado, os níveis entram no prompt');
   ok(/"philia": -1 \| 0 \| 1/.test(r) && /"interesse": -1 \| 0 \| 1/.test(r), 'e o JSON pede philia e interesse');
   ok(/amor de amizade/.test(r) && /nunca há romance, flerte ou ciúme/.test(r) && /é do mestre Shadow/.test(r), 'Philia é amor de amizade: o amor dela é do mestre, com o agente nunca há romance');
 
+  sec('o molde repetido');
+  const MOLDE = ['Agente 795, você tem razão nos dois pontos, e registro isso com gosto: cobrir fecha o olho. Para hoje, escreva o gesto da mão do seu jeito. Depois, se quiser, conversamos sobre por que defender uma escolha faz parte.',
+    'Agente 795, erguer a mão resolveu o gesto, e registro isso com gosto. Restam duas pontas. Para hoje, reescreva só essa frase da luz e traga a cena inteira para eu arquivar. Depois, se quiser, conversamos sobre por que o leitor confia.',
+    'Agente 795, a frase da luz perdeu o forçou, e isso eu registro com gosto. Para hoje, escreva a luz em duas linhas e traga a cena inteira para eu arquivar. Depois, se quiser, conversamos sobre por que cortar.'];
+  r = await p.evaluate(M => SYS.E.sgGastas(M, ['A luz do dia veio primeiro, e a frase da luz que eu escrevi.']), MOLDE);
+  ok(r.indexOf('registro isso com gosto') >= 0 && r.indexOf('agente 795') >= 0 && r.some(t => /traga a cena inteira para eu arquivar/.test(t)) && r.some(t => /^para hoje/.test(t)), 'sgGastas acha o molde da Beta nas falas reais: ' + JSON.stringify(r));
+  ok(!r.some(t => /frase da luz/.test(t)), 'e não conta como molde o assunto que veio dele');
+  ok(r.length <= 10 && !r.some((t, i) => r.some((u, j) => i !== j && (' ' + u + ' ').indexOf(' ' + t + ' ') >= 0)), 'pedaços que se encaixam viram um trecho só, sem repetição na lista');
+  r = await p.evaluate(M => { const E = SYS.E, G = E.sgFill({num: '795'}); G.canal.beta.m = M.map(t => ({at: '2026-11-10T23:00:00Z', de: 'beta', t})); return E.sgPrompt(G, 'beta', 'oi', 'R'); }, MOLDE);
+  ok(/=== O QUE VOCÊ JÁ GASTOU \(não use agora\) ===\n.*"registro isso com gosto"/.test(r), 'e isso vai para o prompt como "não use agora"');
+  r = await p.evaluate(() => { const V = SYS.E.sgVariar; return [V('Agente 795, olha isso.', 'Agente 795, antes.'), V('Agente 795, olha isso.', 'Oi.'), V('Número 795. Relatório?', 'Número 795. O conselho está ouvindo.'), V('A cena chegou.', 'Agente 795, antes.')]; });
+  ok(r[0] === 'Olha isso.' && r[1] === 'Agente 795, olha isso.' && r[2] === 'Relatório?' && r[3] === 'A cena chegou.', 'duas aberturas seguidas pelo número não passam: a segunda perde o vocativo (' + r.join(' | ') + ')');
+
   sec('ligar a Visão e conversar com a Beta');
-  await p.evaluate(() => { const A = SYS.App; A.sgSet(true); A.sg.vis.entrada = SYS.U.today(); A.commit(['sg'], {quiet: true}); }); await run(p, 300);
+  await p.evaluate(() => { const A = SYS.App; A.sgSet(true); A.sg.vis.entrada = SYS.U.today(); A.commit(['sg'], {quiet: true});
+    window.__tiers = []; const s = A.sample, j = s.json; A.sample = Object.assign(function(){ return s.apply(this, arguments); }, s, {json: function(i, o){ window.__tiers.push(o && o.modelTier); return j.apply(this, arguments); }}); }); await run(p, 300);
   r = await p.evaluate(() => { const G = SYS.App.sg; return { proto: G.proto, ph: Object.assign({}, G.philia), it: Object.assign({}, G.inter), ini: SYS.SG.MEMBROS.map(M => M.ini) }; });
   ok(r.proto === false && noInicio(r), 'a Visão nasce com o protótipo desligado e Philia e Interesse no ponto de partida de cada uma');
   function noInicio(r){ return ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta'].every((id, i) => r.ph[id] === r.ini[i].philia && r.it[id] === r.ini[i].inter); }
@@ -108,6 +139,20 @@ const go = async (p, h) => {
   ok(!temTique(r.dom), 'e assim aparece no balão');
   ok(r.ph === r.ini.philia && r.it === r.ini.inter, 'com o protótipo desligado, Philia e Interesse não andam');
   ok(/Uma coisa por mensagem/.test(r.P) && !/"philia"/.test(r.P), 'o prompt enviado leva as regras da voz, sem os medidores');
+  ok((await p.evaluate(() => window.__tiers.slice(-1)[0])) === 'complex', 'a voz caprichada (o modelo mais forte) é o padrão');
+  await p.evaluate(() => { window.__mockSg = {fala: 'Agente ' + SYS.App.sg.num + ', essa abertura tem ritmo de cena.', humor: 'satisfeita', memoria: 'x', afinidade: 0}; });
+  await p.fill('.sg-input textarea', 'Gostou?'); await p.keyboard.press('Enter'); await run(p, 1200);
+  await p.fill('.sg-input textarea', 'E agora?'); await p.keyboard.press('Enter'); await run(p, 1200);
+  r = await p.evaluate(() => SYS.App.sg.canal.beta.m.filter(x => x.de === 'beta').slice(-2).map(x => x.t));
+  ok(/^Agente \d+, essa abertura/.test(r[0]) && r[1] === 'Essa abertura tem ritmo de cena.', 'a mesma abertura pelo número duas vezes seguidas: a segunda chega sem o vocativo');
+  await go(p, '#/garden/ajustes');
+  r = await p.evaluate(() => ({ on: (document.querySelector('[data-a="sgVoz"].on') || {}).getAttribute ? document.querySelector('[data-a="sgVoz"].on').getAttribute('data-v') : '', txt: document.getElementById('view').textContent }));
+  ok(r.on === 'caprichada' && /modelo mais forte/.test(r.txt), 'os Ajustes mostram a voz caprichada, explicando o custo');
+  await p.click('[data-a="sgVoz"][data-v="padrao"]'); await run(p, 200);
+  await go(p, '#/garden/beta'); await p.evaluate(() => { window.__mockSg = {fala: 'Hm. Tá bom.', humor: 'neutra', memoria: 'x', afinidade: 0}; });
+  await p.fill('.sg-input textarea', 'teste'); await p.keyboard.press('Enter'); await run(p, 1200);
+  ok((await p.evaluate(() => [SYS.App.sg.voz, window.__tiers.slice(-1)[0]])).join() === 'padrao,default', 'trocar para a voz padrão usa o modelo padrão');
+  await p.evaluate(() => { SYS.App.sg.voz = 'caprichada'; SYS.App.commit(['sg'], {quiet: true}); });
 
   sec('modo protótipo');
   await go(p, '#/garden/ajustes');
@@ -143,6 +188,8 @@ const go = async (p, h) => {
   r = await p.evaluate(() => { const E = SYS.E, G = E.sgFill({num: '436', afin: {alpha: 30}}), X = E.sgFill({philia: {beta: 999, gamma: -5, delta: 'x'}, inter: [1, 2], proto: 'sim'});
     return { G: { ph: G.philia, it: G.inter, proto: G.proto }, X: { ph: X.philia, it: X.inter, proto: X.proto }, ini: SYS.SG.MAP }; });
   ok(r.G.proto === false && r.G.ph.alpha === r.ini.alpha.ini.philia && r.G.it.eta === r.ini.eta.ini.inter, 'um sg sem os medidores ganha o ponto de partida da ficha e o protótipo desligado');
+  const rv = await p.evaluate(() => [SYS.E.sgFill({}).voz, SYS.E.sgFill({voz: 'turbo'}).voz, SYS.E.sgFill({voz: 'padrao'}).voz].join());
+  ok(rv === 'caprichada,caprichada,padrao', 'a voz vem caprichada quando falta ou está torta, e a escolha fica (' + rv + ')');
   ok(r.X.ph.beta === 100 && r.X.ph.gamma === 0 && r.X.ph.delta === r.ini.delta.ini.philia && r.X.it.alpha === r.ini.alpha.ini.inter && r.X.proto === false, 'valores tortos são cortados ou refeitos');
   r = await p.evaluate(() => { const N = SYS.E.sgNivel; return [0, 19, 20, 59, 60, 99, 100, 150].map(v => N('philia', v).n + ':' + N('philia', v).rot).join(',') + '|' + N('inter', 85).rot; });
   ok(r === '1:distante,1:distante,2:cordial,3:apreço,4:carinho,5:laço,5:laço,5:laço|fascinada', 'os níveis: de 20 em 20 pontos (' + r + ')');
