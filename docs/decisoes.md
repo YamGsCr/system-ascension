@@ -66,6 +66,7 @@ Quando uma resposta em aberto for dada, ela entra aqui e no `CONF`.
 | Ars Subtilior | Deixa de ser Way. Vira a vertente Harmonia do Vitruviano com os mesmos IDs; a "gramática" do Ars era a teoria musical e ficou na Harmonia. O nome segue como Shadow Level do Sonus. |
 | Mind | Fica com Hiperfocos & Arquivos (a escrita criativa dele) e Jogos & Sistemas. Lógica, retórica e memória foram para a Lingua; filosofia, psicologia, Jung e atenção para a Philosophia; Ética & justiça para a Politeia. |
 | Politeia (v21.1) | Saiu o foco em instituições (Constituição e município). Entrou discussão a frio: Ágora, Clássicos, Estado moderno, Esquerda e Direita na melhor versão com os críticos, Realpolitik e os laterais fora do eixo. O mapa de poder de uma instituição real ficou, como nó da Realpolitik. |
+| Idiomas na Rotina (15/11) | O japonês entra na Onda 1, no lugar do inglês: o Yam já lê inglês e a viagem ao Japão vem antes. O inglês vai para a Onda 3 como "inglês de verdade" (escuta sem legenda, fala em voz alta e inglês científico); o arco do inglês foi reescrito com os mesmos IDs (L01 a L04). Muda a ordem do doc SGM-Opus. |
 | Way físico | Não existe como Way: é a vertente Calistenia do Aesthetic. Os Títulos usam a Calistenia como o corpo. |
 | Mythos | Vai para o Flâneur, onde já mora o worldbuilding. |
 | Títulos | Prokopton no tier IV dos três (marco da tatuagem); Kalokagathia no tier máximo dos três (o ápice, como o termo pede). |

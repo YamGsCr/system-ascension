@@ -14,47 +14,16 @@ SYS.lib({
   writingScience:{t:'Writing Science',a:'Joshua Schimel',y:'2012',w:'vitruviano',note:'Como contar a história de um resultado: o arco OCAR, parágrafo que puxa o próximo, o leitor que não tem tempo.'},
   taeKim:{t:'Guide to Japanese Grammar',a:'Tae Kim',y:'grátis online',u:'https://guidetojapanese.org/learn/',w:'vitruviano',note:'Gramática japonesa explicada como japonês, não como tradução do inglês. Alternativa grátis ao Genki.'},
   genki:{t:'Genki I & II',a:'Eri Banno et al.',y:'3ª ed. · The Japan Times',w:'vitruviano',note:'O livro-texto mais usado para chegar ao N4 com estrutura de curso.'},
+  englishPronunciation:{t:'English Pronunciation in Use',a:'Cambridge University Press',y:'níveis Intermediate e Advanced',w:'vitruviano',note:'Sons, acento e entonação, com áudio. Para a boca acompanhar o que o olho já lê.'},
+  fluentForever:{t:'Fluent Forever',a:'Gabriel Wyner',y:'2014',w:'vitruviano',note:'Pronúncia primeiro, frases com áudio e imagem no Anki. Serve para o japonês e para o inglês.'},
+  wallworkPapers:{t:'English for Writing Research Papers',a:'Adrian Wallwork',y:'2ª ed. · 2016',w:'vitruviano',note:'O inglês dos papers para quem não é nativo: estrutura, abstract e os erros clássicos.'},
   hskStandard:{t:'HSK Standard Course',a:'Jiang Liping (org.)',y:'Beijing Language and Culture University Press',w:'vitruviano',note:'O curso oficial alinhado às provas HSK, nível por nível.'}
 });
 
 /* ---------- GRAMMATICA · os quatro idiomas ----------
    Cada idioma tem um primeiro marco e um chefe. As provas oficiais também entram em Marcos › Certificações
    (39u_vitruviano_game.js), com data e nota. O chinês só abre depois do JLPT N4 (reqN). */
-SYS.arc('vitruviano', { id:'ln1', br:'lin', n:'GRAMMATICA · INGLÊS', wk:'Lingua · Grammatica', sub:'Papers, documentação e consultoria fora do Brasil. Primeiro marco: o EF SET e um artigo técnico lido inteiro sem tradutor.', nodes:[
- {id:'L01',d:'Inglês',t:'Nivelamento: EF SET & um artigo técnico sem tradutor',xp:40,cr:14,ach:'Placement Done',
-  s:'Saber de onde você parte, com número, e provar que já lê o que precisa.',
-  st:['Fazer o EF SET completo e registrar o resultado','Escolher um artigo técnico da sua área','Ler inteiro sem tradutor, anotando as palavras novas','Resumir em inglês em 10 linhas'],
-  wh:[['EF SET (teste grátis)','https://www.efset.org/','ferramenta','EN'],['Anki','https://apps.ankiweb.net/','ferramenta','EN']],
-  bk:[],
-  q:'Faça o EF SET, leia um artigo técnico sem tradutor e escreva o resumo em inglês.',
-  dv:'Resultado do EF SET + resumo + lista de palavras', g:'Resultado registrado em Marcos e resumo que outra pessoa entende.',
-  f:'Abrir o tradutor no primeiro parágrafo difícil.'},
- {id:'L02',d:'Inglês',t:'Leitura diária, Anki & shadowing',xp:45,cr:16,
-  s:'O motor da Onda 1: vocabulário em repetição espaçada, leitura de documentação e fala por imitação.',
-  st:['Baralho próprio no Anki com frases, não palavras soltas','Um paper ou datasheet por semana','Shadowing de 5 minutos','Registro de minutos por semana'],
-  wh:[['Anki — manual','https://docs.ankiweb.net/','doc','EN'],['arXiv','https://arxiv.org/','site','EN']],
-  bk:[],
-  q:'8 semanas de Anki em dia, um paper por semana e shadowing três vezes por semana.',
-  dv:'Estatística do Anki + lista de papers + gravação da semana 1 e 8', g:'Retenção do Anki acima de 85% e a gravação da semana 8 soa melhor que a da 1.',
-  f:'Baralho pronto de 5 mil palavras que você nunca viu num texto.'},
- {id:'L03',d:'Inglês',t:'Marco intermediário: B2',xp:60,cr:21,
-  s:'Ler, ouvir e discutir trabalho técnico com folga.',
-  st:['Simulados de leitura e escuta','Escrita de e-mail técnico','Conversa de 15 minutos sobre o seu trabalho','Prova de nível B2 (EF SET de novo ou equivalente)'],
-  wh:[['Cambridge English — níveis CEFR','https://www.cambridgeenglish.org/exams-and-tests/cefr/','doc','EN']],
-  bk:[],
-  q:'Faça o EF SET de novo ou outra prova de nível e registre o B2.',
-  dv:'Resultado B2 registrado', g:'B2 confirmado por prova, não por sensação.',
-  f:'Achar que entende série com legenda e chamar de B2.'},
- {id:'L04',d:'BOSS',t:'BOSS · C1 (Cambridge C1 Advanced, IELTS 7 ou TOEFL iBT 5)',xp:300,cr:105,boss:1,ach:'Advanced',
-  s:'Chefe do inglês: certificação oficial no nível C1. TOEFL iBT na escala nova de 1 a 6.',
-  st:['Escolher a prova pelo uso (consultoria, estudo, trabalho fora)','Simulados no tempo oficial','Writing corrigido por alguém de fora','Prova feita e nota registrada'],
-  wh:[['Cambridge C1 Advanced','https://www.cambridgeenglish.org/exams-and-tests/advanced/','doc','EN'],['IELTS','https://ielts.org/','doc','EN'],['TOEFL iBT','https://www.ets.org/toefl.html','doc','EN']],
-  bk:[],
-  q:'Faça a prova e registre a nota em Marcos › Certificações.',
-  dv:'Certificado C1', g:'C1 oficial: Cambridge C1, IELTS 7 ou TOEFL iBT 5.',
-  f:'Remarcar a prova três vezes esperando estar perfeito.'}
-]});
-SYS.arc('vitruviano', { id:'ln2', br:'lin', n:'GRAMMATICA · JAPONÊS', wk:'Lingua · Grammatica', sub:'Cultura, mídia e a viagem. Primeiro marco: kana completo e JLPT N5. Chefe: JLPT N2.', nodes:[
+SYS.arc('vitruviano', { id:'ln2', br:'lin', n:'GRAMMATICA · JAPONÊS', wk:'Lingua · Grammatica', sub:'O idioma da Onda 1: cultura, mídia e a viagem. Primeiro marco: kana completo e JLPT N5. Chefe: JLPT N2.', nodes:[
  {id:'L05',d:'Japonês',t:'Kana completo: hiragana & katakana',xp:40,cr:14,ach:'Kana',
   s:'Os dois silabários lidos e escritos à mão, antes de qualquer kanji.',
   st:['Hiragana: 46 básicos, dakuten e combinações','Katakana: o mesmo, mais as palavras estrangeiras','Escrita à mão com ordem de traços','Leitura de palavras reais (cardápio, embalagem, jogo)'],
@@ -87,6 +56,40 @@ SYS.arc('vitruviano', { id:'ln2', br:'lin', n:'GRAMMATICA · JAPONÊS', wk:'Ling
   q:'Faça a prova do N2 e registre a nota.',
   dv:'Certificado N2', g:'Aprovado no N2.',
   f:'Ficar no conforto do N4 com anime.'}
+]});
+SYS.arc('vitruviano', { id:'ln1', br:'lin', n:'GRAMMATICA · INGLÊS DE VERDADE', wk:'Lingua · Grammatica', sub:'Onda 3. Você já lê o inglês de internet; aqui é sair dele: escutar sem legenda, falar em voz alta e, por fim, o inglês científico de papers e consultoria. Chefe: C1 oficial.', nodes:[
+ {id:'L01',d:'Inglês',t:'Nivelamento honesto: EF SET & a gravação do dia 1',xp:40,cr:14,ach:'Placement Done',
+  s:'Medir o que o inglês de internet esconde: a escuta sem legenda e a fala em voz alta.',
+  st:['EF SET completo, com a nota de leitura e a de escuta separadas','Gravar 3 minutos falando do seu trabalho, sem roteiro','Ouvir uma palestra técnica de 10 minutos sem legenda e resumir','Listar o que travou: som, vocabulário ou velocidade'],
+  wh:[['EF SET (teste grátis)','https://www.efset.org/','ferramenta','EN'],['TED (palestras com transcrição)','https://www.ted.com/talks','site','EN']],
+  bk:[['englishPronunciation','Diagnóstico inicial']],
+  q:'Faça o EF SET, grave os 3 minutos e o resumo da palestra. Guarde a gravação: ela volta no B2.',
+  dv:'Nota do EF SET + gravação do dia 1 + resumo', g:'Resultado registrado em Marcos e um diagnóstico do que trava a escuta e a fala.',
+  f:'Fazer só a parte de leitura, que você já domina.'},
+ {id:'L02',d:'Inglês',t:'Escuta de verdade & fala em voz alta',xp:45,cr:16,
+  s:'O motor da Onda 3: ouvido treinado em velocidade natural e boca acostumada a falar, não só a digitar.',
+  st:['Escuta diária sem legenda (podcast, palestra, entrevista) e depois com a transcrição','Shadowing de 5 a 10 minutos','Anki com frases que você ouviu, com áudio','Conversa semanal com tutor ou parceiro de idioma','Gravação quinzenal para comparar'],
+  wh:[['Anki — manual','https://docs.ankiweb.net/','doc','EN'],['italki (tutores)','https://www.italki.com/','site','EN']],
+  bk:[['fluentForever','Pronúncia e frases com áudio'],['englishPronunciation','Unidades de sons e entonação']],
+  q:'8 semanas de escuta diária, shadowing três vezes por semana e uma conversa por semana.',
+  dv:'Registro de minutos + gravações da semana 1 e da 8', g:'A gravação da semana 8 é mais fluida que a da 1, e quem conversa com você nota.',
+  f:'Ficar só no input e nunca abrir a boca.'},
+ {id:'L03',d:'Inglês',t:'Marco B2 & o inglês científico',xp:60,cr:21,
+  s:'Discutir trabalho com folga e começar a ler e escrever como a ciência escreve.',
+  st:['Conversa de 15 minutos sobre o seu trabalho, sem travar','Um paper por semana, lido em três passadas','Abstract de 200 palavras reescrito no padrão da área','E-mail técnico para alguém de fora','Prova de nível B2 (EF SET de novo ou equivalente)'],
+  wh:[['Academic Phrasebank (Universidade de Manchester)','https://www.phrasebank.manchester.ac.uk/','site','EN'],['Cambridge English — níveis CEFR','https://www.cambridgeenglish.org/exams-and-tests/cefr/','doc','EN']],
+  bk:[['wallworkPapers','Capítulos sobre abstract e estrutura'],['writingScience','O arco da história']],
+  q:'Registre o B2 por prova e escreva um abstract em inglês de um projeto seu.',
+  dv:'Resultado B2 + abstract + gravação comparada com a do dia 1', g:'B2 confirmado por prova e um abstract que um leitor de fora entende.',
+  f:'Achar que entende série com legenda e chamar de B2.'},
+ {id:'L04',d:'BOSS',t:'BOSS · C1 (Cambridge C1 Advanced, IELTS 7 ou TOEFL iBT 5)',xp:300,cr:105,boss:1,ach:'Advanced',
+  s:'Chefe do inglês: certificação oficial no nível C1. TOEFL iBT na escala nova de 1 a 6.',
+  st:['Escolher a prova pelo uso (consultoria, estudo, trabalho fora)','Simulados no tempo oficial, com a parte oral gravada','Writing corrigido por alguém de fora','Prova feita e nota registrada'],
+  wh:[['Cambridge C1 Advanced','https://www.cambridgeenglish.org/exams-and-tests/advanced/','doc','EN'],['IELTS','https://ielts.org/','doc','EN'],['TOEFL iBT','https://www.ets.org/toefl.html','doc','EN']],
+  bk:[],
+  q:'Faça a prova e registre a nota em Marcos › Certificações.',
+  dv:'Certificado C1', g:'C1 oficial: Cambridge C1, IELTS 7 ou TOEFL iBT 5.',
+  f:'Remarcar a prova três vezes esperando estar perfeito.'}
 ]});
 SYS.arc('vitruviano', { id:'ln3', br:'lin', n:'GRAMMATICA · CHINÊS', wk:'Lingua · Grammatica', sub:'Fornecedores de hardware e indústria (Artifex, Infomax). Só depois do JLPT N4: pinyin, tons e HSK 1. Chefe: HSK 4.', nodes:[
  {id:'L09',d:'Chinês',t:'Pinyin & tons',xp:45,cr:16,ach:'Four Tones',reqN:['L07'],
@@ -263,7 +266,7 @@ SYS.arc('vitruviano', { id:'is1', br:'lin', side:1, needGate:'ig1', n:'ARCO LATE
 ]});
 
 [
- {id:'lng1',arc:'ln1',n:'Selo · Inglês',ev:['EF SET registrado','8 semanas de Anki e papers','B2 confirmado','C1 oficial'],oral:'Explique em inglês, por dois minutos, um projeto seu do SGM-Opus.',fail:'Em que situação você ainda abre o tradutor?',ach:'vt_ln1',xp:300},
+ {id:'lng1',arc:'ln1',n:'Selo · Inglês',ev:['EF SET e gravação do dia 1','8 semanas de escuta e fala','B2 e o primeiro abstract','C1 oficial'],oral:'Explique em inglês, por dois minutos, um projeto seu do SGM-Opus.',fail:'Em que situação você ainda abre o tradutor?',ach:'vt_ln1',xp:300},
  {id:'lng2',arc:'ln2',n:'Selo · Japonês',ev:['Kana à mão','N5','N4','N2'],oral:'Leia em voz alta um trecho de notícia simples.',fail:'Qual parte da escuta ainda some quando a fala acelera?',ach:'vt_ln2',xp:350},
  {id:'lng3',arc:'ln3',n:'Selo · Chinês',ev:['50 tons gravados','HSK 1','HSK 4'],oral:'Peça um orçamento simples a um fornecedor em chinês.',fail:'Qual tom você ainda troca?',ach:'vt_ln3',xp:350},
  {id:'lng4',arc:'ln4',n:'Selo · Português',ev:['Oito redações corrigidas','Nota máxima nas cinco competências'],oral:'Defenda a sua proposta de intervenção em um minuto.',fail:'Qual competência cai primeiro quando o tempo aperta?',ach:'vt_ln4',xp:250},

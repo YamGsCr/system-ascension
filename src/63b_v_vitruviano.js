@@ -30,7 +30,7 @@
       ['Toda Prova vira mini-artigo','Até duas páginas: pergunta, método, resultado, limitações, próximo passo. A Prova só fecha com o texto anexado. O preprint do Opus Publicum é o sétimo texto desse formato, não o primeiro.'],
       ['Ranks da Mathematica','Cada rank só sobe com uma Prova entregue num projeto do SGM-Opus. O selo do rank abre o seguinte.'],
       ['Composição em dose fixa','A Harmonia compõe uma faixa por mês, no máximo. O piano é o instrumento-base de teoria e ouvido e só é comprado depois de 30 dias seguidos de treino de ouvido e teoria.'],
-      ['Idiomas em ordem','Inglês e português desde já; japonês na Onda 3; chinês só depois do JLPT N4, aproveitando os kanji.'],
+      ['Idiomas em ordem','Japonês e português desde já (o japonês é a Onda 1); o inglês de verdade, escuta, fala e científico, na Onda 3; chinês só depois do JLPT N4, aproveitando os kanji.'],
       ['Química de bancada não é domínio','É uma ficha de segurança do Artifex (baterias de lítio, fumaça de solda, filamentos, corrosão), lida antes da primeira solda.'],
       ['Chefes medem, não passam','Cada resultado vai para o Ascension com data e condições. Os simulados são registrados como "Ommen Bannal". Nunca na prova oficial: identificação fora do lugar pode anular a prova.']
     ]

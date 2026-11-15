@@ -148,9 +148,9 @@ const ANTES = { xp: 81, architect: 18, flaneur: 6, aesthetic: 20, navigation: 19
   await at(p, '2026-11-18T10:00:00');
   await p.evaluate(() => { location.hash = '#/rotina'; }); await L.routed(p, 'rotina');
   s = await p.evaluate(() => ({ at: SYS.E.rotAtivos(SYS.App.S, SYS.U.today()).map(b => b.id).join(','), menu: document.getElementById('view').innerText }));
-  ok(s.at === 'mat,eng,corpus', 'Onda 1 ativa: Mathematica, inglês e Corpus');
-  ok(/Anki: vocabulário de inglês/.test(s.menu) && !/Kana escrito à mão/.test(s.menu), 'o menu de bolso só mostra o que pertence a bloco ativo');
-  await p.evaluate(() => { ['mat','eng','corpus'].forEach(id => SYS.App.A.rotBloco({ getAttribute: k => k === 'data-id' ? id : 'min' })); });
+  ok(s.at === 'mat,jap,corpus', 'Onda 1 ativa: Mathematica, japonês e Corpus');
+  ok(/Kana escrito à mão/.test(s.menu) && !/Escuta em inglês/.test(s.menu), 'o menu de bolso só mostra o que pertence a bloco ativo: kana sim, inglês só na Onda 3');
+  await p.evaluate(() => { ['mat','jap','corpus'].forEach(id => SYS.App.A.rotBloco({ getAttribute: k => k === 'data-id' ? id : 'min' })); });
   ok(await p.evaluate(() => SYS.E.rotDia(SYS.App.S, SYS.U.today()) === 'minimo'), '10 minutos de cada bloco: dia mínimo cumprido');
   ok(await p.evaluate(() => SYS.E.rotDia(SYS.App.S, '2026-11-17') === 'falhou'), 'o dia em branco conta como falha');
   await p.evaluate(() => { const r = SYS.App.rot(); ['2026-11-16','2026-11-17'].forEach(d => { r.dias[d] = r.dias[d] || {}; r.dias[d].sono = 'ruim'; }); SYS.App.A.rotSono({ getAttribute: () => 'ruim' }); });
@@ -181,7 +181,7 @@ const ANTES = { xp: 81, architect: 18, flaneur: 6, aesthetic: 20, navigation: 19
     const ids = W.shop.map(i => i.id), dup = ids.filter((x, i) => ids.indexOf(x) !== i);
     const nomes = ['vm4','vm5','vm7','vm8','vh8','vh9','vh10'].map(id => (W.shop.filter(i => i.id === id)[0] || {}).n || '?');
     return { by, bad, dup, nomes }; });
-  ok(s.by.mat >= 16 && s.by.pol >= 17 && s.by.lin >= 16 && s.by.phi >= 30 && s.by.har >= 73 && s.by.shadow >= 2, 'todas as vertentes com loja: ' + JSON.stringify(s.by));
+  ok(s.by.mat >= 41 && s.by.pol >= 24 && s.by.lin >= 25 && s.by.phi >= 41 && s.by.har >= 73 && s.by.shadow >= 2, 'todas as vertentes com loja: ' + JSON.stringify(s.by));
   ok(s.bad.length === 0 && s.dup.length === 0, 'todo req aponta para nó, conquista ou compra que existe; ids únicos ' + s.bad.concat(s.dup).join(','));
   ok(/Quadro branco de parede/.test(s.nomes[0]) && /científica/.test(s.nomes[1]) && /profissional/.test(s.nomes[2]) && /gráfica/.test(s.nomes[3]) && /órgão/.test(s.nomes[4]) && /Teclado/.test(s.nomes[5]) && /Piano digital/.test(s.nomes[6]), 'quadros, calculadoras, órgão, teclado e piano na loja');
   s = await p.evaluate(() => { const E = SYS.E, S = SYS.App.S, D = SYS.App.D, r = SYS.App.rot(), antes = E.reqMet(S, D, 'op_12'), t = SYS.U.today();
