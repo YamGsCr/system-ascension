@@ -174,5 +174,20 @@ const ANTES = { xp: 81, architect: 18, flaneur: 6, aesthetic: 20, navigation: 19
   ok(s.d === 5, 'Abstinentia conta desde 14/11: ' + s.d + ' dias');
   ok(p.errs.length === 0, 'sem erro de página: ' + p.errs.join(' | '));
 
+
+  sec('7 · loja das vertentes');
+  s = await p.evaluate(() => { const W = SYS.WAYMAP.vitruviano, by = {}; W.shop.forEach(i => { by[i.br || 'shadow'] = (by[i.br || 'shadow'] || 0) + 1; });
+    const bad = W.shop.filter(i => i.req && !(/^n_/.test(i.req) ? SYS.E.NODE[i.req.slice(2)] : /^op_/.test(i.req) ? SYS.OPUS.COMPRAS.some(c => c.n === +i.req.slice(3)) : SYS.E.ACHMAP[i.req])).map(i => i.id);
+    const ids = W.shop.map(i => i.id), dup = ids.filter((x, i) => ids.indexOf(x) !== i);
+    const nomes = ['vm4','vm5','vm7','vm8','vh8','vh9','vh10'].map(id => (W.shop.filter(i => i.id === id)[0] || {}).n || '?');
+    return { by, bad, dup, nomes }; });
+  ok(s.by.mat >= 16 && s.by.pol >= 8 && s.by.lin >= 16 && s.by.phi >= 30 && s.by.har >= 73 && s.by.shadow >= 2, 'todas as vertentes com loja: ' + JSON.stringify(s.by));
+  ok(s.bad.length === 0 && s.dup.length === 0, 'todo req aponta para nó, conquista ou compra que existe; ids únicos ' + s.bad.concat(s.dup).join(','));
+  ok(/Quadro branco de parede/.test(s.nomes[0]) && /científica/.test(s.nomes[1]) && /profissional/.test(s.nomes[2]) && /gráfica/.test(s.nomes[3]) && /órgão/.test(s.nomes[4]) && /Teclado/.test(s.nomes[5]) && /Piano digital/.test(s.nomes[6]), 'quadros, calculadoras, órgão, teclado e piano na loja');
+  s = await p.evaluate(() => { const E = SYS.E, S = SYS.App.S, D = SYS.App.D, r = SYS.App.rot(), antes = E.reqMet(S, D, 'op_12'), t = SYS.U.today();
+    for (let i = 0; i < 30; i++) { const d = SYS.U.addDays(t, -i); r.dias[d] = r.dias[d] || {}; r.dias[d].b = Object.assign(r.dias[d].b || {}, { har: 'min' }); }
+    return { antes, depois: E.reqMet(S, D, 'op_12'), label: E.reqLabel('op_12') }; });
+  ok(!s.antes && s.depois && /30 dias seguidos/.test(s.label), 'o piano da loja espera a compra 12 do SGM-Opus (30 dias de treino): ' + s.label);
+
   await L.done(b);
 })();

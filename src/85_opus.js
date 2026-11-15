@@ -49,6 +49,17 @@
     return ok ? 'liberado' : 'bloqueado';
   };
 
+  /* loja: req 'op_<n>' = a linha n da lista de compras precisa estar liberada (ou já comprada) */
+  var oldReqMet = E.reqMet, oldReqLabel = E.reqLabel;
+  E.reqMet = function(S, D, req){
+    if (String(req).slice(0, 3) === 'op_') { var c = O.COMPRAS.filter(function(x){ return x.n === +req.slice(3); })[0]; return !!c && E.compraEstado(S, c) !== 'bloqueado'; }
+    return oldReqMet.apply(this, arguments);
+  };
+  E.reqLabel = function(req){
+    if (String(req).slice(0, 3) === 'op_') { var c = O.COMPRAS.filter(function(x){ return x.n === +req.slice(3); })[0]; return c ? 'SGM-Opus · compra ' + c.n + ' liberada: ' + c.cond : req; }
+    return oldReqLabel.apply(this, arguments);
+  };
+
   /* ---------- rota e navegação ---------- */
   var at = -1; App.NAV.forEach(function(n, k){ if (n && n[0] === 'caminhos') at = k; });
   App.NAV.splice(at >= 0 ? at + 1 : 3, 0, ['opus', 'SGM-Opus', 'layers']);
