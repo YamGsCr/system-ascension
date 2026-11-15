@@ -92,11 +92,12 @@ Os testes valem sobre o build de publicação: rode `python build.py --publicar`
 
 - `main` = v21.1 (publicada no Artifact em 15/11): a reestruturação v21 do doc SGM-Opus, que veio da branch `claude/vitruviano` e foi juntada à v20.8 (a voz das Sombras como conversa), que só existia no bundle de 11/11 e não tinha chegado ao GitHub. Ars vira Harmonia; a base do Mind vai para Philosophia, Lingua e Politeia; entra o Vitruviano com Mathematica (7 ranks por Prova), Politeia, Lingua (Trivium e quatro idiomas), Shadow Superare Machinam, Títulos Prokopton e Kalokagathia, a aba SGM-Opus e a Rotina. A v21.1 refaz a Politeia (discussão a frio, esquerda e direita com os críticos, Realpolitik e os eixos fora do eixo) e dá a Aristóteles um arco próprio na Philosophia.
 - Mexe em `build.py` (bloco `ars` virou `vitruviano` a partir de `27_`; bloco novo `opus` a partir de `84_`), nos arquivos `27*`, `29_mind.js` (o `29b_mind_side.js` saiu), em referências de `24b`, `25a`, `26a`, `29z`, `30`, `31`, `37`, `38`, `39v`, `41`, `52`, `70`, `74b`, `74f`, `76` e `80_sg_data.js` (só o `way` da Epsilon), e cria `39u`, `42b`, `63b`, `84` a `87` e a suíte `vitruviano`. Não toca no `83` nem nas falas das Sombras.
+- Anistia a4 (`68b`, pedido de 15/11): na primeira abertura até 16/11, oferece zerar a Zona desde 09/11 (faltas viram descanso, prendas saem, multa volta, Cidade do período limpa) e, aplicada até 15/11, põe a Zona em pausa até 15/11: sem veredito na véspera da jornada.
 - O save de quem já usa migra na primeira abertura (`42b`): XP total igual antes e depois, cópia em `localStorage['sysasc.backup.v21']`.
 - Para o GPT pegar: `git fetch origin` e `git rebase origin/main` na branch dele. Quem mexe em `27*` ou `29*` vai conflitar com a v21: os arquivos do Ars e da base do Mind mudaram de nome e de Caminho.
 - Pendências do doc: o rank do Prokopton foi decidido como IV (Kalokagathia ficou no tier máximo); os marcos das eras que só existem na v0.1 são escritos na tela; o nome do Way físico continua "Calistenia (Aesthetic)".
 - Artes: no Artifact seguem só as aprovadas (Gamma, Delta e Eta). Na pasta do Yam há PNGs da Alpha, da Beta e da Epsilon que ainda não passaram por revisão; ficaram fora.
-- Testes: 36 suítes e 1.169 asserções verdes. Com `JOBS=3` ou mais a `anistia`, a `cityui` e a `citysave` às vezes falham por tempo; rodadas sozinhas passam.
+- Testes: 36 suítes e 1.174 asserções verdes. Com `JOBS=3` ou mais a `anistia`, a `cityui` e a `citysave` às vezes falham por tempo; rodadas sozinhas passam.
 
 ## Estado anterior (11/11/2026, v20.8)
 

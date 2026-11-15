@@ -2,6 +2,7 @@
    a chama fica protegida sem gastar gelo; uma vez só, até 31/10, e "agora não" deixa para a próxima abertura.
    O pedido de 21/10: só as prendas das faltas até 21/10 saem, de 21/10 a 04/11.
    O pedido de 09/11: a Zona e a Cidade do período (de 22/10 até a aplicação), sem mexer na chama.
+   O pedido de 15/11: o mesmo desde 09/11 e, na véspera da jornada, a Zona sem veredito.
    E a banca da Zona: o Examinador julga pelo mesmo pedido que aparece na tela */
 const L = require('./v14lib.js'); const { ok, sec, open, at, run, prime } = L;
 const DAYS = (a, b) => { const out = []; let d = new Date(a + 'T12:00:00'); const e = new Date(b + 'T12:00:00'); while (d <= e) { out.push(d.toISOString().slice(0, 10)); d = new Date(d.getTime() + 864e5); } return out; };
@@ -157,6 +158,31 @@ const st = p => p.evaluate(() => { const A = SYS.App, S = A.S, z = S.pz, m = doc
   ok(s.gout < g0 && gemB - gemA === g0 - s.gout, 'a multa do período volta para o saldo (+' + (g0 - s.gout) + ' ◆)');
   ok(r.corr === 0 && r.mald === 0 && r.posse === 0 && r.eco === 0 && r.qb === 1 && r.log, 'Cidade: Piscinas limpas, maldição e portal do Posseiro fora, Eco Partido fora, quebra perdoada, celular avisa');
   ok(r.chama === chama0 && r.flag === '2026-11-09' && r.an === 'periodo', 'a chama fica como estava; o registro guarda a anistia de 09/11');
+  await ctx.close();
+
+  sec('pedido de 15/11: Zona zerada e sem veredito na véspera da jornada');
+  ({ p, ctx } = await open(b, '2026-11-12T08:00:00', () => { window.__anistia = 1; }));
+  await prime(p, true);
+  await p.evaluate(() => {
+    const A = SYS.App, z = A.S.pz; z.on = true; z.since = '2026-11-01'; z.intro = 1; z.dias = [0, 1, 2, 3, 4, 5, 6];
+    ['2026-11-12', '2026-11-13'].forEach(d => { z.log[d] = {v: 'ok', a: 2}; z.tot.ok++; });
+    z.log['2026-11-14'] = {v: 'miss', a: 0, p: 'pzX'}; z.tot.miss = (z.tot.miss || 0) + 1; z.seq = 0;
+    z.pens.push({id: 'pzX', k: 'treino', d: '2026-11-14', f: '2026-11-14', at: new Date().toISOString(), st: 'open', due: '2026-11-17'});
+    A.S.flags.anistia = '2026-10-17'; A.S.flags.anistia2 = '2026-10-21'; A.S.flags.anistia3 = '2026-11-09';
+    SYS.Store.asAuto(() => A.commit(['core'], {quiet: true}));
+  });
+  await at(p, '2026-11-15T10:30:00', 4000);
+  s = await st(p);
+  ok(s.modal === 'anistia' && s.mid === 'a4' && /a jornada começa em 16\/11/.test(s.txt) && /faltas? na Zona entre 09\/11 e 15\/11/.test(s.txt) && /prendas? sa/.test(s.txt) && /Sem veredito hoje/.test(s.txt), 'em 15/11 o pedido novo mostra as faltas desde 09/11, as prendas e o dia sem veredito');
+  await p.click('.modal [data-a="pzAnOk"]'); await run(p, 800);
+  s = await st(p);
+  r = await p.evaluate(() => { const A = SYS.App, E = SYS.E, S = A.S, z = S.pz; return { v14: z.log['2026-11-14'].v, pausa: z.pause, hoje: E.pzArmed(S, '2026-11-15'), amanha: E.pzArmed(S, '2026-11-16'), flag: S.flags.anistia4 }; });
+  ok(r.v14 === 'rest' && s.open === 0 && !s.show, 'aplicado: a falta de 14/11 vira descanso e a prenda sai');
+  ok(r.pausa === '2026-11-15' && !r.hoje && r.amanha && r.flag === '2026-11-15', 'a Zona descansa hoje e o Chamado volta em 16/11');
+  await at(p, '2026-11-15T21:00:00', 2500);
+  s = await st(p);
+  ok(s.open === 0 && !s.show && !(await p.evaluate(() => SYS.App.S.pz.log['2026-11-15'] && SYS.App.S.pz.log['2026-11-15'].v === 'miss')), 'à noite não sai veredito nem prenda');
+  ok(p.errs.length === 0, 'sem erro de JS ' + p.errs.slice(0, 2).join(' | '));
   await ctx.close();
 
   sec('banca: o Examinador julga o pedido da tela');

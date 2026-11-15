@@ -13,12 +13,16 @@
        sem passar do que a Zona cobrou) e a sequência do Chamado é recontada;
      - Cidade: a corrupção de cada bairro volta ao nível de antes do período, as maldições acabam, e o que as quebras
        do período deixaram (Revanche, Eco Partido, Contenção acima do nível novo) sai. A chama não entra.
-   O registro guarda cada anistia em S.pz.anistias; a marca de aplicada fica em S.flags (anistia, anistia2). */
+   a4 · pedido em 15/11, de 15/11 até 16/11 · a jornada começa em 16/11 · o período vai de 09/11 até o dia em que for aplicada
+     - igual à a3 (faltas viram descanso, prendas saem, multa volta, Cidade do período limpa) e, aplicada até 15/11,
+       a Zona fica em pausa até 15/11: o veredito de hoje não sai e o Chamado volta em 16/11.
+   O registro guarda cada anistia em S.pz.anistias; a marca de aplicada fica em S.flags (anistia, anistia2, anistia3, anistia4). */
 (function(){
   var PEDIDOS = [
     {id: 'a1', flag: 'anistia', pedido: '2026-10-17', de: '', ate: '2026-10-31', motivo: 'foco total no sistema da loja'},
     {id: 'a2', flag: 'anistia2', pedido: '2026-10-21', de: '2026-10-21', ate: '2026-11-04', motivo: 'ocupado na hora do chamado', so: 'prendas'},
-    {id: 'a3', flag: 'anistia3', pedido: '2026-11-09', de: '2026-11-09', ate: '2026-11-23', desde: '2026-10-22', motivo: 'fora de operação até agora', so: 'periodo'}
+    {id: 'a3', flag: 'anistia3', pedido: '2026-11-09', de: '2026-11-09', ate: '2026-11-23', desde: '2026-10-22', motivo: 'fora de operação até agora', so: 'periodo'},
+    {id: 'a4', flag: 'anistia4', pedido: '2026-11-15', de: '2026-11-15', ate: '2026-11-16', desde: '2026-11-09', motivo: 'a jornada começa em 16/11, com a Zona zerada', so: 'periodo', fecha: '2026-11-15'}
   ];
   function ped(id){ return PEDIDOS.filter(function(x){ return x.id === id; })[0] || PEDIDOS[0]; }
   function fmt(d){ return d.slice(8, 10) + '/' + d.slice(5, 7); }
@@ -81,7 +85,8 @@
       out.gem = multa(z, A.desde, fim, out.pens);
       out.seq = replay(S, out.zd).seq;
       out.cy = planCidade(A.desde, fim);
-      out.any = !!(out.zd.length || out.pens.length || out.gem || (out.cy && out.cy.any));
+      if (A.fecha && t <= A.fecha && E.pzArmed(S, t)) out.fecha = A.fecha;   /* sem veredito até a véspera da jornada */
+      out.any = !!(out.zd.length || out.pens.length || out.gem || (out.cy && out.cy.any) || out.fecha);
       return out;
     }
     if (z.log) {
@@ -155,6 +160,7 @@
     if (P.gem) z.gout = Math.max(0, (z.gout || 0) - P.gem);
     if (z.show && z.show.t === 'miss') z.show = null;
     var R = replay(S, []); z.seq = R.seq; z.clean = R.clean; z.best = Math.max(z.best || 0, R.best);
+    if (P.fecha && (!z.pause || z.pause < P.fecha)) z.pause = P.fecha;
     if (P.sd.length) {                                              /* a chama só entra no pedido de 17/10 */
       P.sd.forEach(function(d){
         var r = S.daily[d] || (S.daily[d] = {q: {}, need: S.settings.dailies.length});
@@ -164,7 +170,7 @@
       if (S.streakLost && (S.streakLost.gap || []).every(function(g){ return P.sd.indexOf(g) >= 0; })) S.streakLost = null;
     }
     (z.anistias || (z.anistias = [])).push(A.so === 'periodo'
-      ? {at: t, pedido: A.pedido, motivo: A.motivo, so: 'periodo', de: P.ini, ate: P.fim, zona: P.zd.slice(), prendas: P.pens.length, gem: P.gem, cidade: P.cy ? {corr: P.cy.corr, mald: P.cy.mald.length, rem: P.cy.rem.length, ecos: P.cy.ecos.length, quebras: P.cy.quebras.length} : null}
+      ? {at: t, pedido: A.pedido, motivo: A.motivo, so: 'periodo', de: P.ini, ate: P.fim, zona: P.zd.slice(), prendas: P.pens.length, gem: P.gem, pausa: P.fecha || '', cidade: P.cy ? {corr: P.cy.corr, mald: P.cy.mald.length, rem: P.cy.rem.length, ecos: P.cy.ecos.length, quebras: P.cy.quebras.length} : null}
       : {at: t, pedido: A.pedido, motivo: A.motivo, zona: P.zd.slice(), prendas: P.pens.length, gem: P.gem, chama: P.sd.slice(), gelo: P.fz});
     S.flags[A.flag] = t;
     App.commit(A.so === 'periodo' && P.cy ? ['core', 'city'] : ['core']);
@@ -216,6 +222,7 @@
         if (Q.mald.length) rows.push(['alert', '<b>' + Q.mald.length + (Q.mald.length === 1 ? ' maldição acaba' : ' maldições acabam') + '</b> agora.']);
         if (Q.quebras.length || Q.ecos.length || Q.rem.length) rows.push(['sword', '<b>Quebras do período perdoadas</b>' + (Q.quebras.length ? ' (' + Q.quebras.length + ')' : '') + ': ' + [Q.ecos.length ? Q.ecos.length + (Q.ecos.length === 1 ? ' Eco Partido sai' : ' Ecos Partidos saem') : '', Q.rem.length ? Q.rem.length + (Q.rem.length === 1 ? ' portal de Revanche, Contenção ou maldição sai do mapa' : ' portais de Revanche, Contenção ou maldição saem do mapa') : ''].filter(Boolean).join(' e ') + '.']);
       }
+      if (P.fecha) rows.push(['gate', '<b>Sem veredito hoje</b>: a Zona descansa até ' + fmt(P.fecha) + ' e o Chamado volta em ' + fmt(U.addDays(P.fecha, 1)) + ', no começo da jornada.']);
       fim = 'Vale uma vez, até ' + fmt(A.ate) + '. A chama das diárias fica como está. O registro da Zona e o celular da Cidade guardam a anistia.';
     } else {
       if (P.zd.length) rows.push(['gate', '<b>' + P.zd.length + (P.zd.length === 1 ? ' falta' : ' faltas seguidas') + ' na Zona</b> (' + span(P.zd) + ') viram descanso. A sequência do Chamado volta a ' + P.seq + '.']);
@@ -236,7 +243,7 @@
     App.ui.modal = App.ui.modalNext || null; App.ui.modalNext = null; App.renderModal();
     if (P) App.toast(A.so === 'prendas'
       ? {t: '[Sistema] Anistia aplicada', s: P.pens.length + (P.pens.length === 1 ? ' prenda retirada da Zona.' : ' prendas retiradas da Zona.'), ic: 'seal', ms: 8000}
-      : A.so === 'periodo' ? {t: '[Sistema] Anistia aplicada', s: [P.zd.length ? P.zd.length + ' faltas viraram descanso' : '', P.pens.length ? P.pens.length + ' prendas retiradas' : '', P.gem ? '+' + P.gem + ' ◆' : '', P.cy && P.cy.any ? 'Cidade limpa' : ''].filter(Boolean).join(' · ') + '.', ic: 'seal', ms: 8000}
+      : A.so === 'periodo' ? {t: '[Sistema] Anistia aplicada', s: [P.zd.length ? P.zd.length + ' faltas viraram descanso' : '', P.pens.length ? P.pens.length + ' prendas retiradas' : '', P.gem ? '+' + P.gem + ' ◆' : '', P.cy && P.cy.any ? 'Cidade limpa' : '', P.fecha ? 'sem veredito hoje' : ''].filter(Boolean).join(' · ') + '.', ic: 'seal', ms: 8000}
       : {t: '[Sistema] Anistia aplicada', s: [P.zd.length ? P.zd.length + ' faltas viraram descanso' : '', P.pens.length ? P.pens.length + ' prendas retiradas' : '', P.sd.length ? 'chama protegida (' + P.streak + ' dias)' : ''].filter(Boolean).join(' · ') + '.', ic: 'seal', ms: 8000});
     if (App.pzPaint) App.pzPaint();
     if (App.pzPresent) App.pzPresent();
