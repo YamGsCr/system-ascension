@@ -181,13 +181,41 @@ const ANTES = { xp: 81, architect: 18, flaneur: 6, aesthetic: 20, navigation: 19
     const ids = W.shop.map(i => i.id), dup = ids.filter((x, i) => ids.indexOf(x) !== i);
     const nomes = ['vm4','vm5','vm7','vm8','vh8','vh9','vh10'].map(id => (W.shop.filter(i => i.id === id)[0] || {}).n || '?');
     return { by, bad, dup, nomes }; });
-  ok(s.by.mat >= 16 && s.by.pol >= 8 && s.by.lin >= 16 && s.by.phi >= 30 && s.by.har >= 73 && s.by.shadow >= 2, 'todas as vertentes com loja: ' + JSON.stringify(s.by));
+  ok(s.by.mat >= 16 && s.by.pol >= 17 && s.by.lin >= 16 && s.by.phi >= 30 && s.by.har >= 73 && s.by.shadow >= 2, 'todas as vertentes com loja: ' + JSON.stringify(s.by));
   ok(s.bad.length === 0 && s.dup.length === 0, 'todo req aponta para nó, conquista ou compra que existe; ids únicos ' + s.bad.concat(s.dup).join(','));
   ok(/Quadro branco de parede/.test(s.nomes[0]) && /científica/.test(s.nomes[1]) && /profissional/.test(s.nomes[2]) && /gráfica/.test(s.nomes[3]) && /órgão/.test(s.nomes[4]) && /Teclado/.test(s.nomes[5]) && /Piano digital/.test(s.nomes[6]), 'quadros, calculadoras, órgão, teclado e piano na loja');
   s = await p.evaluate(() => { const E = SYS.E, S = SYS.App.S, D = SYS.App.D, r = SYS.App.rot(), antes = E.reqMet(S, D, 'op_12'), t = SYS.U.today();
     for (let i = 0; i < 30; i++) { const d = SYS.U.addDays(t, -i); r.dias[d] = r.dias[d] || {}; r.dias[d].b = Object.assign(r.dias[d].b || {}, { har: 'min' }); }
     return { antes, depois: E.reqMet(S, D, 'op_12'), label: E.reqLabel('op_12') }; });
   ok(!s.antes && s.depois && /30 dias seguidos/.test(s.label), 'o piano da loja espera a compra 12 do SGM-Opus (30 dias de treino): ' + s.label);
+
+  sec('8 · Politeia de discussão e o Aristóteles inteiro');
+  s = await p.evaluate(() => {
+    const W = SYS.WAYMAP.vitruviano, E = SYS.E, pol = W.arcs.filter(a => a.br === 'pol'), ids = a => a.nodes.map(n => n.id);
+    const main = pol.filter(a => !a.side), side = pol.filter(a => a.side);
+    const po5 = main.filter(a => a.id === 'po5')[0], aris = W.arcs.filter(a => a.id === 'pa2')[0];
+    const lib = SYS.LIB || {}, bks = pol.concat([aris]).reduce((x, a) => x.concat(a.nodes.reduce((y, n) => y.concat((n.bk || []).map(k => k[0])), [])), []);
+    return {
+      main: main.map(a => a.id).join(','), side: side.map(a => a.id + ':' + a.needGate).join(','),
+      p08: E.NODE.P08.arc, velhos: ['PO04','PO05'].filter(id => E.NODE[id]).length,
+      po5req: po5.nodes.every(n => (n.req || []).join() === 'pog3,pog4'), chefe: E.NODE.PO06.boss && po5.nodes[po5.nodes.length - 1].id === 'PO06',
+      itt: ['PO22','PO28'].map(id => E.NODE[id].boss ? 1 : 0).join(''), final: E.GATE.pog5 && E.GATE.pog5.final,
+      sm06: E.NODE.SM06.req.every(g => E.GATE[g]), ach: ['vt_po0','vt_po5','vt_pox1','vt_pox4','vt_pa2'].every(k => SYS.GATEACH[k] && SYS.GATEACH[k].title),
+      aris: ids(aris).join(','), arisN: W.arcs.filter(a => a.br === 'phi' && !a.side).map(a => a.id).join(','),
+      semLib: bks.filter(k => !lib[k]), kac: /3 pessoas e feriu 23/.test(E.NODE.PO35.s) && /Fleming/.test(E.NODE.PO35.st.join(' ')),
+      ufo: /IPM 18\/97/.test(E.NODE.PO47.st.join(' ')) && /Colares/.test(E.NODE.PO47.s)
+    };
+  });
+  ok(s.main === 'po0,po1,po2,po3,po4,po5', 'eixo principal: Ágora, Clássicos, Estado moderno, Esquerda, Direita e Realpolitik (' + s.main + ')');
+  ok(s.side === 'pox1:pog0,pox2:pog0,pox3:pog0,pox4:pog0', 'quatro laterais fora do eixo, todas abrem com a Ágora: ' + s.side);
+  ok(s.p08 === 'po1' && s.velhos === 0, 'Ética & justiça segue nos Clássicos; Constituição e município saíram');
+  ok(s.po5req && s.chefe && s.itt === '11' && s.final, 'Realpolitik pede os dois Testes de Turing; o chefe da Gamma fecha o eixo');
+  ok(s.sm06 && s.ach, 'a Banca das Sete Sombras e as conquistas dos selos novos apontam para coisas que existem');
+  ok(s.aris === 'P35,P36,P37,P38,P39,P40,P41,P42' && s.arisN.indexOf('pa1,pa2,i2') === 0, 'Aristóteles vira o arco II da Philosophia: ' + s.aris);
+  ok(s.semLib.length === 0, 'todo livro citado está na biblioteca: ' + s.semLib.join(','));
+  ok(s.kac && s.ufo, 'Kaczynski lido com os crimes e a origem das ideias; ufologia com os documentos oficiais');
+  ok(await p.evaluate(() => { const S = SYS.App.S; S.settings.openWorld = false; return !SYS.E.reqOk(S, SYS.E.NODE.PO29) && SYS.E.arcLocked(S, SYS.E.ARC['vitruviano:pox4']); }), 'sem os selos, a Realpolitik e a Conspirologia ficam travadas');
+  ok(p.errs.length === 0, 'sem erro de página: ' + p.errs.join(' | '));
 
   await L.done(b);
 })();

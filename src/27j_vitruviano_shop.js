@@ -53,10 +53,19 @@ SYS.shop('vitruviano', [
  {id:'vp2',tier:'uncommon',br:'pol',n:'Edição comentada de A República',rule:'até R$ 150',req:'n_PO01'},
  {id:'vp3',tier:'uncommon',br:'pol',n:'Edição comentada da Política de Aristóteles',rule:'até R$ 150',req:'n_PO02'},
  {id:'vp4',tier:'rare',br:'pol',n:'História da Guerra do Peloponeso em edição boa',rule:'até R$ 250',req:'n_PO03'},
- {id:'vp5',tier:'rare',br:'pol',n:'Constituição anotada ou vade-mécum do ano',rule:'até R$ 300',req:'n_PO04'},
+ {id:'vp5',tier:'rare',br:'pol',n:'Box dos contratualistas: Leviatã, Segundo Tratado e Contrato Social',d:'Três livros que discordam entre si na mesma prateleira.',rule:'até R$ 300',req:'n_PO17'},
  {id:'vp6',tier:'rare',br:'pol',n:'Jogo de tabuleiro de política e estratégia (ex.: Diplomacy, Twilight Struggle)',d:'Tucídides em quatro horas, com amigos e traição.',rule:'até R$ 450',cd:72,req:'n_PO03'},
- {id:'vp7',tier:'epic',br:'pol',n:'Viagem a Brasília: sessão do Congresso e visita ao STF',rule:'orçamento separado',seals:1,cd:168,req:'n_PO05'},
- {id:'vp8',tier:'legendary',br:'pol',n:'Viagem a Atenas: Ágora, Pnyx e Acrópole',d:'O lugar onde a palavra política nasceu.',rule:'orçamento separado + reserva intacta',seals:2,cd:336,req:'n_PO06'}
+ {id:'vp7',tier:'epic',br:'pol',n:'Viagem a Brasília: uma sessão do Congresso de caderno na mão',d:'Não é turismo cívico: é ver onde o poder de fato se senta.',rule:'orçamento separado',seals:1,cd:168,req:'n_PO33'},
+ {id:'vp8',tier:'legendary',br:'pol',n:'Viagem a Atenas: Ágora, Pnyx e Acrópole',d:'O lugar onde a palavra política nasceu.',rule:'orçamento separado + reserva intacta',seals:2,cd:336,req:'n_PO06'},
+ {id:'vp9',tier:'common',br:'pol',n:'Caderno de previsões com data de vencimento',d:'Cada previsão com número e prazo. O placar não perdoa.',c:20,rule:'até R$ 40',rep:1,lim:'mês',req:'n_PO10'},
+ {id:'vp10',tier:'uncommon',br:'pol',n:'Jogo de dedução social (ex.: The Resistance, Coup)',d:'Retórica, blefe e leitura fria de gente, numa noite.',rule:'até R$ 200',req:'n_PO09'},
+ {id:'vp11',tier:'uncommon',br:'pol',n:'O Capital, Livro I, em edição boa',rule:'até R$ 200',req:'n_PO18'},
+ {id:'vp12',tier:'uncommon',br:'pol',n:'A Riqueza das Nações em edição completa',rule:'até R$ 200',req:'n_PO23'},
+ {id:'vp13',tier:'rare',br:'pol',n:'Estante dos dois lados: Burke, Paine, Hayek e Polanyi',d:'Cada livro de um lado ao lado do crítico dele.',rule:'até R$ 450',cd:72,req:'n_PO08'},
+ {id:'vp14',tier:'common',br:'pol',n:'Quadro de cortiça, alfinetes e barbante vermelho',d:'Para mapear casos como detetive de série. Com régua, claro.',c:25,rule:'até R$ 80',req:'n_PO45'},
+ {id:'vp15',tier:'rare',br:'pol',n:'Raspberry Pi para um servidor caseiro só com software livre',d:'Do Manifesto GNU para a prática. Um relay Tor é opcional.',rule:'até R$ 600',cd:72,req:'n_PO37'},
+ {id:'vp16',tier:'epic',br:'pol',n:'Viagem de pesquisa a Varginha ou a Colares',d:'Ouvir o folclore no lugar e ler os autos na volta.',rule:'orçamento separado',seals:1,cd:168,req:'n_PO47'},
+ {id:'vp17',tier:'epic',br:'pol',n:'Viagem ao sertão de Canudos (Parque Estadual de Canudos, BA)',d:'Os Sertões na mochila.',rule:'orçamento separado',seals:1,cd:168,req:'n_PO43'}
 ]);
 
 /* ---------- LINGUA · o que faltava ---------- */

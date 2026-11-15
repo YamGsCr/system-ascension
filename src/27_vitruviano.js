@@ -31,7 +31,7 @@ SYS.way({
     {id:'mat', n:'Mathematica', ic:'target', d:'Matemática, física e engenharia em 6 ranks e um Shadow, até o micro-Doppler do Vigil Caeli. Cada rank só sobe com uma Prova entregue num projeto do SGM-Opus. Astronomia é extensão opcional.', tierNames:['Numerus','Calculator','Geometra','Mechanicus','Mathematicus'], mt:'Mestre da Mathematica'},
     {id:'har', n:'Harmonia', ic:'wave', d:'Piano como base de teoria e ouvido; drum & bass, jungle e composição em dose fixa (uma faixa por mês); cordas; acústica. O antigo Ars Subtilior.', tierNames:['Bedroom Ghost','Break Surgeon','Bass Alchemist','Subtilior','The Composer'], mt:'Mestre da Harmonia'},
     {id:'phi', n:'Philosophia', ic:'eye', d:'Milesianos, Sócrates e estoicos; exercícios estoicos como psicologia aplicada. Autoconhecimento não substitui terapia.', tierNames:['Cave Dweller','Questioner','Skeptic','Stoic','The Lucid'], mt:'Mestre da Philosophia'},
-    {id:'pol', n:'Politeia', ic:'shield', d:'Platão, Aristóteles e Tucídides lidos contra instituições reais: a Constituição, o município e um dossiê.', tierNames:['Idiotes','Polites','Strategos','Nomothetes','Archon'], mt:'Mestre da Politeia'},
+    {id:'pol', n:'Politeia', ic:'shield', d:'Discutir a frio: ouvir os dois lados no Teste de Turing, ler os clássicos, a esquerda, a direita e a realpolitik de hoje, e os eixos que ninguém lembra.', tierNames:['Idiotes','Polites','Strategos','Nomothetes','Archon'], mt:'Mestre da Politeia'},
     {id:'lin', n:'Lingua', ic:'pen', d:'Trivium (Grammatica, Dialectica, Rhetorica) e idiomas: inglês, japonês e, depois do JLPT N4, chinês. Português em treino de maestria.', tierNames:['Barbaros','Grammaticus','Dialecticus','Rhetor','Polyglotta'], mt:'Mestre da Lingua'}
   ]
 });

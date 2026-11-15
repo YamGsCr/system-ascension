@@ -13,7 +13,7 @@
   SYS.VIT = {
     RANKS: [['mt1','I · Elementa','Ensino médio'],['mt2','II · Calculus','Graduação, 1º ano'],['mt3','III · Linearis','Graduação, 2º ano'],['mt4','IV · Signum','Graduação, 3º e 4º anos de Engenharia Elétrica'],['mt5','V · Estimatio','Fim da graduação e início do mestrado'],['mt6','VI · Micromotus','Mestrado'],['mt7','Shadow · Opus Publicum','Pesquisa']],
     PROVAS: ['MT05','MT10','MT15','MT20','MT25','MT30','MT35'],
-    CHEFES_DOMINIO: [['mat','MT30','Ver Chefes e calibração'],['har','M75','Faixa com restrição imposta, com a progressão tocada ao piano'],['phi','P23','Diálogo socrático escrito sobre uma decisão real'],['pol','PO06','Dossiê de uma instituição real'],['lin','L04','Certificações de cada idioma'],['shadow','SM06','Em cada domínio, achar e corrigir com prova um erro real de uma IA']],
+    CHEFES_DOMINIO: [['mat','MT30','Ver Chefes e calibração'],['har','M75','Faixa com restrição imposta, com a progressão tocada ao piano'],['phi','P23','Diálogo socrático escrito sobre uma decisão real'],['pol','PO06','Disputa de poder real analisada a frio: os dois lados no Teste de Turing, mapa de poder e previsão conferida'],['lin','L04','Certificações de cada idioma'],['shadow','SM06','Em cada domínio, achar e corrigir com prova um erro real de uma IA']],
     ART: [['perg','Pergunta','A pergunta numa frase.'],['met','Método','O que você mediu ou calculou, e como outra pessoa repete.'],['res','Resultado','O que deu, com o número e a figura que dizem a conclusão.'],['lim','Limitações','Onde o resultado pode estar errado.'],['prox','Próximo passo','O que essa Prova abre.']],
     ART_MIN: 20,
     CHEFES: [

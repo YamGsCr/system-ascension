@@ -1,6 +1,6 @@
 /* ===== VITRUVIANO · PHILOSOPHIA (examinadora: Alpha) =====
-   Milesianos, Sócrates, estoicos e a psicologia aplicada. Os arcos II a V e o lateral de Atenção vieram da base do Mind
-   com os mesmos IDs (P04…P32, ig2…ig6, igs2): o progresso salvo acompanha os nós. */
+   Milesianos, Aristóteles, Sócrates, estoicos e a psicologia aplicada. Os arcos III a VI e o lateral de Atenção vieram da base do Mind
+   com os mesmos IDs (P04…P32, ig2…ig6, igs2): o progresso salvo acompanha os nós. O arco II (Aristóteles, P35…P42) entrou na v21.1. */
 SYS.lib({
   republica:{t:'A República',a:'Platão',y:'c. 375 a.C.',w:'vitruviano',note:'Livro VII: a alegoria da caverna.'},
   apologia:{t:'Apologia de Sócrates',a:'Platão',y:'c. 399 a.C.',w:'vitruviano',note:'A defesa de Sócrates: o preço de viver examinando a vida.'},
@@ -31,6 +31,14 @@ SYS.lib({
   superforecasting:{t:'Superforecasting',a:'Philip Tetlock & Dan Gardner',y:'2015',pt:'Superprevisões',w:'vitruviano',note:'Previsões calibradas, atualização de crenças e humildade.'},
   mundoAssombrado:{t:'The Demon-Haunted World',a:'Carl Sagan',y:'1995',pt:'O Mundo Assombrado pelos Demônios (Companhia das Letras)',w:'vitruviano',note:'Ciência como vela no escuro e o kit de detecção de bobagem.'},
   fixeConhecimento:{t:'Make It Stick',a:'Peter C. Brown, Henry L. Roediger III & Mark A. McDaniel',y:'2014',pt:'Fixe o Conhecimento (Penso)',w:'vitruviano',note:'A ciência da aprendizagem: recuperação, espaçamento e intercalação.'},
+  organon:{t:'Órganon',a:'Aristóteles',y:'séc. IV a.C. · domínio público',pt:'Órganon (Edipro)',w:'vitruviano',note:'Categorias, Da Interpretação, Analíticos, Tópicos e Refutações Sofísticas: a lógica inteira.'},
+  fisica:{t:'Física',a:'Aristóteles',y:'séc. IV a.C. · domínio público',pt:'Física I-II (Editora da Unicamp, trad. Lucas Angioni)',w:'vitruviano',note:'As quatro causas, a natureza, o movimento e o tempo.'},
+  metafisica:{t:'Metafísica',a:'Aristóteles',y:'séc. IV a.C. · domínio público',pt:'Metafísica (Loyola, ed. Giovanni Reale)',w:'vitruviano',note:'Livros I, IV, VII, IX e XII: o ser enquanto ser, a substância, ato e potência e o motor imóvel.'},
+  deAnima:{t:'De Anima',a:'Aristóteles',y:'séc. IV a.C. · domínio público',pt:'De Anima (Editora 34)',w:'vitruviano',note:'A alma como forma do corpo vivo: a primeira filosofia da mente.'},
+  poetica:{t:'Poética',a:'Aristóteles',y:'séc. IV a.C. · domínio público',pt:'Poética (Editora 34)',w:'vitruviano',note:'Enredo, peripécia, reconhecimento e catarse. Curta.'},
+  historiaAnimais:{t:'História dos Animais',a:'Aristóteles',y:'séc. IV a.C. · domínio público',w:'vitruviano',note:'Observação e classificação de centenas de espécies.'},
+  lagoon:{t:'The Lagoon: How Aristotle Invented Science',a:'Armand Marie Leroi',y:'2014',w:'vitruviano',note:'Um biólogo volta à lagoa de Lesbos e lê o Aristóteles cientista.'},
+  aristotelesVSI:{t:'Aristotle: A Very Short Introduction',a:'Jonathan Barnes',y:'2000',w:'vitruviano',note:'O mapa da obra inteira em poucas páginas.'},
   montaigne:{t:'Os Ensaios',a:'Michel de Montaigne',y:'1580',pt:'Os Ensaios (Penguin-Companhia, seleção)',w:'vitruviano',note:'O inventor do ensaio: pensar escrevendo sobre si e o mundo.'}
 });
 
@@ -54,7 +62,73 @@ SYS.arc('vitruviano', { id:'pa1', br:'phi', n:'I · OS ANTIGOS', wk:'Philosophia
 ]});
 SYS.gate('vitruviano', {id:'pag1',arc:'pa1',n:'Selo · Os Antigos',ev:['Três páginas sobre os milesianos','Diário estoico de 21 dias'],oral:'Explique o salto do mito ao lógos com Anaximandro.',fail:'Qual exercício estoico você usou para fugir de um problema em vez de enfrentá-lo?',ach:'vt_pa1',xp:120});
 
-SYS.arc('vitruviano', { id:'i2', br:'phi', n:'II · FILOSOFIA — AS GRANDES PERGUNTAS', wk:'Philosophia · II', sub:'Sócrates, Aristóteles, estoicos, existencialistas, ética, mente, espaço e cansaço.', nodes:[
+SYS.arc('vitruviano', { id:'pa2', br:'phi', n:'II · ARISTÓTELES, O MESTRE DOS QUE SABEM', wk:'Philosophia · II', sub:'Dante o chamou de mestre dos que sabem. Lógica, física, metafísica, alma, poesia e biologia: a obra que organizou o saber por dois mil anos. A ética mora no arco III (P05), a política na Politeia (PO02) e a retórica na Lingua.', nodes:[
+ {id:'P35',d:'Aristóteles',t:'Órganon I: Categorias, Da Interpretação & o silogismo',xp:45,cr:16,ach:'Silogismo',
+  s:'Aristóteles inventa a lógica formal: dez categorias para dizer o que existe e o silogismo para provar o que se segue.',
+  st:['As dez categorias: substância e acidentes','Da Interpretação: proposição, verdade e os futuros contingentes (a batalha naval)','Analíticos Anteriores: as figuras do silogismo','Analíticos Posteriores: demonstração e ciência','Da lógica de Aristóteles à de Frege: o que ficou'],
+  wh:[['Stanford Encyclopedia — Aristotle’s Logic','https://plato.stanford.edu/entries/aristotle-logic/','doc','EN'],['Stanford Encyclopedia — Aristotle’s Categories','https://plato.stanford.edu/entries/aristotle-categories/','doc','EN']],
+  bk:[['organon','Categorias, Da Interpretação (cap. 9) e Analíticos Anteriores I (cap. 1 a 7)'],['aristotelesVSI','Livro inteiro (curto)']],
+  q:'Formalize dez argumentos reais (notícias, discussões, papers) em silogismos e marque os inválidos.',
+  dv:'Dez silogismos com validade', g:'Acha a premissa escondida de cada entimema.',
+  f:'Decorar os nomes das figuras sem aplicar.'},
+ {id:'P36',d:'Aristóteles',t:'Órganon II: Tópicos & Refutações Sofísticas',xp:45,cr:16,ach:'Refutador',
+  s:'O primeiro manual de debate: como argumentar a partir de opiniões aceitas e as treze falácias que Aristóteles catalogou.',
+  st:['Dialética contra demonstração','Os lugares-comuns (tópoi) como banco de argumentos','Refutações Sofísticas: as falácias que dependem da linguagem e as que não dependem','O jogo de perguntas e respostas da Academia','Ponte com a Ágora da Politeia: discutir para descobrir, não para ganhar'],
+  wh:[['Aristotle — Sophistical Refutations (aulas)',yt('Aristotle Sophistical Refutations fallacies lecture'),'vídeo','EN']],
+  bk:[['organon','Tópicos I e VIII; Refutações Sofísticas inteiro']],
+  q:'Ache um exemplo atual de cada uma das treze falácias aristotélicas.',
+  dv:'Catálogo de 13 falácias reais', g:'Cada exemplo tem fonte e explica o mecanismo.',
+  f:'Achar falácia só no adversário.'},
+ {id:'P37',d:'Aristóteles',t:'Física: as quatro causas, o movimento & o tempo',xp:45,cr:16,ach:'Quatro Causas',
+  s:'Natureza, mudança, infinito, lugar e tempo: a física que durou dois mil anos, errada em muito e certeira no jeito de perguntar.',
+  st:['As quatro causas: material, formal, eficiente e final','Natureza como princípio de movimento','Ato e potência na mudança','Infinito potencial, lugar e o tempo como número do movimento','O que Galileu e Newton derrubaram e o que a pergunta ainda vale'],
+  wh:[['Stanford Encyclopedia — Aristotle on Causality','https://plato.stanford.edu/entries/aristotle-causality/','doc','EN'],['Stanford Encyclopedia — Aristotle’s Natural Philosophy','https://plato.stanford.edu/entries/aristotle-natphil/','doc','EN']],
+  bk:[['fisica','Livros I e II; Livro IV (o tempo)']],
+  q:'Explique um objeto do seu trabalho (um radar, um algoritmo, um prédio) pelas quatro causas e diga qual delas a ciência moderna descarta.',
+  dv:'Quatro causas de um objeto + uma página', g:'Mostra onde a causa final sobreviveu como função, na biologia e na engenharia.',
+  f:'Rir da física antiga sem entender a pergunta.'},
+ {id:'P38',d:'Aristóteles',t:'Metafísica: o ser enquanto ser',xp:50,cr:18,ach:'Ser Enquanto Ser',
+  s:'A ciência do que existe enquanto existe: substância, essência, ato e potência, o princípio de não contradição e o motor imóvel.',
+  st:['Livro I (Alfa): o desejo de saber e a filosofia antes dele','Livro IV (Gama): o ser enquanto ser e o princípio de não contradição','Livro VII (Zeta): o que é substância','Livro IX (Teta): ato e potência','Livro XII (Lambda): o motor imóvel, pensamento que pensa a si mesmo'],
+  wh:[['Stanford Encyclopedia — Aristotle’s Metaphysics','https://plato.stanford.edu/entries/aristotle-metaphysics/','doc','EN'],['Stanford Encyclopedia — Aristotle on Non-contradiction','https://plato.stanford.edu/entries/aristotle-noncontradiction/','doc','EN']],
+  bk:[['metafisica','Livros I, IV, VII, IX e XII']],
+  q:'Escreva uma ficha por livro e defenda o princípio de não contradição contra um objetor real: o dialeteísmo de Graham Priest.',
+  dv:'Cinco fichas + defesa', g:'A defesa reconstrói o argumento do Livro IV e encara a objeção de verdade.',
+  f:'Ler resumo de resumo.'},
+ {id:'P39',d:'Aristóteles',t:'De Anima: a alma como forma do corpo',xp:45,cr:16,ach:'Hilemorfismo',
+  s:'Nem fantasma na máquina nem só matéria: a alma como o jeito de um corpo vivo funcionar.',
+  st:['Hilemorfismo: matéria e forma','Os três níveis: nutritivo, sensitivo e racional','Percepção: receber a forma sem a matéria','O intelecto agente e o enigma do Livro III','Aristóteles e a filosofia da mente de hoje (funcionalismo)'],
+  wh:[['Stanford Encyclopedia — Aristotle’s Psychology','https://plato.stanford.edu/entries/aristotle-psychology/','doc','EN']],
+  bk:[['deAnima','Livros II e III']],
+  q:'Compare Aristóteles, Descartes e o funcionalismo sobre o que é uma mente, num quadro, e diga onde cada um falha diante de uma IA.',
+  dv:'Quadro + uma página sobre IA', g:'Aplica o critério de cada um a um caso real de IA.',
+  f:'Ler “alma” em Aristóteles como alma religiosa.'},
+ {id:'P40',d:'Aristóteles',t:'Poética: enredo, mimese & catarse',xp:40,cr:14,ach:'Catarse',
+  s:'O primeiro manual de roteiro: tragédia, enredo, reviravolta e reconhecimento. Ainda é o que se ensina em oficina de escrita.',
+  st:['Mimese: imitar como forma de conhecer','Os seis elementos da tragédia, com o enredo em primeiro','Peripécia, reconhecimento e o erro trágico (hamartia)','Catarse: o debate sobre o que ela é','Da Poética ao roteiro de hoje (e ao Flâneur)'],
+  wh:[['Stanford Encyclopedia — Aristotle’s Aesthetics','https://plato.stanford.edu/entries/aristotle-aesthetics/','doc','EN']],
+  bk:[['poetica','Livro inteiro (curto)']],
+  q:'Analise um filme ou série pela Poética e reescreva uma cena que falha pelo critério dela.',
+  dv:'Análise + cena reescrita', g:'A cena reescrita melhora pelo critério da Poética.',
+  f:'Usar a Poética como checklist de clichê.'},
+ {id:'P41',d:'Aristóteles',t:'Biologia: História dos Animais & a lagoa de Lesbos',xp:45,cr:16,ach:'Lagoa de Lesbos',
+  s:'Aristóteles abriu bichos, observou o polvo e o ouriço e descreveu centenas de espécies. O pai da biologia, inclusive nos erros.',
+  st:['Observação de campo na lagoa de Pyrrha, em Lesbos','História dos Animais: classificar por partes, modo de vida e hábitos','Partes dos Animais: por que estudar até os bichos sem graça','Os acertos que Darwin admirou e os erros famosos','Aves: voo, migração e ovos (ponte com o Iter e o radar)'],
+  wh:[['Stanford Encyclopedia — Aristotle’s Biology','https://plato.stanford.edu/entries/aristotle-biology/','doc','EN']],
+  bk:[['lagoon','Livro inteiro'],['historiaAnimais','Livro I e os trechos sobre aves']],
+  q:'Faça como ele: observe uma espécie de ave por 30 dias, registre partes, hábitos e comportamento e compare com o que ele escreveu.',
+  dv:'Caderno de campo de 30 dias', g:'Registros com data, hora e local, e uma correção a Aristóteles com evidência.',
+  f:'Copiar a enciclopédia em vez de olhar o bicho.'},
+ {id:'P42',d:'BOSS',t:'BOSS · Disputatio',xp:250,cr:90,boss:1,ach:'Mestre dos Que Sabem',
+  s:'Chefe da Alpha no modo medieval: uma questão disputada no formato de Tomás de Aquino sobre uma tese aristotélica, com objeções, sed contra, resposta e réplica.',
+  st:['Escolher a questão (ex.: existe causa final na natureza?)','Três objeções fortes do lado contrário','Sed contra: o argumento a favor','Respondeo: a sua resposta com as obras lidas','Réplica a cada objeção, uma por uma'],
+  q:'Escreva a questão disputada e faça a disputa oral com alguém que defenda as objeções.',
+  dv:'Questão escrita + disputa oral', g:'Cada objeção tem resposta própria e uma delas te obriga a ajustar a tese.',
+  f:'Objeções de palha.'}
+]});
+SYS.gate('vitruviano', {id:'pag2',arc:'pa2',n:'Selo · Aristóteles',ev:['Dez silogismos','Catálogo de 13 falácias','Quatro causas de um objeto','Cinco fichas da Metafísica','Quadro da mente','Cena reescrita pela Poética','Caderno de campo de 30 dias','Disputatio'],oral:'Explique ato e potência com um exemplo do seu trabalho.',fail:'Qual erro de Aristóteles você teria cometido no lugar dele?',ach:'vt_pa2',xp:250});
+
+SYS.arc('vitruviano', { id:'i2', br:'phi', n:'III · FILOSOFIA — AS GRANDES PERGUNTAS', wk:'Philosophia · III', sub:'Sócrates, Aristóteles, estoicos, existencialistas, ética, mente, espaço e cansaço.', nodes:[
  {id:'P04',d:'Filosofia',t:'Sócrates, Platão & a caverna',xp:40,cr:14,ach:'Out of the Cave',
   s:'A vida não examinada — e as sombras que confundimos com o real.',
   st:['Método socrático (elenchus)','“Só sei que nada sei”: ignorância consciente','Alegoria da caverna (República, Livro VII)','Ideias vs aparências','Apologia: o preço de questionar','A caverna, simulação e espaços liminares'],
@@ -105,7 +179,7 @@ SYS.arc('vitruviano', { id:'i2', br:'phi', n:'II · FILOSOFIA — AS GRANDES PER
   f:'Transformar descanso em mais uma métrica de produtividade.'}
 ]});
 
-SYS.arc('vitruviano', { id:'i3', br:'phi', n:'III · PSICOLOGIA APLICADA', wk:'Philosophia · III', sub:'Aprendizagem, hábitos, emoções, personalidade e influência.', nodes:[
+SYS.arc('vitruviano', { id:'i3', br:'phi', n:'IV · PSICOLOGIA APLICADA', wk:'Philosophia · IV', sub:'Aprendizagem, hábitos, emoções, personalidade e influência.', nodes:[
  {id:'P11',d:'Psicologia',t:'Aprender a aprender',xp:45,cr:16,ach:'Meta Learner',
   s:'Reler dá sensação de saber; testar-se dá saber.',
   st:['Prática de recuperação (testar-se)','Repetição espaçada','Intercalação','Dificuldade desejável','Ilusão de fluência','Teach-back e método Feynman','Flashcards (Anki)'],
@@ -148,7 +222,7 @@ SYS.arc('vitruviano', { id:'i3', br:'phi', n:'III · PSICOLOGIA APLICADA', wk:'P
   f:'Escassez falsa (“últimas 2 vagas” eternas).'}
 ]});
 
-SYS.arc('vitruviano', { id:'i4', br:'phi', n:'IV · JUNG & PROFUNDEZAS', wk:'Philosophia · IV', sub:'Mapa junguiano, persona e sombra, sonhos, símbolos e sentido.', nodes:[
+SYS.arc('vitruviano', { id:'i4', br:'phi', n:'V · JUNG & PROFUNDEZAS', wk:'Philosophia · V', sub:'Mapa junguiano, persona e sombra, sonhos, símbolos e sentido.', nodes:[
  {id:'P16',d:'Jung',t:'O mapa junguiano',xp:50,cr:18,ach:'Psyche Cartographer',
   s:'Arquétipos, persona, sombra e individuação — com senso crítico.',
   st:['Consciente, inconsciente pessoal e coletivo','Arquétipos','Persona (máscara social)','Sombra','Anima/animus (e leituras críticas atuais)','Self e individuação','Complexos','Críticas: falsificabilidade e uso pop'],
@@ -215,7 +289,7 @@ SYS.arc('vitruviano', { id:'is2', br:'phi', side:1, needGate:'ig3', n:'ARCO LATE
   f:'Instalar 4 apps de foco e passar a semana configurando os 4.'}
 ]});
 
-SYS.arc('vitruviano', { id:'i6', br:'phi', n:'V · LUCIDEZ', wk:'Philosophia · Final', sub:'O diálogo com o Examinador e o Tratado Pessoal.', nodes:[
+SYS.arc('vitruviano', { id:'i6', br:'phi', n:'VI · LUCIDEZ', wk:'Philosophia · Final', sub:'O diálogo com o Examinador e o Tratado Pessoal.', nodes:[
  {id:'P23',d:'BOSS',t:'BOSS · O Diálogo Socrático',xp:250,cr:90,boss:1,ach:'Examined Life',
   s:'Chefe da Alpha: um diálogo socrático escrito sobre uma decisão real sua, sustentado contra 20 perguntas do Examinador.',
   st:['Escolher uma decisão real que ainda está em aberto','Escrever o diálogo: tese, perguntas, contradições, nova tese','Responder ao Examinador sem se esconder','Registrar o que mudou na decisão'],
@@ -231,9 +305,9 @@ SYS.arc('vitruviano', { id:'i6', br:'phi', n:'V · LUCIDEZ', wk:'Philosophia · 
 ]});
 
 [
- {id:'ig2',arc:'i2',n:'Selo II · Filosofia',ev:['Diálogo socrático','Mapa de virtudes','Diário estoico','Ensaio existencial','Casos éticos','Ensaio visual liminal','Manifesto anti-burnout'],oral:'Explique o absurdo de Camus e a resposta de Nietzsche em 3 minutos.',fail:'Qual filosofia você usou como desculpa em vez de guia?',ach:'mi_g2',xp:200},
- {id:'ig3',arc:'i3',n:'Selo III · Psicologia',ev:['Experimento de aprendizagem','Design de hábitos','Registro de pensamentos','Relatório de personalidade','Auditoria de persuasão'],oral:'Explique prática de recuperação e autodeterminação com exemplos deste Sistema.',fail:'Onde a gamificação deste Sistema pode sabotar sua motivação?',ach:'mi_g3',xp:180},
- {id:'ig4',arc:'i4',n:'Selo IV · Profundezas',ev:['Glossário junguiano','Diário de projeções','Diário de sonhos + obra','Carta de valores'],oral:'Explique persona e sombra com um exemplo seu (sem expor ninguém).',fail:'Qual a crítica científica mais forte a Jung e como você lida com ela?',ach:'mi_g4',xp:180},
+ {id:'ig2',arc:'i2',n:'Selo III · Filosofia',ev:['Diálogo socrático','Mapa de virtudes','Diário estoico','Ensaio existencial','Casos éticos','Ensaio visual liminal','Manifesto anti-burnout'],oral:'Explique o absurdo de Camus e a resposta de Nietzsche em 3 minutos.',fail:'Qual filosofia você usou como desculpa em vez de guia?',ach:'mi_g2',xp:200},
+ {id:'ig3',arc:'i3',n:'Selo IV · Psicologia',ev:['Experimento de aprendizagem','Design de hábitos','Registro de pensamentos','Relatório de personalidade','Auditoria de persuasão'],oral:'Explique prática de recuperação e autodeterminação com exemplos deste Sistema.',fail:'Onde a gamificação deste Sistema pode sabotar sua motivação?',ach:'mi_g3',xp:180},
+ {id:'ig4',arc:'i4',n:'Selo V · Profundezas',ev:['Glossário junguiano','Diário de projeções','Diário de sonhos + obra','Carta de valores'],oral:'Explique persona e sombra com um exemplo seu (sem expor ninguém).',fail:'Qual a crítica científica mais forte a Jung e como você lida com ela?',ach:'mi_g4',xp:180},
  {id:'ig6',arc:'i6',n:'Selo Final · Lucidez',ev:['Diálogo com o Examinador','Tratado Pessoal v1'],oral:'Resuma sua filosofia em 5 frases e diga o que faria você mudá-la.',fail:'O que você ainda não sabe sobre si mesmo?',ach:'mi_g6',xp:350,final:1},
  {id:'igs2',arc:'is2',n:'Selo Lateral · Atenção',ev:['15 blocos profundos registrados','21 dias de prática + página crítica','Diário de 14 dias de tédio','Boss Atenção Auditada'],oral:'Mostre seus números de tela e explique o que mudou de verdade.',fail:'Qual hábito digital você tentou cortar e voltou? Por quê?',ach:'mi_s2',xp:220}
 ].forEach(function(g){ SYS.gate('vitruviano', g); });

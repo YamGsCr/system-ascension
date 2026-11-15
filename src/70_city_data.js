@@ -42,7 +42,7 @@ SYS.CITY = {
       clas: [['Liga do Livro-Razão', 'Centavo que some volta. Com juros.'], ['Navegadores da Maré', 'Ninguém prevê a maré; a gente lê e ajusta a vela.']]},
     {id: 'biblioteca', way: 'mind', n: 'Biblioteca às 3h', curto: 'Biblioteca', ic: 'd_library', col: 0, row: 2,
       /* a rua Pensamento puxa os nós da antiga base do Mind, que hoje moram no Vitruviano (sel.way); a recompensa segue do distrito */
-      ruas: ['Pensamento', 'Hiperfocos e Arquivos', 'Jogos e Sistemas'], sel: [{way: 'vitruviano', arcs: ['pa1','i1','i2','i3','i4','i5','i6','is1','is2']}, {br: 'hip'}, {br: 'jog'}],
+      ruas: ['Pensamento', 'Hiperfocos e Arquivos', 'Jogos e Sistemas'], sel: [{way: 'vitruviano', arcs: ['pa1','pa2','i1','i2','i3','i4','i5','i6','is1','is2']}, {br: 'hip'}, {br: 'jog'}],
       clas: [['Círculo da Lamparina', 'Defina os termos. Depois a gente briga.'], ['Casa da Sombra', 'O que você não olha, olha você.'], ['Arquivistas do Hiperfoco', 'Tudo que você amou por uma semana merece uma ficha.']]},
     {id: 'galeria', way: 'flaneur', n: 'Galeria Coberta', curto: 'Galeria', ic: 'd_gallery', col: 1, row: 2,
       ruas: ['Observação e Leitura', 'Ofício da Escrita', 'Teoria e Academia', 'Publicação'], sel: [{br: 'obs'}, {br: 'ofi'}, {br: 'aca'}, {br: 'pub'}],
